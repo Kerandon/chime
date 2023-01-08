@@ -1,12 +1,12 @@
-import 'package:chime/utils/read_asset_files.dart';
+import 'dart:ui';
 import 'package:chime/components/start_button.dart';
-import 'package:chime/state/state_manager.dart';
-import 'package:chime/components/timer_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
-import '../utils/constants.dart';
+import '../components/interval_dropdown.dart';
+import '../components/app_timer.dart';
+import '../components/custom_title.dart';
+import '../components/sound_selection.dart';
+import '../state/state_manager.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({
@@ -18,110 +18,77 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
-  late final Future<List<String>> _audioAssetsFuture;
-
-  @override
-  void didChangeDependencies() {
-    _audioAssetsFuture = readAssetFiles(context: context, subPath: 'audio/');
-
-    super.didChangeDependencies();
-  }
 
   @override
   Widget build(BuildContext context) {
-    final provider = ref.read(stateProvider);
+    final size = MediaQuery.of(context).size;
+
+    final state= ref.read(stateProvider);
     final notifier = ref.read(stateProvider.notifier);
+
+    if(!state.initialTimeIsSet) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        notifier.setTotalTime(60);
+        notifier.setIfInitialTimeSet(true);
+      });
+    }
 
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        toolbarHeight: size.height * 0.10,
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
-        title: const Text('Meditation Timer'),
+        title: Padding(
+          padding: EdgeInsets.all(size.height * 0.08,),
+          child: Image.asset('assets/images/logo2.png', fit: BoxFit.scaleDown,),
+        ),
       ),
       backgroundColor: Colors.black,
-      body: FutureBuilder<List<String>>(
-          future: _audioAssetsFuture,
-          builder:
-              (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
-            if (snapshot.hasData) {
-
-              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                notifier.setAllAudio(audioList: snapshot.data!);
-              });
-
-
-              return SafeArea(
-                child: Stack(
-                  children: [
-                    Container(
-                      decoration: const BoxDecoration(
-                          image: DecorationImage(
-                              opacity: 1,
-                              fit: BoxFit.cover,
-                              image: AssetImage(
-                                'assets/images/rocks.jpg',
-                              ))),
-                    ),
-                    Container(
-                      child: Column(children: [
-                        Expanded(
-                          flex: 5,
-                          child: Center(
-                            child: Text(
-                              '54',
-                              style: Theme.of(context).textTheme.displayLarge,
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 5,
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: times
-                                  .map((e) => TimerButton(
-                                        label: e,
-                                      ))
-                                  .toList()),
-                        ),
-                        Expanded(
-                          flex: 3,
-                          child: Center(
-                            child: FormBuilder(
-                              child: provider.allAudio.isEmpty ? SizedBox() : FormBuilderDropdown(
-                                initialValue: provider.allAudio.first,
-                                name: 'sounds',
-                                items: provider.allAudio
-                                    .map(
-                                      (e) => DropdownMenuItem(
-                                        value: e,
-                                        child: Center(
-                                          child: Text(
-                                            e,
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                                      ),
-                                    )
-                                    .toList(),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const Expanded(
-                          flex: 3,
-                          child: StartButton(),
-                        ),
-                      ]),
-                    ),
-                  ],
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: AssetImage(
+                    'assets/images/rocks.jpg',
+                  ),
                 ),
-              );
-            }
-            return const CircularProgressIndicator();
-          }),
+              ),
+            ),
+            Center(
+              child: ClipRect(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: Container(
+                    width: size.width * 0.80,
+                    height: size.height * 0.85,
+                    decoration: const BoxDecoration(color: Colors.black54),
+                  ),
+                ),
+              ),
+            ),
+            Column(children: [
+              const Expanded(flex: 1, child: SizedBox()),
+              const AppTimer(),
+              const CustomTitle(text: 'Play sound every'),
+              const IntervalDropdown(),
+              SizedBox(
+                height: size.height * 0.05,
+              ),
+              const SoundSelection(),
+              const Expanded(
+                flex: 2,
+                child: StartButton(),
+              ),
+            ]),
+          ],
+        ),
+      ),
     );
   }
 }

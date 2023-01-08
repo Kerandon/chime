@@ -1,5 +1,4 @@
 import 'package:chime/pages/home_page.dart';
-import 'package:chime/utils/read_asset_files.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'configs/app_theme.dart';
@@ -14,19 +13,14 @@ class ChimeApp extends StatefulWidget {
 }
 
 class _ChimeAppState extends State<ChimeApp> {
-
-
   @override
   Widget build(BuildContext context) {
-    readAssetFiles(context: context);
 
     return ProviderScope(
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: appTheme,
-        home: HomePage(
-
-        ),
+        home: const HomePage(),
       ),
     );
   }
