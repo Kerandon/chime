@@ -18,6 +18,8 @@ class AppTimer extends ConsumerStatefulWidget {
 }
 
 class _CustomNumberFieldState extends ConsumerState<AppTimer> {
+
+  CountdownTimer? _timer;
   final _textEditingController = TextEditingController();
   final _focusNode = FocusNode();
   int _minRemaining = 0;
@@ -25,8 +27,8 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
   bool _sessionStarted = false;
 
   void _setTimer(int totalTime) {
-    CountdownTimer(Duration(minutes: totalTime), const Duration(seconds: 1))
-        .listen(
+    _timer = CountdownTimer(Duration(minutes: totalTime), const Duration(seconds: 1))
+        ..listen(
       (event) {
         _minRemaining = event.remaining.inMinutes;
         _secRemaining = event.remaining.inSeconds;
@@ -35,6 +37,13 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
       },
       onDone: () {},
     );
+  }
+
+  _cancelTimer(){
+    _timer?.cancel();
+    setState(() {
+
+    });
   }
 
   @override
@@ -48,13 +57,17 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
       numberOfSounds = state.totalTime ~/ state.intervalTime;
     }
     if (state.sessionStatus == SessionStatus.inProgress) {
+      print('start');
       if (!_sessionStarted) {
+        print('start timer');
         _setTimer(state.totalTime);
+
         _sessionStarted = true;
       }
     }
+
     if(state.sessionStatus == SessionStatus.stopped){
-      print('STOP!');
+     _cancelTimer();
     }
 
     List<int> bellTimes = [];

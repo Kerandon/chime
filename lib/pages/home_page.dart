@@ -82,7 +82,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               ),
               const SoundSelection(),
               const Expanded(
-                flex: 2,
+                flex: 5,
                 child: StartButton(),
               ),
             ]),

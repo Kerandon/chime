@@ -13,7 +13,6 @@ class AppState {
   final SessionStatus sessionStatus;
   final FocusState focusState;
   final bool initialTimeIsSet;
-  final bool sessionInProgress;
 
   AppState({
     required this.totalTime,
@@ -23,7 +22,6 @@ class AppState {
     required this.sessionStatus,
     required this.focusState,
     required this.initialTimeIsSet,
-    required this.sessionInProgress,
   });
 
   AppState copyWith({
@@ -44,7 +42,6 @@ class AppState {
       sessionStatus: sessionStatus ?? this.sessionStatus,
       focusState: focusState ?? this.focusState,
       initialTimeIsSet: initialTimeIsSet ?? this.initialTimeIsSet,
-      sessionInProgress: sessionInProgress ?? this.sessionInProgress,
     );
   }
 }
@@ -90,6 +87,7 @@ class AppNotifier extends StateNotifier<AppState> {
 
   void setSessionStatus(SessionStatus status) {
     state = state.copyWith(sessionStatus: status);
+    print('session status is set to $status');
   }
 
   void setTimerFocusState(FocusState focus){
@@ -109,6 +107,5 @@ final stateProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
     sessionStatus: SessionStatus.stopped,
     focusState: FocusState.none,
     initialTimeIsSet: false,
-    sessionInProgress: false,
   ));
 });
