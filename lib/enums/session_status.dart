@@ -1,1 +1,6 @@
-enum SessionStatus { inProgress, stopped, paused }
+enum SessionStatus {
+  notStarted,
+  inProgress,
+  paused,
+  ended,
+}

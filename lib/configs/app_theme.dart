@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'app_colors.dart';
+
 final appTheme = ThemeData(
+  primaryColor: AppColors.teal,
   outlinedButtonTheme: OutlinedButtonThemeData(
     style: OutlinedButton.styleFrom(
         textStyle: const TextStyle(color: Colors.white)),

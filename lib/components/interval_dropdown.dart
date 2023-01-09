@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../state/state_manager.dart';
-import 'dart:developer' as developer;
 
 class IntervalDropdown extends ConsumerWidget {
   const IntervalDropdown({
@@ -45,19 +44,29 @@ class IntervalDropdown extends ConsumerWidget {
       );
     }
 
-
     selectedValue = state.intervalTime;
-    if(items.every((element) => element.value != selectedValue) && items.isNotEmpty){
+    if (items.every((element) => element.value != selectedValue) &&
+        items.isNotEmpty) {
       selectedValue = items.first.value;
     }
 
     return SizedBox(
       height: size.height * 0.05,
       width: size.width * 0.70,
-      child: Center(
-        child: items.isEmpty
-            ? const SizedBox()
-            : DropdownButton<int>(
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(bottom: size.height * 0.005),
+            child: Text(
+              'Play a ${state.soundSelected.name} every',
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                    color: Colors.white60,
+                  ),
+            ),
+          ),
+          items.isEmpty
+              ? const SizedBox()
+              : DropdownButton<int>(
                 dropdownColor: Colors.black,
                 value: selectedValue,
                 iconSize: 0,
@@ -66,6 +75,7 @@ class IntervalDropdown extends ConsumerWidget {
                   notifier.setIntervalTime(value as int);
                 },
               ),
+        ],
       ),
     );
   }

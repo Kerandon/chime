@@ -13,6 +13,7 @@ class AppState {
   final SessionStatus sessionStatus;
   final FocusState focusState;
   final bool initialTimeIsSet;
+  final int secondsRemaining;
 
   AppState({
     required this.totalTime,
@@ -22,6 +23,7 @@ class AppState {
     required this.sessionStatus,
     required this.focusState,
     required this.initialTimeIsSet,
+    required this.secondsRemaining,
   });
 
   AppState copyWith({
@@ -33,6 +35,7 @@ class AppState {
     FocusState? focusState,
     bool? initialTimeIsSet,
     bool? sessionInProgress,
+    int? secondsRemaining,
   }) {
     return AppState(
       totalTime: totalTime ?? this.totalTime,
@@ -42,6 +45,7 @@ class AppState {
       sessionStatus: sessionStatus ?? this.sessionStatus,
       focusState: focusState ?? this.focusState,
       initialTimeIsSet: initialTimeIsSet ?? this.initialTimeIsSet,
+      secondsRemaining: secondsRemaining ?? this.secondsRemaining,
     );
   }
 }
@@ -96,6 +100,11 @@ class AppNotifier extends StateNotifier<AppState> {
       state = state.copyWith(focusState: FocusState.none);
     });
   }
+
+  void setSecondsRemaining(int total){
+    state = state.copyWith(secondsRemaining: total);
+
+  }
 }
 
 final stateProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
@@ -104,8 +113,9 @@ final stateProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
     intervalTimes: {1},
     intervalTime: 1,
     soundSelected: Sounds.chime,
-    sessionStatus: SessionStatus.stopped,
+    sessionStatus: SessionStatus.notStarted,
     focusState: FocusState.none,
     initialTimeIsSet: false,
+    secondsRemaining: 0
   ));
 });
