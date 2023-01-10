@@ -28,18 +28,16 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
 
   void _setTimer(int totalTime) {
     _timer =
-        CountdownTimer(Duration(minutes: totalTime), const Duration(milliseconds: 1000))
-          ..listen(
+    CountdownTimer(
+        Duration(seconds: totalTime), const Duration(milliseconds: 1000))
+      ..listen(
             (event) {
-              // int minutes = event.remaining.inSeconds ~/ 60;
-              // print(minutes);
-              // _minRemaining = event.remaining.inMinutes;
-              _secRemaining = event.remaining.inSeconds;
-              //_secRemaining = event.remaining.inSeconds % 60;
-              setState(() {});
-            },
-            onDone: () {},
-          );
+          _minRemaining = event.remaining.inMinutes;
+          _secRemaining = event.remaining.inSeconds;
+          setState(() {});
+        },
+        onDone: () {},
+      );
   }
 
   @override
@@ -54,19 +52,24 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
     }
     if (state.sessionStatus == SessionStatus.inProgress) {
       if (!_sessionStarted) {
-
-        _setTimer(state.totalTime);
+       int totalTimeInSeconds = state.totalTime * 60;
+        _setTimer(totalTimeInSeconds);
         _sessionStarted = true;
+      }
+      if(state.pausedTime != 0){
+          _setTimer(state.pausedTime);
+          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+            notifier.setPausedTime(reset: true);
+          });
       }
     }
 
     if (state.sessionStatus == SessionStatus.paused) {
-      print('SESSION PAUSE');
       _cancelTimer();
+
     }
 
-    if (state.sessionStatus == SessionStatus.ended) {
-      print('SESSION END');
+    if (state.sessionStatus == SessionStatus.stopped) {
       _cancelTimer();
     }
 
@@ -77,63 +80,61 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
     });
 
 
-
-    final size = MediaQuery.of(context).size;
+    final size = MediaQuery
+        .of(context)
+        .size;
     return SizedBox(
       width: size.width * 0.70,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Align(
-            alignment: const Alignment(0.50, 0.0),
-            child: Text(
-              numberOfSounds.toString(),
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall!
-                  .copyWith(color: Colors.white54),
+          state.sessionStatus == SessionStatus.inProgress ||
+              state.sessionStatus == SessionStatus.paused
+              ? RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              children: [
+                TextSpan(
+                    text: (_secRemaining ~/ 60).toString(),
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .displayLarge),
+                TextSpan(
+                    text: (_secRemaining % 60).toString(),
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .displaySmall!
+                        .copyWith(fontWeight: FontWeight.normal)),
+              ],
+            ),
+          )
+              : TextFormField(
+            focusNode: _focusNode,
+            controller: _textEditingController,
+            onChanged: (value) {
+              notifier.setTimerFocusState(FocusState.inFocus);
+              if (value.trim() == "") {
+                notifier.setTotalTime(0);
+              } else {
+                notifier.setTotalTime(int.parse(value));
+              }
+            },
+            maxLength: 4,
+            style: Theme
+                .of(context)
+                .textTheme
+                .displayLarge,
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            textAlign: TextAlign.center,
+            decoration: const InputDecoration(
+              contentPadding: EdgeInsets.zero,
+              counterText: "",
             ),
           ),
-          state.sessionStatus == SessionStatus.inProgress ||
-                  state.sessionStatus == SessionStatus.paused
-              ? RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                          text: (_secRemaining ~/ 60).toString(),
-                          style: Theme.of(context).textTheme.displayLarge),
-                      TextSpan(
-                          text: (_secRemaining % 60).toString(),
-                          style: Theme.of(context)
-                              .textTheme
-                              .displaySmall!
-                              .copyWith(fontWeight: FontWeight.normal)),
-                    ],
-                  ),
-                )
-              : TextFormField(
-                  focusNode: _focusNode,
-                  controller: _textEditingController,
-                  onChanged: (value) {
-                    notifier.setTimerFocusState(FocusState.inFocus);
-                    if (value.trim() == "") {
-                      notifier.setTotalTime(0);
-                    } else {
-                      notifier.setTotalTime(int.parse(value));
-                    }
-                  },
-                  maxLength: 4,
-                  style: Theme.of(context).textTheme.displayLarge,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  textAlign: TextAlign.center,
-                  decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.zero,
-                    counterText: "",
-                  ),
-                ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -178,7 +179,7 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
     if (bellTimes
         .any((element) => element == _minRemaining && _secRemaining == 0)) {
       AudioManager().playAudio(sound: Sounds.gong.name);
-    }
+  }
   }
 
   void _setFocus(AppState state) {

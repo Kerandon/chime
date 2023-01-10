@@ -14,6 +14,7 @@ class AppState {
   final FocusState focusState;
   final bool initialTimeIsSet;
   final int secondsRemaining;
+  final int pausedTime;
 
   AppState({
     required this.totalTime,
@@ -24,6 +25,7 @@ class AppState {
     required this.focusState,
     required this.initialTimeIsSet,
     required this.secondsRemaining,
+    required this.pausedTime,
   });
 
   AppState copyWith({
@@ -36,6 +38,7 @@ class AppState {
     bool? initialTimeIsSet,
     bool? sessionInProgress,
     int? secondsRemaining,
+    int? pausedTime,
   }) {
     return AppState(
       totalTime: totalTime ?? this.totalTime,
@@ -46,6 +49,7 @@ class AppState {
       focusState: focusState ?? this.focusState,
       initialTimeIsSet: initialTimeIsSet ?? this.initialTimeIsSet,
       secondsRemaining: secondsRemaining ?? this.secondsRemaining,
+      pausedTime: pausedTime ?? this.pausedTime,
     );
   }
 }
@@ -54,26 +58,27 @@ class AppNotifier extends StateNotifier<AppState> {
   AppNotifier(state) : super(state);
 
   void setTotalTime(int time) {
-    state = state.copyWith(totalTime: time, intervalTimes: calculateIntervals(time));
+    state = state.copyWith(
+        totalTime: time, intervalTimes: calculateIntervals(time));
   }
 
-  void setIfInitialTimeSet(bool set){
+  void setIfInitialTimeSet(bool set) {
     state = state.copyWith(initialTimeIsSet: set);
   }
 
   void incrementTotalTime() {
     if (state.totalTime < 9999) {
       state = state.copyWith(totalTime: state.totalTime + 1);
-      state = state.copyWith(
-          intervalTimes: calculateIntervals(state.totalTime));
+      state =
+          state.copyWith(intervalTimes: calculateIntervals(state.totalTime));
     }
   }
 
   void decrementTotalTime() {
     if (state.totalTime > 0) {
       state = state.copyWith(totalTime: state.totalTime - 1);
-      state = state.copyWith(
-          intervalTimes: calculateIntervals(state.totalTime));
+      state =
+          state.copyWith(intervalTimes: calculateIntervals(state.totalTime));
     }
   }
 
@@ -94,16 +99,24 @@ class AppNotifier extends StateNotifier<AppState> {
     print('session status is set to $status');
   }
 
-  void setTimerFocusState(FocusState focus){
+  void setTimerFocusState(FocusState focus) {
     state = state.copyWith(focusState: focus);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       state = state.copyWith(focusState: FocusState.none);
     });
   }
 
-  void setSecondsRemaining(int total){
+  void setSecondsRemaining(int total) {
     state = state.copyWith(secondsRemaining: total);
+  }
 
+  void setPausedTime({bool? reset}){
+    int time = state.secondsRemaining;
+    if(reset == true){
+      time = 0;
+    }
+    state = state.copyWith(pausedTime: time);
+    print('paused time is ${state.pausedTime}');
   }
 }
 
@@ -116,6 +129,7 @@ final stateProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
     sessionStatus: SessionStatus.notStarted,
     focusState: FocusState.none,
     initialTimeIsSet: false,
-    secondsRemaining: 0
+    secondsRemaining: 0,
+    pausedTime: 0,
   ));
 });

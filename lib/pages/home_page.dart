@@ -54,7 +54,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                   ),
                 ),
                 Align(
-                  alignment: Alignment(0, 0.70),
+                  alignment: const Alignment(0, 0.70),
                   child: ClipRect(
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
@@ -71,31 +71,51 @@ class _HomePageState extends ConsumerState<HomePage> {
                   ),
                 ),
 
+
                 SizedBox(
                   width: size.width,
                   height: size.height * 0.90,
-                  child: Column(children: const [
-                    Expanded(
-                        flex: 15,
-                        child: SizedBox()),
-                    Expanded(flex: 120, child: AppTimer()),
-                    Expanded(flex: 5, child: SizedBox()),
-                    Expanded(flex: 35, child: IntervalDropdown()),
-                    Expanded(
-                        flex: 20,
-                        child: SoundSelection()),
-                    Expanded(
-                      flex: 80,
-                      child: StartButton(),
-                    ),
-                  ],),
+                  child: Stack(
+                    children: [
+                      Align(
+                        alignment: const Alignment(0.80,-0.80),
+                        child: SizedBox(
+                          width: size.width * 0.20,
+                          height: size.height * 0.10,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Text('Day 2', style: Theme.of(context).textTheme.bodySmall!
+                                  .copyWith(color: Colors.white54, fontWeight: FontWeight.normal),),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Column(children: const [
+                        Expanded(
+                            flex: 15,
+                            child: SizedBox()),
+                        Expanded(flex: 120, child: AppTimer()),
+                        Expanded(flex: 5, child: SizedBox()),
+                        Expanded(flex: 40, child: IntervalDropdown()),
+                        Expanded(
+                            flex: 20,
+                            child: SoundSelection()),
+                        Expanded(
+                          flex: 80,
+                          child: StartButton(),
+                        ),
+                      ],),
+                    ],
+                  ),
                 ),
                 Container(
                   width: size.width,
                   height: size.height * 0.05,
                   color: Colors.black,
                   child: IconButton(
-                      alignment: Alignment(0.90,0),
+                      alignment: const Alignment(0.90,0),
                       onPressed: (){}, icon: Icon(Icons.menu_outlined, size: size.height * 0.03,)),
                 ),
               ],
