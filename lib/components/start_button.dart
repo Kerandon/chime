@@ -1,3 +1,4 @@
+import 'package:chime/animation/bounce_animation.dart';
 import 'package:chime/components/stop_color_ring.dart';
 import 'package:chime/components/custom_circular_indicator.dart';
 import 'package:chime/enums/session_status.dart';
@@ -18,7 +19,7 @@ class StartButton extends ConsumerStatefulWidget {
 
 class _StartButtonState extends ConsumerState<StartButton> {
   CountdownTimer? _timer;
-  static const _kLongPressDuration = 1;
+  static const _kLongPressDurationMilliseconds = 2000;
   bool _longTapInProgress = false;
   int _restartMillisecondsRemaining = 0;
 
@@ -28,7 +29,8 @@ class _StartButtonState extends ConsumerState<StartButton> {
 
   @override
   Widget build(BuildContext context) {
-    double restartPercent = _restartMillisecondsRemaining / _kLongPressDuration;
+    double restartPercent =
+        _restartMillisecondsRemaining / _kLongPressDurationMilliseconds;
     if (restartPercent.isNegative) {
       restartPercent = 0;
     }
@@ -36,8 +38,11 @@ class _StartButtonState extends ConsumerState<StartButton> {
     final notifier = ref.read(stateProvider.notifier);
     final size = MediaQuery.of(context).size;
 
+    if(state.sessionStatus == SessionStatus.notStarted){
+      _buttonImage = Icon(Icons.play_arrow_outlined);
+    }
     if (state.sessionStatus == SessionStatus.inProgress) {
-      _buttonImage = Icon(Icons.play_arrow);
+      _buttonImage = Image.asset('assets/images/lotus.png', color: Colors.white,);
     }
     if (state.sessionStatus == SessionStatus.paused) {
       _buttonImage = Icon(Icons.pause);
@@ -80,19 +85,21 @@ class _StartButtonState extends ConsumerState<StartButton> {
           (LongPressGestureRecognizer instance) {
             instance.onLongPress = () {
               _longTapInProgress = true;
-              setState(() {});
 
               _timer = CountdownTimer(
-                  const Duration(milliseconds: _kLongPressDuration),
+                  const Duration(milliseconds: _kLongPressDurationMilliseconds),
                   const Duration(milliseconds: 20));
 
-              _timer?.listen(
-                (event) {
-                  _restartMillisecondsRemaining =
-                      event.remaining.inMilliseconds;
-                  setState(() {});
-                },
-              );
+              _timer?.listen((event) {
+                _restartMillisecondsRemaining = event.remaining.inMilliseconds;
+                setState(() {});
+              }, onDone: () {
+                notifier.setSessionStatus(SessionStatus.notStarted);
+                setState(() {
+                  _longTapInProgress = false;
+                  notifier.resetSession();
+                });
+              });
             };
             instance.onLongPressEnd = (details) {
               setState(
@@ -115,24 +122,30 @@ class _StartButtonState extends ConsumerState<StartButton> {
       },
       child: Stack(
         children: [
-          // StopColorRing(
-          //   animate: _longTapInProgress,
-          //   cancel: !_longTapInProgress,
-          //   radius: size.width * 0.16,
-          //   colorsList: [],
-          // ),
+          StopColorRing(
+            animate: _longTapInProgress,
+            cancel: !_longTapInProgress,
+            radius: size.width * 0.16,
+            duration: _kLongPressDurationMilliseconds,
+            colorsList: const [
+              Colors.orangeAccent,
+              Colors.orange,
+              Colors.redAccent,
+              Colors.red,
+            ],
+          ),
           StopColorRing(
             animate: state.sessionStatus == SessionStatus.paused,
             cancel: state.sessionStatus != SessionStatus.paused,
             radius: size.width * 0.16,
-            duration: 8000,
+            duration: 12000,
             loop: true,
-            colorsList: [
+            colorsList: const [
               Colors.yellow,
-              Colors.orange,
-              Colors.orangeAccent,
-              Colors.redAccent,
-              Colors.red,
+              Colors.yellowAccent,
+              Colors.yellow,
+              Colors.amberAccent,
+              Colors.amber,
               Colors.yellow
             ],
           ),
@@ -141,7 +154,7 @@ class _StartButtonState extends ConsumerState<StartButton> {
             animate: _startIndicator,
             colorStart: Colors.teal,
             colorEnd: Colors.green,
-            duration: 5,
+            duration: state.totalTime * 60,
             pause: state.sessionStatus == SessionStatus.paused,
           ),
           Center(
@@ -155,11 +168,15 @@ class _StartButtonState extends ConsumerState<StartButton> {
                     height: size.width * 0.25,
                     child: Padding(
                       padding: EdgeInsets.all(size.width * 0.05),
-                      child: AnimatedSwitcher(
-                        duration: const Duration(
-                          milliseconds: 200,
+                      child: BounceAnimation(
+                        animate: state.sessionStatus == SessionStatus.inProgress,
+                        stop: state.sessionStatus != SessionStatus.inProgress,
+                        child: AnimatedSwitcher(
+                          duration: const Duration(
+                            milliseconds: 300,
+                          ),
+                          child: _buttonImage,
                         ),
-                        child: _buttonImage,
                       ),
                     ),
                   ),

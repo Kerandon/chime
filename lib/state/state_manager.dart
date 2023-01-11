@@ -99,6 +99,13 @@ class AppNotifier extends StateNotifier<AppState> {
     print('session status is set to $status');
   }
 
+  void resetSession(){
+    state = state.copyWith(
+        pausedTime: 0,
+
+    );
+  }
+
   void setTimerFocusState(FocusState focus) {
     state = state.copyWith(focusState: focus);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -116,7 +123,6 @@ class AppNotifier extends StateNotifier<AppState> {
       time = 0;
     }
     state = state.copyWith(pausedTime: time);
-    print('paused time is ${state.pausedTime}');
   }
 }
 

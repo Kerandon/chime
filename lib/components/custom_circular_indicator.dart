@@ -39,6 +39,8 @@ class _CustomCircularIndicatorState extends State<CustomCircularIndicator>
 
   @override
   void initState() {
+
+    print('total seconds ${widget.duration}');
     super.initState();
     _controller = AnimationController(
       duration: Duration(seconds: widget.duration),

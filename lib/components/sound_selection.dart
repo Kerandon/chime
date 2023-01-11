@@ -1,4 +1,5 @@
 import 'package:chime/audio/audio_manager.dart';
+import 'package:chime/enums/session_status.dart';
 import 'package:chime/state/state_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -46,7 +47,9 @@ class SoundButton extends ConsumerWidget {
               : null,
         ),
         onPressed: () async {
-          await AudioManager().playAudio(sound: sound.name);
+          if(state.sessionStatus == SessionStatus.notStarted) {
+            await AudioManager().playAudio(sound: sound.name);
+          }
           notifier.setSound(sound);
           notifier.setTimerFocusState(FocusState.unFocus);
         },

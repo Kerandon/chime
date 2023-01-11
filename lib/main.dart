@@ -1,4 +1,4 @@
-import 'package:chime/pages/home_page.dart';
+import 'package:chime/enums/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'configs/app_theme.dart';

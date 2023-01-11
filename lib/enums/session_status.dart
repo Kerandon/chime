@@ -3,5 +3,4 @@ enum SessionStatus {
   inProgress,
   continueAfterPause,
   paused,
-  stopped,
 }

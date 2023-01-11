@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:chime/audio/audio_manager.dart';
 import 'package:chime/enums/session_status.dart';
 import 'package:flutter/material.dart';
@@ -27,11 +29,10 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
   bool _sessionStarted = false;
 
   void _setTimer(int totalTime) {
-    _timer =
-    CountdownTimer(
-        Duration(seconds: totalTime), const Duration(milliseconds: 1000))
+    _timer = CountdownTimer(
+        Duration(seconds: totalTime + 2), const Duration(milliseconds: 1000))
       ..listen(
-            (event) {
+        (event) {
           _minRemaining = event.remaining.inMinutes;
           _secRemaining = event.remaining.inSeconds;
           setState(() {});
@@ -47,29 +48,29 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
     int numberOfSounds = 1;
     _setFocus(state);
 
-    if (state.totalTime != 0 || state.intervalTime != 0) {
-      numberOfSounds = state.totalTime ~/ state.intervalTime;
-    }
-    if (state.sessionStatus == SessionStatus.inProgress) {
+    numberOfSounds = _setNumberOfSounds(state, numberOfSounds);
+
+    if (state.sessionStatus == SessionStatus.notStarted) {
+      _secRemaining = 0;
+      _minRemaining = 0;
+      _timer?.cancel();
+      _sessionStarted = false;
+    } else if (state.sessionStatus == SessionStatus.inProgress) {
       if (!_sessionStarted) {
-       int totalTimeInSeconds = state.totalTime * 60;
-        _setTimer(totalTimeInSeconds);
+        int totalTimeInSeconds = state.totalTime * 60;
+        Timer(Duration(milliseconds: 3000), () {
+          _setTimer(totalTimeInSeconds);
+        });
+
         _sessionStarted = true;
       }
-      if(state.pausedTime != 0){
-          _setTimer(state.pausedTime);
-          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-            notifier.setPausedTime(reset: true);
-          });
+      if (state.pausedTime != 0) {
+        _setTimer(state.pausedTime);
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          notifier.setPausedTime(reset: true);
+        });
       }
-    }
-
-    if (state.sessionStatus == SessionStatus.paused) {
-      _cancelTimer();
-
-    }
-
-    if (state.sessionStatus == SessionStatus.stopped) {
+    } else if (state.sessionStatus == SessionStatus.paused) {
       _cancelTimer();
     }
 
@@ -79,10 +80,7 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
       notifier.setSecondsRemaining(_secRemaining);
     });
 
-
-    final size = MediaQuery
-        .of(context)
-        .size;
+    final size = MediaQuery.of(context).size;
     return SizedBox(
       width: size.width * 0.70,
       child: Column(
@@ -90,78 +88,83 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           state.sessionStatus == SessionStatus.inProgress ||
-              state.sessionStatus == SessionStatus.paused
+                  state.sessionStatus == SessionStatus.paused
               ? RichText(
-            textAlign: TextAlign.center,
-            text: TextSpan(
-              children: [
-                TextSpan(
-                    text: (_secRemaining ~/ 60).toString(),
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .displayLarge),
-                TextSpan(
-                    text: (_secRemaining % 60).toString(),
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .displaySmall!
-                        .copyWith(fontWeight: FontWeight.normal)),
-              ],
-            ),
-          )
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                          text: (_secRemaining ~/ 60).toString(),
+                          style: Theme.of(context).textTheme.displayLarge),
+                      TextSpan(
+                          text: (_secRemaining % 60).toString(),
+                          style: Theme.of(context)
+                              .textTheme
+                              .displaySmall!
+                              .copyWith(fontWeight: FontWeight.normal)),
+                    ],
+                  ),
+                )
               : TextFormField(
-            focusNode: _focusNode,
-            controller: _textEditingController,
-            onChanged: (value) {
-              notifier.setTimerFocusState(FocusState.inFocus);
-              if (value.trim() == "") {
-                notifier.setTotalTime(0);
-              } else {
-                notifier.setTotalTime(int.parse(value));
-              }
-            },
-            maxLength: 4,
-            style: Theme
-                .of(context)
-                .textTheme
-                .displayLarge,
-            keyboardType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            textAlign: TextAlign.center,
-            decoration: const InputDecoration(
-              contentPadding: EdgeInsets.zero,
-              counterText: "",
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
-                onPressed: () {
-                  _focusNode.unfocus();
-                  notifier.incrementTotalTime();
-                },
-                icon: const Icon(
-                  Icons.add,
+                  focusNode: _focusNode,
+                  controller: _textEditingController,
+                  onChanged: (value) {
+                    notifier.setTimerFocusState(FocusState.inFocus);
+                    if (value.trim() == "") {
+                      notifier.setTotalTime(0);
+                    } else {
+                      notifier.setTotalTime(int.parse(value));
+                    }
+                  },
+                  maxLength: 4,
+                  style: Theme.of(context).textTheme.displayLarge,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  textAlign: TextAlign.center,
+                  decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.zero,
+                    counterText: "",
+                  ),
                 ),
-              ),
-              SizedBox(
-                width: size.width * 0.10,
-              ),
-              IconButton(
-                onPressed: () {
-                  _focusNode.unfocus();
-                  notifier.decrementTotalTime();
-                },
-                icon: const Icon(Icons.remove),
-              ),
-            ],
-          )
+          state.sessionStatus == SessionStatus.notStarted
+              ? SizedBox(
+                  height: size.height * 0.05,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          _focusNode.unfocus();
+                          notifier.incrementTotalTime();
+                        },
+                        icon: const Icon(
+                          Icons.add,
+                        ),
+                      ),
+                      SizedBox(
+                        width: size.width * 0.10,
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          _focusNode.unfocus();
+                          notifier.decrementTotalTime();
+                        },
+                        icon: const Icon(Icons.remove),
+                      ),
+                    ],
+                  ),
+                )
+              : SizedBox(height: size.height * 0.05,),
         ],
       ),
     );
+  }
+
+  int _setNumberOfSounds(AppState state, int numberOfSounds) {
+    if (state.totalTime != 0 || state.intervalTime != 0) {
+      numberOfSounds = state.totalTime ~/ state.intervalTime;
+    }
+    return numberOfSounds;
   }
 
   _cancelTimer() {
@@ -179,7 +182,7 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
     if (bellTimes
         .any((element) => element == _minRemaining && _secRemaining == 0)) {
       AudioManager().playAudio(sound: Sounds.gong.name);
-  }
+    }
   }
 
   void _setFocus(AppState state) {
