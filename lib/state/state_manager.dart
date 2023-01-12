@@ -15,6 +15,7 @@ class AppState {
   final bool initialTimeIsSet;
   final int secondsRemaining;
   final int pausedTime;
+  final bool sessionHasStarted;
 
   AppState({
     required this.totalTime,
@@ -26,6 +27,7 @@ class AppState {
     required this.initialTimeIsSet,
     required this.secondsRemaining,
     required this.pausedTime,
+    required this.sessionHasStarted,
   });
 
   AppState copyWith({
@@ -39,6 +41,7 @@ class AppState {
     bool? sessionInProgress,
     int? secondsRemaining,
     int? pausedTime,
+    bool? sessionHasStarted,
   }) {
     return AppState(
       totalTime: totalTime ?? this.totalTime,
@@ -50,6 +53,7 @@ class AppState {
       initialTimeIsSet: initialTimeIsSet ?? this.initialTimeIsSet,
       secondsRemaining: secondsRemaining ?? this.secondsRemaining,
       pausedTime: pausedTime ?? this.pausedTime,
+      sessionHasStarted: sessionHasStarted ?? this.sessionHasStarted,
     );
   }
 }
@@ -99,10 +103,13 @@ class AppNotifier extends StateNotifier<AppState> {
     print('session status is set to $status');
   }
 
-  void resetSession(){
-    state = state.copyWith(
-        pausedTime: 0,
+  void setSessionHasStarted(bool started) {
+    state = state.copyWith(sessionHasStarted: started);
+  }
 
+  void resetSession() {
+    state = state.copyWith(
+      pausedTime: 0,
     );
   }
 
@@ -117,9 +124,9 @@ class AppNotifier extends StateNotifier<AppState> {
     state = state.copyWith(secondsRemaining: total);
   }
 
-  void setPausedTime({bool? reset}){
+  void setPausedTime({bool? reset}) {
     int time = state.secondsRemaining;
-    if(reset == true){
+    if (reset == true) {
       time = 0;
     }
     state = state.copyWith(pausedTime: time);
@@ -137,5 +144,6 @@ final stateProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
     initialTimeIsSet: false,
     secondsRemaining: 0,
     pausedTime: 0,
+    sessionHasStarted: false,
   ));
 });

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:chime/audio/audio_manager.dart';
 import 'package:chime/enums/session_status.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:quiver/async.dart';
 import '../enums/focus_state.dart';
 import '../enums/sounds.dart';
 import '../state/state_manager.dart';
+import '../utils/constants.dart';
 
 class AppTimer extends ConsumerStatefulWidget {
   const AppTimer({
@@ -27,17 +29,23 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
   int _minRemaining = 0;
   int _secRemaining = 0;
   bool _sessionStarted = false;
+  bool _startCountdownInProgress = false;
+  bool _sessionIsCompleted = false;
 
   void _setTimer(int totalTime) {
     _timer = CountdownTimer(
         Duration(seconds: totalTime + 2), const Duration(milliseconds: 1000))
       ..listen(
         (event) {
+          _startCountdownInProgress = false;
           _minRemaining = event.remaining.inMinutes;
           _secRemaining = event.remaining.inSeconds;
           setState(() {});
         },
-        onDone: () {},
+        onDone: () {
+          _sessionIsCompleted = true;
+          setState(() {});
+        },
       );
   }
 
@@ -55,10 +63,14 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
       _minRemaining = 0;
       _timer?.cancel();
       _sessionStarted = false;
+      _sessionIsCompleted = false;
+
     } else if (state.sessionStatus == SessionStatus.inProgress) {
       if (!_sessionStarted) {
+        _startCountdownInProgress = true;
         int totalTimeInSeconds = state.totalTime * 60;
-        Timer(Duration(milliseconds: 3000), () {
+        Timer(const Duration(milliseconds: kStartingScreenDuration), () {
+          setState(() {});
           _setTimer(totalTimeInSeconds);
         });
 
@@ -72,12 +84,19 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
       }
     } else if (state.sessionStatus == SessionStatus.paused) {
       _cancelTimer();
+      _sessionIsCompleted = false;
     }
 
     _calculateBellIntervals(numberOfSounds, state);
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       notifier.setSecondsRemaining(_secRemaining);
+      if (_sessionIsCompleted) {
+        if (state.sessionStatus != SessionStatus.notStarted) {
+          print('run here');
+          notifier.setSessionStatus(SessionStatus.ended);
+        }
+      }
     });
 
     final size = MediaQuery.of(context).size;
@@ -87,74 +106,111 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          state.sessionStatus == SessionStatus.inProgress ||
-                  state.sessionStatus == SessionStatus.paused
-              ? RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
+          if (_startCountdownInProgress) ...[
+            AnimatedTextKit(
+                pause: const Duration(milliseconds: 600),
+                isRepeatingAnimation: false,
+                animatedTexts: [
+                  FadeAnimatedText('3',
+                      textStyle: Theme.of(context)
+                          .textTheme
+                          .displayLarge!
+                          .copyWith(color: Colors.white),
+                      duration: const Duration(milliseconds: 1500),
+                      fadeOutBegin: 0.90,
+                      fadeInEnd: 0.7),
+                  FadeAnimatedText('2',
+                      textStyle: Theme.of(context)
+                          .textTheme
+                          .displayLarge!
+                          .copyWith(color: Colors.white),
+                      duration: const Duration(milliseconds: 1500),
+                      fadeOutBegin: 0.90,
+                      fadeInEnd: 0.7),
+                  FadeAnimatedText('1',
+                      textStyle: Theme.of(context)
+                          .textTheme
+                          .displayLarge!
+                          .copyWith(color: Colors.white),
+                      duration: const Duration(milliseconds: 1500),
+                      fadeOutBegin: 0.90,
+                      fadeInEnd: 0.7),
+                ]),
+          ],
+          if (!_startCountdownInProgress) ...[
+            state.sessionStatus == SessionStatus.inProgress ||
+                    state.sessionStatus == SessionStatus.paused &&
+                        !_startCountdownInProgress
+                ? RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
                           text: (_secRemaining ~/ 60).toString(),
-                          style: Theme.of(context).textTheme.displayLarge),
-                      TextSpan(
-                          text: (_secRemaining % 60).toString(),
-                          style: Theme.of(context)
-                              .textTheme
-                              .displaySmall!
-                              .copyWith(fontWeight: FontWeight.normal)),
-                    ],
-                  ),
-                )
-              : TextFormField(
-                  focusNode: _focusNode,
-                  controller: _textEditingController,
-                  onChanged: (value) {
-                    notifier.setTimerFocusState(FocusState.inFocus);
-                    if (value.trim() == "") {
-                      notifier.setTotalTime(0);
-                    } else {
-                      notifier.setTotalTime(int.parse(value));
-                    }
-                  },
-                  maxLength: 4,
-                  style: Theme.of(context).textTheme.displayLarge,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  textAlign: TextAlign.center,
-                  decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.zero,
-                    counterText: "",
-                  ),
-                ),
-          state.sessionStatus == SessionStatus.notStarted
-              ? SizedBox(
-                  height: size.height * 0.05,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          _focusNode.unfocus();
-                          notifier.incrementTotalTime();
-                        },
-                        icon: const Icon(
-                          Icons.add,
+                          style: Theme.of(context).textTheme.displayLarge,
                         ),
-                      ),
-                      SizedBox(
-                        width: size.width * 0.10,
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          _focusNode.unfocus();
-                          notifier.decrementTotalTime();
-                        },
-                        icon: const Icon(Icons.remove),
-                      ),
-                    ],
+                        TextSpan(
+                            text: (_secRemaining % 60).toString(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .displaySmall!
+                                .copyWith(fontWeight: FontWeight.normal)),
+                      ],
+                    ),
+                  )
+                : TextFormField(
+                    focusNode: _focusNode,
+                    controller: _textEditingController,
+                    onChanged: (value) {
+                      notifier.setTimerFocusState(FocusState.inFocus);
+                      if (value.trim() == "") {
+                        notifier.setTotalTime(0);
+                      } else {
+                        notifier.setTotalTime(int.parse(value));
+                      }
+                    },
+                    maxLength: 4,
+                    style: Theme.of(context).textTheme.displayLarge,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    textAlign: TextAlign.center,
+                    decoration: const InputDecoration(
+                      contentPadding: EdgeInsets.zero,
+                      counterText: "",
+                    ),
                   ),
-                )
-              : SizedBox(height: size.height * 0.05,),
+            state.sessionStatus == SessionStatus.notStarted
+                ? SizedBox(
+                    height: size.height * 0.05,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            _focusNode.unfocus();
+                            notifier.incrementTotalTime();
+                          },
+                          icon: const Icon(
+                            Icons.add,
+                          ),
+                        ),
+                        SizedBox(
+                          width: size.width * 0.10,
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            _focusNode.unfocus();
+                            notifier.decrementTotalTime();
+                          },
+                          icon: const Icon(Icons.remove),
+                        ),
+                      ],
+                    ),
+                  )
+                : SizedBox(
+                    height: size.height * 0.05,
+                  ),
+          ],
         ],
       ),
     );

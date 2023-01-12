@@ -4,7 +4,7 @@ class StopColorRing extends StatefulWidget {
   const StopColorRing({
     super.key,
     required this.animate,
-    required this.cancel,
+    this.cancel = false,
     required this.radius,
     this.duration = 2000,
     this.loop = false,

@@ -1,0 +1,1 @@
+const kStartingScreenDuration = 6000;

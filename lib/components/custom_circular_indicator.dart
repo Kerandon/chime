@@ -1,6 +1,9 @@
-import 'package:flutter/material.dart';
 
-class CustomCircularIndicator extends StatefulWidget {
+import 'package:chime/state/state_manager.dart';
+import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+class CustomCircularIndicator extends ConsumerStatefulWidget {
   const CustomCircularIndicator({
     Key? key,
     required this.radius,
@@ -27,23 +30,20 @@ class CustomCircularIndicator extends StatefulWidget {
   final bool pause;
 
   @override
-  State<CustomCircularIndicator> createState() =>
+  ConsumerState<CustomCircularIndicator> createState() =>
       _CustomCircularIndicatorState();
 }
 
-class _CustomCircularIndicatorState extends State<CustomCircularIndicator>
+class _CustomCircularIndicatorState extends ConsumerState<CustomCircularIndicator>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Color?> _animationColor;
-  late Animation<double> _animation;
 
   @override
   void initState() {
-
-    print('total seconds ${widget.duration}');
     super.initState();
     _controller = AnimationController(
-      duration: Duration(seconds: widget.duration),
+      duration: const Duration(seconds: 60),
       vsync: this,
     );
 
@@ -55,14 +55,6 @@ class _CustomCircularIndicatorState extends State<CustomCircularIndicator>
       curve: Curves.easeInOutSine,
     ));
 
-    double begin = 0.0, end = 1.0;
-    if (widget.reverse) {
-      begin = 1.0;
-      end = 0.0;
-    }
-
-    _animation = Tween<double>(begin: begin, end: end).animate(
-        CurvedAnimation(parent: _controller, curve: Curves.easeOutSine));
   }
 
   @override
@@ -73,11 +65,12 @@ class _CustomCircularIndicatorState extends State<CustomCircularIndicator>
 
   @override
   void didUpdateWidget(covariant CustomCircularIndicator oldWidget) {
-    if (widget.animate) {
+    if (widget.animate && !_controller.isAnimating) {
       _controller.forward();
+
     }
 
-    if(widget.pause){
+    if (widget.pause) {
       _controller.stop();
     }
 
@@ -90,6 +83,9 @@ class _CustomCircularIndicatorState extends State<CustomCircularIndicator>
 
   @override
   Widget build(BuildContext context) {
+
+    final state = ref.read(stateProvider);
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -99,12 +95,25 @@ class _CustomCircularIndicatorState extends State<CustomCircularIndicator>
             height: widget.radius * 2,
             child: AnimatedBuilder(
               animation: _controller,
-              builder: (context, child) => CircularProgressIndicator(
-                backgroundColor: widget.backgroundColor,
-                valueColor: _animationColor,
-                value: _animation.value,
-                strokeWidth: widget.strokeWidth,
-              ),
+              builder: (context, child) {
+
+                double percent = 1.0;
+
+                if(state.totalTime != 0) {
+
+                  percent = state.secondsRemaining / (state.totalTime * 60);
+                }
+                if(percent == 0 && !_controller.isCompleted){
+                  percent = 1.0;
+                }
+
+                return CircularProgressIndicator(
+                    backgroundColor: widget.backgroundColor,
+                    valueColor: _animationColor,
+                    value: percent,
+                    strokeWidth: widget.strokeWidth,
+                  );
+              },
             ),
           ),
         ),

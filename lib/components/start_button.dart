@@ -1,4 +1,6 @@
+
 import 'package:chime/animation/bounce_animation.dart';
+import 'package:chime/components/lotus_icon.dart';
 import 'package:chime/components/stop_color_ring.dart';
 import 'package:chime/components/custom_circular_indicator.dart';
 import 'package:chime/enums/session_status.dart';
@@ -25,7 +27,7 @@ class _StartButtonState extends ConsumerState<StartButton> {
 
   bool _startIndicator = false;
 
-  Widget _buttonImage = Icon(Icons.play_arrow_outlined);
+  Widget _buttonImage = const Icon(Icons.play_arrow_outlined);
 
   @override
   Widget build(BuildContext context) {
@@ -38,18 +40,7 @@ class _StartButtonState extends ConsumerState<StartButton> {
     final notifier = ref.read(stateProvider.notifier);
     final size = MediaQuery.of(context).size;
 
-    if(state.sessionStatus == SessionStatus.notStarted){
-      _buttonImage = Icon(Icons.play_arrow_outlined);
-    }
-    if (state.sessionStatus == SessionStatus.inProgress) {
-      _buttonImage = Image.asset('assets/images/lotus.png', color: Colors.white,);
-    }
-    if (state.sessionStatus == SessionStatus.paused) {
-      _buttonImage = Icon(Icons.pause);
-    }
-    if (_longTapInProgress) {
-      _buttonImage = Icon(Icons.stop);
-    }
+    _setButtonIcon(state);
 
     return RawGestureDetector(
       gestures: <Type, GestureRecognizerFactory>{
@@ -60,8 +51,12 @@ class _StartButtonState extends ConsumerState<StartButton> {
           );
         }, (TapGestureRecognizer instance) {
           instance.onTap = () {
-            _startIndicator = true;
-            setState(() {});
+              _startIndicator = true;
+              setState(() {
+
+              });
+
+
             if (state.sessionStatus == SessionStatus.notStarted) {
               notifier.setSessionStatus(SessionStatus.inProgress);
             }
@@ -94,7 +89,8 @@ class _StartButtonState extends ConsumerState<StartButton> {
                 _restartMillisecondsRemaining = event.remaining.inMilliseconds;
                 setState(() {});
               }, onDone: () {
-                notifier.setSessionStatus(SessionStatus.notStarted);
+                notifier.setSessionStatus(SessionStatus.notStarted,
+                );
                 setState(() {
                   _longTapInProgress = false;
                   notifier.resetSession();
@@ -120,6 +116,8 @@ class _StartButtonState extends ConsumerState<StartButton> {
           },
         ),
       },
+
+
       child: Stack(
         children: [
           StopColorRing(
@@ -134,6 +132,7 @@ class _StartButtonState extends ConsumerState<StartButton> {
               Colors.red,
             ],
           ),
+
           StopColorRing(
             animate: state.sessionStatus == SessionStatus.paused,
             cancel: state.sessionStatus != SessionStatus.paused,
@@ -149,13 +148,25 @@ class _StartButtonState extends ConsumerState<StartButton> {
               Colors.yellow
             ],
           ),
+          StopColorRing(
+            animate: state.sessionStatus == SessionStatus.notStarted,
+            radius: size.width * 0.15,
+            duration: 5000,
+            loop: true,
+            colorsList: const [
+              Colors.white24,
+              Colors.white10,
+            ],
+          ),
           CustomCircularIndicator(
             radius: size.width * 0.15,
             animate: _startIndicator,
             colorStart: Colors.teal,
-            colorEnd: Colors.green,
+            colorEnd: Colors.yellowAccent,
             duration: state.totalTime * 60,
             pause: state.sessionStatus == SessionStatus.paused,
+            cancel: state.sessionStatus == SessionStatus.notStarted,
+            backgroundColor: Colors.transparent,
           ),
           Center(
             child: ClipRRect(
@@ -187,5 +198,20 @@ class _StartButtonState extends ConsumerState<StartButton> {
         ],
       ),
     );
+  }
+
+  void _setButtonIcon(AppState state) {
+    if(state.sessionStatus == SessionStatus.notStarted){
+      _buttonImage = const Icon(Icons.play_arrow_outlined);
+    }
+    if (state.sessionStatus == SessionStatus.inProgress) {
+      _buttonImage = const LotusIcon();
+    }
+    if (state.sessionStatus == SessionStatus.paused) {
+      _buttonImage = const Icon(Icons.pause);
+    }
+    if (_longTapInProgress) {
+      _buttonImage = const Icon(Icons.stop);
+    }
   }
 }

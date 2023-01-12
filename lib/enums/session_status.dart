@@ -1,6 +1,7 @@
 enum SessionStatus {
   notStarted,
   inProgress,
-  continueAfterPause,
   paused,
+  continueAfterPause,
+  ended,
 }
