@@ -1,7 +1,9 @@
 import 'package:chime/enums/session_status.dart';
+import 'package:chime/state/prefs_manager.dart';
 import 'package:chime/utils/calculate_intervals.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../enums/focus_state.dart';
 import '../enums/sounds.dart';
 
@@ -61,12 +63,12 @@ class AppState {
 class AppNotifier extends StateNotifier<AppState> {
   AppNotifier(state) : super(state);
 
-  void setTotalTime(int time) {
+  void setTotalTime(int time) async {
     state = state.copyWith(
         totalTime: time, intervalTimes: calculateIntervals(time));
   }
 
-  void setIfInitialTimeSet(bool set) {
+  void isInitialTimeSet(bool set) {
     state = state.copyWith(initialTimeIsSet: set);
   }
 
@@ -75,6 +77,7 @@ class AppNotifier extends StateNotifier<AppState> {
       state = state.copyWith(totalTime: state.totalTime + 1);
       state =
           state.copyWith(intervalTimes: calculateIntervals(state.totalTime));
+
     }
   }
 
@@ -86,7 +89,8 @@ class AppNotifier extends StateNotifier<AppState> {
     }
   }
 
-  void setIntervalTime(int time) {
+  void setIntervalTime(int time) async {
+    await PrefsManager.setPrefs(interval: time);
     state = state.copyWith(intervalTime: time);
   }
 
@@ -94,7 +98,8 @@ class AppNotifier extends StateNotifier<AppState> {
     state = state.copyWith(intervalTimes: times);
   }
 
-  void setSound(Sounds sound) {
+  void setSound(Sounds sound) async {
+      await PrefsManager.setPrefs(sound: sound);
     state = state.copyWith(soundSelected: sound);
   }
 

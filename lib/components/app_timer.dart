@@ -1,17 +1,16 @@
 import 'dart:async';
-
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:chime/audio/audio_manager.dart';
+import 'package:chime/components/time_field.dart';
 import 'package:chime/enums/session_status.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quiver/async.dart';
-
 import '../enums/focus_state.dart';
 import '../enums/sounds.dart';
+import '../state/prefs_manager.dart';
 import '../state/state_manager.dart';
 import '../utils/constants.dart';
+import 'countdown_text.dart';
 
 class AppTimer extends ConsumerStatefulWidget {
   const AppTimer({
@@ -34,7 +33,7 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
 
   void _setTimer(int totalTime) {
     _timer = CountdownTimer(
-        Duration(seconds: totalTime + 2), const Duration(milliseconds: 1000))
+        Duration(seconds: totalTime + 2), const Duration(seconds: 1))
       ..listen(
         (event) {
           _startCountdownInProgress = false;
@@ -64,7 +63,6 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
       _timer?.cancel();
       _sessionStarted = false;
       _sessionIsCompleted = false;
-
     } else if (state.sessionStatus == SessionStatus.inProgress) {
       if (!_sessionStarted) {
         _startCountdownInProgress = true;
@@ -93,7 +91,6 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
       notifier.setSecondsRemaining(_secRemaining);
       if (_sessionIsCompleted) {
         if (state.sessionStatus != SessionStatus.notStarted) {
-          print('run here');
           notifier.setSessionStatus(SessionStatus.ended);
         }
       }
@@ -107,35 +104,7 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           if (_startCountdownInProgress) ...[
-            AnimatedTextKit(
-                pause: const Duration(milliseconds: 600),
-                isRepeatingAnimation: false,
-                animatedTexts: [
-                  FadeAnimatedText('3',
-                      textStyle: Theme.of(context)
-                          .textTheme
-                          .displayLarge!
-                          .copyWith(color: Colors.white),
-                      duration: const Duration(milliseconds: 1500),
-                      fadeOutBegin: 0.90,
-                      fadeInEnd: 0.7),
-                  FadeAnimatedText('2',
-                      textStyle: Theme.of(context)
-                          .textTheme
-                          .displayLarge!
-                          .copyWith(color: Colors.white),
-                      duration: const Duration(milliseconds: 1500),
-                      fadeOutBegin: 0.90,
-                      fadeInEnd: 0.7),
-                  FadeAnimatedText('1',
-                      textStyle: Theme.of(context)
-                          .textTheme
-                          .displayLarge!
-                          .copyWith(color: Colors.white),
-                      duration: const Duration(milliseconds: 1500),
-                      fadeOutBegin: 0.90,
-                      fadeInEnd: 0.7),
-                ]),
+            CountdownText(),
           ],
           if (!_startCountdownInProgress) ...[
             state.sessionStatus == SessionStatus.inProgress ||
@@ -158,26 +127,9 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
                       ],
                     ),
                   )
-                : TextFormField(
+                : TimeField(
                     focusNode: _focusNode,
-                    controller: _textEditingController,
-                    onChanged: (value) {
-                      notifier.setTimerFocusState(FocusState.inFocus);
-                      if (value.trim() == "") {
-                        notifier.setTotalTime(0);
-                      } else {
-                        notifier.setTotalTime(int.parse(value));
-                      }
-                    },
-                    maxLength: 4,
-                    style: Theme.of(context).textTheme.displayLarge,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    textAlign: TextAlign.center,
-                    decoration: const InputDecoration(
-                      contentPadding: EdgeInsets.zero,
-                      counterText: "",
-                    ),
+                    textEditingController: _textEditingController,
                   ),
             state.sessionStatus == SessionStatus.notStarted
                 ? SizedBox(
@@ -186,9 +138,13 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         IconButton(
-                          onPressed: () {
+                          onPressed: () async {
                             _focusNode.unfocus();
                             notifier.incrementTotalTime();
+                            if(state.totalTime < 9999) {
+                              await PrefsManager.setPrefs(time: state
+                                  .totalTime + 1);
+                            }
                           },
                           icon: const Icon(
                             Icons.add,
@@ -198,9 +154,16 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
                           width: size.width * 0.10,
                         ),
                         IconButton(
-                          onPressed: () {
+                          onPressed: () async {
                             _focusNode.unfocus();
                             notifier.decrementTotalTime();
+                            if(state.totalTime > 0) {
+                              await PrefsManager.setPrefs(time: state
+                                  .totalTime - 1);
+                            }
+
+
+
                           },
                           icon: const Icon(Icons.remove),
                         ),

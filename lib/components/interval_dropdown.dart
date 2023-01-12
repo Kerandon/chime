@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../configs/app_colors.dart';
 import '../state/state_manager.dart';
+import '../utils/constants.dart';
 
 class IntervalDropdown extends ConsumerWidget {
   const IntervalDropdown({
@@ -24,20 +26,16 @@ class IntervalDropdown extends ConsumerWidget {
         DropdownMenuItem<int>(
           value: e,
           child: SizedBox(
-            width: size.width * 0.60,
+            width: size.width * 0.70,
             child: Center(
               child: Text(
-                e == totalTime
-                    ? 'On time up only'
-                    : e == 1
-                        ? '$e minute'
-                        : '$e minutes',
-                textAlign: TextAlign.center,
-                style: Theme.of(context)
-                    .textTheme
-                    .displaySmall!
-                    .copyWith(fontWeight: FontWeight.normal),
-              ),
+                  e == totalTime
+                      ? 'On time up only'
+                      : e == 1
+                          ? '$e minute'
+                          : '$e minutes',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.displaySmall),
             ),
           ),
         ),
@@ -60,21 +58,26 @@ class IntervalDropdown extends ConsumerWidget {
             child: Text(
               'Play a ${state.soundSelected.name} every',
               style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                    color: Colors.white60,
+                    color: Colors.white54,
                   ),
             ),
           ),
           items.isEmpty
               ? const SizedBox()
               : DropdownButton<int>(
-                dropdownColor: Colors.black,
-                value: selectedValue,
-                iconSize: 0,
-                items: items.toList(),
-                onChanged: (Object? value) {
-                  notifier.setIntervalTime(value as int);
-                },
-              ),
+                  underline: Container(
+                    height: 2,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                  borderRadius: BorderRadius.circular(kBorderRadius),
+                  dropdownColor: Colors.black,
+                  value: selectedValue,
+                  iconSize: 0,
+                  items: items.toList(),
+                  onChanged: (Object? value) {
+                    notifier.setIntervalTime(value as int);
+                  },
+                ),
         ],
       ),
     );

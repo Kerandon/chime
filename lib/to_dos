@@ -1,11 +1,12 @@
     // add flip animation DONE
 // add fade between cover and normal screens
     // reverse timer color DONE
-// match divider colors
+// match divider colors DONE
 // tween button colors
 // add shimmer to start button
     // end screen
 // settings with tips, and about
-// save preferences
+// save preferences DONE
 // save streak
 // add in audio
+// Stop state issue if tapped during countdown to start

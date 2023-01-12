@@ -5,8 +5,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../components/lotus_icon.dart';
 import '../state/state_manager.dart';
 
-class SessionCoverPage extends ConsumerWidget {
-  const SessionCoverPage({
+class CompletedPage extends ConsumerWidget {
+  const CompletedPage({
     super.key,
   });
 
