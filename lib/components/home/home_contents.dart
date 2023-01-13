@@ -1,11 +1,12 @@
 
-import 'package:chime/components/sound_selection.dart';
-import 'package:chime/components/start_button.dart';
-import 'package:chime/components/streak_counter.dart';
+import 'package:chime/components/home/sound_selection.dart';
+import 'package:chime/components/home/start_button.dart';
+import 'package:chime/components/home/streak_counter.dart';
 import 'package:flutter/material.dart';
 
 import 'app_timer.dart';
 import 'interval_dropdown.dart';
+
 
 class CountDownText extends StatelessWidget {
   const CountDownText({

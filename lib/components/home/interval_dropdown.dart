@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../state/state_manager.dart';
-import '../utils/constants.dart';
+
+import '../../state/state_manager.dart';
+import '../../utils/constants.dart';
 
 class IntervalDropdown extends ConsumerWidget {
   const IntervalDropdown({

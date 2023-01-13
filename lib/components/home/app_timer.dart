@@ -1,15 +1,15 @@
 import 'dart:async';
 import 'package:chime/audio/audio_manager.dart';
-import 'package:chime/components/time_field.dart';
+import 'package:chime/components/home/time_field.dart';
 import 'package:chime/enums/session_status.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quiver/async.dart';
-import '../enums/focus_state.dart';
-import '../enums/sounds.dart';
-import '../state/prefs_manager.dart';
-import '../state/state_manager.dart';
-import '../utils/constants.dart';
+import '../../enums/focus_state.dart';
+import '../../enums/sounds.dart';
+import '../../state/prefs_manager.dart';
+import '../../state/state_manager.dart';
+import '../../utils/constants.dart';
 import 'countdown_text.dart';
 
 class AppTimer extends ConsumerStatefulWidget {

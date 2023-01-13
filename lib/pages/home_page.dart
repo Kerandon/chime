@@ -1,12 +1,13 @@
 import 'dart:ui';
 import 'package:chime/animation/flip_animation.dart';
-import 'package:chime/components/lotus_icon.dart';
 import 'package:chime/enums/session_status.dart';
+import 'package:chime/pages/settings_page.dart';
 import 'package:chime/state/prefs_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../animation/fade_in_animation.dart';
-import '../components/home_contents.dart';
+import '../components/home/home_contents.dart';
+import '../components/home/lotus_icon.dart';
 import '../models/prefs_model.dart';
 import '../utils/constants.dart';
 import 'completed_page.dart';
@@ -114,10 +115,12 @@ class _HomePageState extends ConsumerState<HomePage> {
                           color: Colors.black,
                           child: IconButton(
                               alignment: const Alignment(0.90, 0),
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsPage()));
+                              },
                               icon: Icon(
-                                Icons.menu_outlined,
-                                size: size.height * 0.03,
+                                Icons.settings_outlined,
+                                size: size.height * 0.02,
                               )),
                         ),
                       ],

@@ -43,7 +43,7 @@ class _StreakCounterState extends State<StreakCounter> {
 
                       if (streak > 0) {
                         return Align(
-                          alignment: const Alignment(0.80, -0.80),
+                          alignment: const Alignment(0.85, -0.80),
                           child: SizedBox(
                             width: size.width * 0.20,
                             height: size.height * 0.10,
@@ -60,7 +60,7 @@ class _StreakCounterState extends State<StreakCounter> {
                                     ),
                                     SizedBox(width: size.width * 0.02),
                                     Text(
-                                      'Streak $streak',
+                                      '$streak',
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodySmall!

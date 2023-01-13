@@ -1,14 +1,15 @@
 
 import 'package:chime/animation/bounce_animation.dart';
-import 'package:chime/components/lotus_icon.dart';
-import 'package:chime/components/stop_color_ring.dart';
-import 'package:chime/components/custom_circular_indicator.dart';
+import 'package:chime/components/home/stop_color_ring.dart';
 import 'package:chime/enums/session_status.dart';
 import 'package:chime/state/state_manager.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quiver/async.dart';
+
+import 'custom_circular_indicator.dart';
+import 'lotus_icon.dart';
 
 class StartButton extends ConsumerStatefulWidget {
   const StartButton({

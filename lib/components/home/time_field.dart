@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../enums/focus_state.dart';
-import '../state/prefs_manager.dart';
-import '../state/state_manager.dart';
+import '../../enums/focus_state.dart';
+import '../../state/prefs_manager.dart';
+import '../../state/state_manager.dart';
 
 class TimeField extends ConsumerWidget {
   const TimeField({

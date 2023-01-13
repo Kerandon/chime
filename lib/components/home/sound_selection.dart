@@ -3,8 +3,8 @@ import 'package:chime/enums/session_status.dart';
 import 'package:chime/state/state_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../enums/focus_state.dart';
-import '../enums/sounds.dart';
+import '../../enums/focus_state.dart';
+import '../../enums/sounds.dart';
 
 class SoundSelection extends StatelessWidget {
   const SoundSelection({

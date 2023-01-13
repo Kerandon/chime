@@ -1,8 +1,7 @@
 import 'package:chime/enums/session_status.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
-import '../components/lotus_icon.dart';
+import '../components/home/lotus_icon.dart';
 import '../state/state_manager.dart';
 
 class CompletedPage extends ConsumerWidget {
