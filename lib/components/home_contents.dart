@@ -20,7 +20,7 @@ class CountDownText extends StatelessWidget {
       height: size.height * 0.90,
       child: Stack(
         children: [
-          StreakCounter(),
+          const StreakCounter(),
           Column(
             children: const [
               Expanded(flex: 15, child: SizedBox()),

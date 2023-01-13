@@ -28,7 +28,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   void initState() {
-    _prefsFuture = PrefsManager.getPreferences();
+    _prefsFuture = PreferenceManager.getPreferences();
     super.initState();
   }
 
@@ -39,13 +39,6 @@ class _HomePageState extends ConsumerState<HomePage> {
     final state = ref.watch(stateProvider);
     final notifier = ref.read(stateProvider.notifier);
 
-    // if (!state.initialTimeIsSet) {
-    //   WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-    //     //notifier.setTotalTime(60);
-    //     notifier.isInitialTimeSet(true);
-    //   });
-    // }
-
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -54,27 +47,24 @@ class _HomePageState extends ConsumerState<HomePage> {
             future: _prefsFuture,
             builder: (context, snapshot) {
               if (snapshot.hasError) {
-                return Text('Error');
+                return const Text('Error');
               }
               if (snapshot.hasData) {
                 if (!_prefsDataUpdated) {
                   PrefsModel data = snapshot.data as PrefsModel;
 
-                  WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-
-                    print('total time from prefs is ${data.time}');
-
+                  WidgetsBinding.instance
+                      .addPostFrameCallback((timeStamp) async {
                     notifier.setTotalTime(data.time);
                     notifier.setIntervalTime(data.interval);
 
-
                     notifier.setSound(data.sound);
-
                   });
                   _prefsDataUpdated = true;
                 }
                 return Stack(
                   children: [
+
                     SizedBox(
                       width: size.width,
                       height: size.height,
@@ -117,7 +107,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                   ),
                                   state.sessionStatus == SessionStatus.ended
                                       ? const CompletedPage()
-                                      : CountDownText(),
+                                      : const CountDownText(),
                                 ],
                               ),
                             ),
@@ -140,8 +130,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                   ],
                 );
               }
-              print('no data');
-              return LotusIcon();
+              return const LotusIcon();
             }),
       ),
     );

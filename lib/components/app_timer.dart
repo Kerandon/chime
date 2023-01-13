@@ -33,7 +33,7 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
 
   void _setTimer(int totalTime) {
     _timer = CountdownTimer(
-        Duration(seconds: totalTime + 2), const Duration(seconds: 1))
+        Duration(seconds: totalTime + 2 - 59), const Duration(seconds: 1))
       ..listen(
         (event) {
           _startCountdownInProgress = false;
@@ -87,7 +87,7 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
 
     _calculateBellIntervals(numberOfSounds, state);
 
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       notifier.setSecondsRemaining(_secRemaining);
       if (_sessionIsCompleted) {
         if (state.sessionStatus != SessionStatus.notStarted) {
@@ -104,7 +104,7 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           if (_startCountdownInProgress) ...[
-            CountdownText(),
+            const CountdownText(),
           ],
           if (!_startCountdownInProgress) ...[
             state.sessionStatus == SessionStatus.inProgress ||
@@ -142,7 +142,7 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
                             _focusNode.unfocus();
                             notifier.incrementTotalTime();
                             if(state.totalTime < 9999) {
-                              await PrefsManager.setPrefs(time: state
+                              await PreferenceManager.setPreferences(time: state
                                   .totalTime + 1);
                             }
                           },
@@ -158,7 +158,7 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
                             _focusNode.unfocus();
                             notifier.decrementTotalTime();
                             if(state.totalTime > 0) {
-                              await PrefsManager.setPrefs(time: state
+                              await PreferenceManager.setPreferences(time: state
                                   .totalTime - 1);
                             }
 

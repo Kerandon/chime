@@ -26,7 +26,7 @@ class TimeField extends ConsumerWidget {
       controller: textEditingController,
       onChanged: (value) async {
         notifier.setTimerFocusState(FocusState.inFocus);
-        PrefsManager.setPrefs(time: int.tryParse(value) ?? 0);
+        PreferenceManager.setPreferences(time: int.tryParse(value) ?? 0);
         if (value.trim() == "") {
           notifier.setTotalTime(0);
         } else {
@@ -44,7 +44,7 @@ class TimeField extends ConsumerWidget {
       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
       textAlign: TextAlign.center,
       decoration: InputDecoration(
-        enabledBorder: UnderlineInputBorder(
+        enabledBorder: const UnderlineInputBorder(
           borderSide: BorderSide(color: Colors.transparent),
         ),
         focusedBorder: UnderlineInputBorder(

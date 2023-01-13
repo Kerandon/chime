@@ -1,31 +1,78 @@
-
+import 'package:chime/state/prefs_manager.dart';
 import 'package:flutter/material.dart';
 
-class StreakCounter extends StatelessWidget {
+class StreakCounter extends StatefulWidget {
   const StreakCounter({
     super.key,
   });
 
   @override
+  State<StreakCounter> createState() => _StreakCounterState();
+}
+
+class _StreakCounterState extends State<StreakCounter> {
+  late final Future<bool> _checkStreakCurrentFuture;
+
+  @override
+  void initState() {
+    _checkStreakCurrentFuture = PreferenceManager.checkIfStreakStillCurrent();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Align(
-      alignment: const Alignment(0.80, -0.80),
-      child: SizedBox(
-        width: size.width * 0.20,
-        height: size.height * 0.10,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              'Day 2',
-              style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                  color: Colors.white54, fontWeight: FontWeight.normal),
-            ),
-          ],
-        ),
-      ),
+    return FutureBuilder<bool>(
+      future: _checkStreakCurrentFuture,
+      builder: (context, snapshot) {
+        if(!snapshot.hasData){
+          return SizedBox.shrink();
+        }
+        if (snapshot.hasData) {
+          final streakIsCurrent = snapshot.data!;
+
+          if(!streakIsCurrent){
+            return SizedBox.shrink();
+          }else {
+            return FutureBuilder<int>(
+              future: PreferenceManager.getCurrentStreakTotal(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    final streak = snapshot.data as int;
+
+                    if (streak > 0) {
+                      return Align(
+                        alignment: const Alignment(0.80, -0.80),
+                        child: SizedBox(
+                          width: size.width * 0.20,
+                          height: size.height * 0.10,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Text(
+                                'Day $streak',
+                                style: Theme
+                                    .of(context)
+                                    .textTheme
+                                    .bodySmall!
+                                    .copyWith(
+                                    color: Colors.white54,
+                                    fontWeight: FontWeight.normal),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+                    return SizedBox.shrink();
+                  }
+                  return SizedBox.shrink();
+                });
+          }
+        }
+        return SizedBox.shrink();
+      }
     );
   }
 }

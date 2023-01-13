@@ -18,7 +18,7 @@ class _FadeInAnimationState extends State<FadeInAnimation>
   void initState() {
     super.initState();
     _controller = AnimationController(
-        duration: Duration(milliseconds: 1800), vsync: this);
+        duration: const Duration(milliseconds: 1800), vsync: this);
 
     _scale = Tween<double>(begin: 0.90, end: 1.0)
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
@@ -26,7 +26,7 @@ class _FadeInAnimationState extends State<FadeInAnimation>
     _opacity = Tween<double>(begin: 0, end: 1.0)
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
-    Future.delayed(Duration(milliseconds: 1000),(){
+    Future.delayed(const Duration(milliseconds: 1000),(){
       if(mounted) {
         _controller.forward();
       }

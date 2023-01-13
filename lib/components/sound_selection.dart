@@ -1,6 +1,5 @@
 import 'package:chime/audio/audio_manager.dart';
 import 'package:chime/enums/session_status.dart';
-import 'package:chime/state/prefs_manager.dart';
 import 'package:chime/state/state_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';

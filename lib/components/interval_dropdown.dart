@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../configs/app_colors.dart';
 import '../state/state_manager.dart';
 import '../utils/constants.dart';
 

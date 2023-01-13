@@ -3,7 +3,6 @@ import 'package:chime/state/prefs_manager.dart';
 import 'package:chime/utils/calculate_intervals.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../enums/focus_state.dart';
 import '../enums/sounds.dart';
 
@@ -90,7 +89,7 @@ class AppNotifier extends StateNotifier<AppState> {
   }
 
   void setIntervalTime(int time) async {
-    await PrefsManager.setPrefs(interval: time);
+    await PreferenceManager.setPreferences(interval: time);
     state = state.copyWith(intervalTime: time);
   }
 
@@ -99,12 +98,15 @@ class AppNotifier extends StateNotifier<AppState> {
   }
 
   void setSound(Sounds sound) async {
-      await PrefsManager.setPrefs(sound: sound);
+      await PreferenceManager.setPreferences(sound: sound);
     state = state.copyWith(soundSelected: sound);
   }
 
-  void setSessionStatus(SessionStatus status) {
+  void setSessionStatus(SessionStatus status) async {
     state = state.copyWith(sessionStatus: status);
+    if(status == SessionStatus.ended){
+      await PreferenceManager.addToStreak(DateTime.now().copyWith(day: 20));
+    }
     print('session status is set to $status');
   }
 
