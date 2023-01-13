@@ -76,7 +76,6 @@ class AppNotifier extends StateNotifier<AppState> {
       state = state.copyWith(totalTime: state.totalTime + 1);
       state =
           state.copyWith(intervalTimes: calculateIntervals(state.totalTime));
-
     }
   }
 
@@ -98,16 +97,15 @@ class AppNotifier extends StateNotifier<AppState> {
   }
 
   void setSound(Sounds sound) async {
-      await PreferenceManager.setPreferences(sound: sound);
+    await PreferenceManager.setPreferences(sound: sound);
     state = state.copyWith(soundSelected: sound);
   }
 
   void setSessionStatus(SessionStatus status) async {
     state = state.copyWith(sessionStatus: status);
-    if(status == SessionStatus.ended){
-      await PreferenceManager.addToStreak(DateTime.now().copyWith(day: 20));
+    if (status == SessionStatus.ended) {
+      await PreferenceManager.addToStreak(DateTime.now());
     }
-    print('session status is set to $status');
   }
 
   void setSessionHasStarted(bool started) {

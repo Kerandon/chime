@@ -1,8 +1,6 @@
 import 'package:chime/pages/home_page.dart';
-import 'package:chime/state/prefs_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'configs/app_theme.dart';
 
 void main() => runApp(const ChimeApp());

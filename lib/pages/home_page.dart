@@ -44,94 +44,91 @@ class _HomePageState extends ConsumerState<HomePage> {
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.black,
         body: FutureBuilder<PrefsModel>(
-            future: _prefsFuture,
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return const Text('Error');
+          future: _prefsFuture,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return const Text('Error');
+            }
+            if (snapshot.hasData) {
+              if (!_prefsDataUpdated) {
+                PrefsModel data = snapshot.data as PrefsModel;
+
+                WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+                  notifier.setTotalTime(data.time);
+                  notifier.setIntervalTime(data.interval);
+
+                  notifier.setSound(data.sound);
+                });
+                _prefsDataUpdated = true;
               }
-              if (snapshot.hasData) {
-                if (!_prefsDataUpdated) {
-                  PrefsModel data = snapshot.data as PrefsModel;
-
-                  WidgetsBinding.instance
-                      .addPostFrameCallback((timeStamp) async {
-                    notifier.setTotalTime(data.time);
-                    notifier.setIntervalTime(data.interval);
-
-                    notifier.setSound(data.sound);
-                  });
-                  _prefsDataUpdated = true;
-                }
-                return Stack(
-                  children: [
-
-                    SizedBox(
-                      width: size.width,
-                      height: size.height,
-                      child: Stack(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.circular(kBorderRadius),
-                              image: const DecorationImage(
-                                fit: BoxFit.cover,
-                                image: AssetImage(
-                                  'assets/images/rocks.jpg',
-                                ),
+              return Stack(
+                children: [
+                  SizedBox(
+                    width: size.width,
+                    height: size.height,
+                    child: Stack(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(kBorderRadius),
+                            image: const DecorationImage(
+                              fit: BoxFit.cover,
+                              image: AssetImage(
+                                'assets/images/rocks.jpg',
                               ),
                             ),
                           ),
-                          FadeInAnimation(
-                            child: FlipAnimation(
-                              child: Stack(
-                                children: [
-                                  Align(
-                                    alignment: const Alignment(0, 0.70),
-                                    child: ClipRect(
-                                      child: BackdropFilter(
-                                        filter: ImageFilter.blur(
-                                            sigmaX: 20, sigmaY: 20),
-                                        child: Container(
-                                          width: size.width * 0.92,
-                                          height: size.height * 0.85,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                                size.width * 0.02),
-                                            color:
-                                                Colors.black.withOpacity(0.92),
-                                          ),
+                        ),
+                        FadeInAnimation(
+                          child: FlipAnimation(
+                            child: Stack(
+                              children: [
+                                Align(
+                                  alignment: const Alignment(0, 0.70),
+                                  child: ClipRect(
+                                    child: BackdropFilter(
+                                      filter: ImageFilter.blur(
+                                          sigmaX: 20, sigmaY: 20),
+                                      child: Container(
+                                        width: size.width * 0.92,
+                                        height: size.height * 0.85,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                              size.width * 0.02),
+                                          color: Colors.black.withOpacity(0.92),
                                         ),
                                       ),
                                     ),
                                   ),
-                                  state.sessionStatus == SessionStatus.ended
-                                      ? const CompletedPage()
-                                      : const CountDownText(),
-                                ],
-                              ),
+                                ),
+                                state.sessionStatus == SessionStatus.ended
+                                    ? const CompletedPage()
+                                    : const CountDownText(),
+                              ],
                             ),
                           ),
-                          Container(
-                            width: size.width,
-                            height: size.height * 0.05,
-                            color: Colors.black,
-                            child: IconButton(
-                                alignment: const Alignment(0.90, 0),
-                                onPressed: () {},
-                                icon: Icon(
-                                  Icons.menu_outlined,
-                                  size: size.height * 0.03,
-                                )),
-                          ),
-                        ],
-                      ),
+                        ),
+                        Container(
+                          width: size.width,
+                          height: size.height * 0.05,
+                          color: Colors.black,
+                          child: IconButton(
+                              alignment: const Alignment(0.90, 0),
+                              onPressed: () {},
+                              icon: Icon(
+                                Icons.menu_outlined,
+                                size: size.height * 0.03,
+                              )),
+                        ),
+                      ],
                     ),
-                  ],
-                );
-              }
-              return const LotusIcon();
-            }),
+                  ),
+                ],
+              );
+            }
+            return const LotusIcon();
+          },
+        ),
       ),
     );
   }

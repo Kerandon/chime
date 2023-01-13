@@ -19,14 +19,15 @@ class CompletedPage extends ConsumerWidget {
       children: [
         Align(
           alignment: const Alignment(0.80, -0.80),
-          child: IconButton(icon: const Icon(
-            Icons.keyboard_return_outlined,
-            color: Colors.white24,
-            size: 30,), onPressed: () {
-
-            notifier.setSessionStatus(SessionStatus.notStarted);
-
-          },
+          child: IconButton(
+            icon: const Icon(
+              Icons.keyboard_return_outlined,
+              color: Colors.white24,
+              size: 30,
+            ),
+            onPressed: () {
+              notifier.setSessionStatus(SessionStatus.notStarted);
+            },
           ),
         ),
         Align(
@@ -47,7 +48,8 @@ class CompletedPage extends ConsumerWidget {
         Align(
           alignment: const Alignment(0, 0.30),
           child: SizedBox(
-              child: SizedBox(width: size.width * 0.20, child: const LotusIcon())),
+              child:
+                  SizedBox(width: size.width * 0.20, child: const LotusIcon())),
         ),
       ],
     );

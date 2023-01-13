@@ -19,7 +19,7 @@ class PreferenceManager {
       return false;
     } else {
       final isSuccessive = PreferenceManager.checkIfEqualOrSuccessiveDay(
-          currentDates, DateTime.now().copyWith(day: 20));
+          currentDates, DateTime.now());
       if (isSuccessive) {
         return true;
       } else {
@@ -96,7 +96,6 @@ class PreferenceManager {
     final record = instance.getInt(PrefConstants.record) ?? 0;
     if (currentStreakTotal > record) {
       instance.setInt(PrefConstants.record, currentStreakTotal);
-      print('new record! ${currentStreakTotal}');
       return true;
     }
     return false;
