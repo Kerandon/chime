@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../enums/focus_state.dart';
-import '../../state/prefs_manager.dart';
+import '../../state/preferences_manager.dart';
 import '../../state/state_manager.dart';
 
 class TimeField extends ConsumerWidget {
@@ -26,7 +26,7 @@ class TimeField extends ConsumerWidget {
       controller: textEditingController,
       onChanged: (value) async {
         notifier.setTimerFocusState(FocusState.inFocus);
-        PreferenceManager.setPreferences(time: int.tryParse(value) ?? 0);
+        PreferencesManager.setPreferences(time: int.tryParse(value) ?? 0);
         if (value.trim() == "") {
           notifier.setTotalTime(0);
         } else {

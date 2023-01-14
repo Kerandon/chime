@@ -1,30 +1,35 @@
-import 'package:chime/state/prefs_manager.dart';
+import 'package:chime/state/preferences_manager.dart';
+import 'package:chime/state/state_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class StreakCounter extends StatefulWidget {
+class StreakCounter extends ConsumerStatefulWidget {
   const StreakCounter({
     super.key,
   });
 
   @override
-  State<StreakCounter> createState() => _StreakCounterState();
+  ConsumerState<StreakCounter> createState() => _StreakCounterState();
 }
 
-class _StreakCounterState extends State<StreakCounter> {
-  late final Future<bool> _checkStreakCurrentFuture;
-
-  @override
-  void initState() {
-    _checkStreakCurrentFuture = PreferenceManager.checkIfStreakStillCurrent();
-    super.initState();
-  }
-
+class _StreakCounterState extends ConsumerState<StreakCounter> {
   @override
   Widget build(BuildContext context) {
+    if (ref.watch(stateProvider).checkIfStatsUpdated) {
+      setState(() {});
+    }
+
+    final checkStreakCurrentFuture =
+        PreferencesManager.checkIfStreakStillCurrent();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref.read(stateProvider.notifier).checkIfStatsUpdated(false);
+    });
+
     final size = MediaQuery.of(context).size;
     return FutureBuilder<bool>(
-        future: _checkStreakCurrentFuture,
+        future: checkStreakCurrentFuture,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const SizedBox.shrink();
@@ -36,7 +41,7 @@ class _StreakCounterState extends State<StreakCounter> {
               return const SizedBox.shrink();
             } else {
               return FutureBuilder<int>(
-                  future: PreferenceManager.getCurrentStreakTotal(),
+                  future: PreferencesManager.getCurrentStreakTotal(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       final streak = snapshot.data as int;

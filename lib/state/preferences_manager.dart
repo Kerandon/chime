@@ -3,7 +3,9 @@ import 'package:chime/models/prefs_model.dart';
 import 'package:chime/utils/pref_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class PreferenceManager {
+import '../models/streak_data.dart';
+
+class PreferencesManager {
   static Future<int> getCurrentStreakTotal() async {
     final instance = await SharedPreferences.getInstance();
     final streaks = instance.getStringList(PrefConstants.streak) ?? [];
@@ -12,18 +14,18 @@ class PreferenceManager {
 
   static Future<bool> checkIfStreakStillCurrent() async {
     Set<DateTime> currentDates =
-        await PreferenceManager._getExistingStreakDates(
+        await PreferencesManager._getExistingStreakDates(
             await SharedPreferences.getInstance());
 
     if (currentDates.isEmpty) {
       return false;
     } else {
-      final isSuccessive = PreferenceManager.checkIfEqualOrSuccessiveDay(
+      final isSuccessive = PreferencesManager.checkIfEqualOrSuccessiveDay(
           currentDates, DateTime.now());
       if (isSuccessive) {
         return true;
       } else {
-        await PreferenceManager.clearStreakDates();
+        await PreferencesManager._clearStreakDates();
         return false;
       }
     }
@@ -101,17 +103,31 @@ class PreferenceManager {
     return false;
   }
 
-  static Future<bool> clearStreakDates() async {
+  static Future<StreakData> getStreakData() async {
+    final current = await getCurrentStreakTotal();
+    final instance = await SharedPreferences.getInstance();
+    final best = instance.getInt(PrefConstants.record) ?? 0;
+    return StreakData(current: current, best: best);
+  }
+
+  static Future<bool> _clearStreakDates() async {
     final instance = await SharedPreferences.getInstance();
     await instance.remove(PrefConstants.streak);
     return true;
   }
 
-  static Future<bool> clearStreakRecord() async {
+  static Future<bool> _clearStreakRecord() async {
     final instance = await SharedPreferences.getInstance();
     await instance.remove(PrefConstants.record);
     return true;
   }
+
+  static Future<bool> clearAllStreakData() async {
+    await _clearStreakDates();
+    await _clearStreakRecord();
+    return true;
+  }
+
 
   static setPreferences({int? time, int? interval, Sounds? sound}) async {
     final instance = await SharedPreferences.getInstance();

@@ -8,11 +8,16 @@ import 'app_timer.dart';
 import 'interval_dropdown.dart';
 
 
-class CountDownText extends StatelessWidget {
+class CountDownText extends StatefulWidget {
   const CountDownText({
     super.key,
   });
 
+  @override
+  State<CountDownText> createState() => _CountDownTextState();
+}
+
+class _CountDownTextState extends State<CountDownText> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;

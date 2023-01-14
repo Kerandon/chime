@@ -1,8 +1,10 @@
+import 'package:chime/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../components/home/lotus_icon.dart';
 import '../components/settings/meditation_guide.dart';
+import '../components/settings/streak_settings.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -45,12 +47,12 @@ class _SettingsPageState extends State<SettingsPage> {
                     ],
                   ),
                   Align(
-                    alignment: Alignment(0.90, 0),
+                    alignment: const Alignment(0.90, 0),
                     child: IconButton(
                         onPressed: () async {
                           await Navigator.of(context).maybePop();
                         },
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.clear_outlined,
                           color: Colors.white,
                           size: 18,
@@ -73,91 +75,34 @@ class _SettingsPageState extends State<SettingsPage> {
               },
             ),
             ListTile(
-              leading: FaIcon(
+              leading: const FaIcon(
                 FontAwesomeIcons.award,
                 size: 15,
               ),
-              title: Text('Streak stats'),
+              title: const Text('Streak stats'),
               onTap: () {
                 showDialog(
                   context: context,
-                  builder: (context) => StreakSettings(),
+                  builder: (context) => const StreakSettings(),
                 );
               },
             ),
-            const ListTile(
-              leading: FaIcon(
+            ListTile(
+              leading: const FaIcon(
                 FontAwesomeIcons.info,
                 size: 15,
               ),
-              title: Text('About'),
-            ),
+              title:
+              const Text('About app'),
+              onTap: () => showAboutDialog(context: context, applicationName: 'Zense Meditation Timer',
+                applicationVersion: '1.0',
+                applicationIcon: LotusIcon(),
+
+              ))
+
           ],
         ),
       ),
-    );
-  }
-}
-
-class StreakSettings extends StatelessWidget {
-  const StreakSettings({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    return AlertDialog(
-      title: Text('Daily Streak', textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall
-      !.copyWith(fontSize: 20, color: Colors.black54, fontWeight: FontWeight.w500),),
-      content: SizedBox(
-        height: size.height * 0.15,
-        child: Column(
-          children: [
-            Table(
-              children: [
-                TableRow(
-                  children: [
-                    TableCell(child: Text('Current\n', style: Theme.of(context).textTheme.bodySmall
-                    !.copyWith(fontSize: 20, color: Colors.black54, fontWeight: FontWeight.w500),)),
-                    TableCell(child: Text('5', textAlign: TextAlign.end, style: Theme.of(context).textTheme.bodySmall
-                    !.copyWith(fontSize: 20, color: Colors.black),)),
-                  ]
-                ),
-                TableRow(
-                    children: [
-                      TableCell(child: Text('Best\n', style: Theme.of(context).textTheme.bodySmall
-                      !.copyWith(fontSize: 20, color: Colors.black54, fontWeight: FontWeight.w500),)),
-                      TableCell(child: Text('25', textAlign: TextAlign.end, style: Theme.of(context).textTheme.bodySmall
-                      !.copyWith(fontSize: 20, color: Colors.black),)),
-                    ]
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-      actionsAlignment: MainAxisAlignment.center,
-      actions: [
-        SizedBox(
-            width: size.width * 0.60,
-            child: OutlinedButton(onPressed: (){
-
-              showDialog(context: context, builder: (context) => AlertDialog(
-                title: Text('Confirm reset?', textAlign: TextAlign.center,),      actionsAlignment: MainAxisAlignment.spaceEvenly,
-                actions: [
-                  OutlinedButton(onPressed: (){
-                  },
-                      child: Text('Yes')),
-                  OutlinedButton(onPressed: () async {
-                    await Navigator.of(context).maybePop();
-                  },
-                      child: Text('No')),
-                ],
-              ),);
-
-            }, child: Text('Reset')))
-      ],
     );
   }
 }

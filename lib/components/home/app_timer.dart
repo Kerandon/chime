@@ -7,7 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quiver/async.dart';
 import '../../enums/focus_state.dart';
 import '../../enums/sounds.dart';
-import '../../state/prefs_manager.dart';
+import '../../state/preferences_manager.dart';
 import '../../state/state_manager.dart';
 import '../../utils/constants.dart';
 import 'countdown_text.dart';
@@ -142,7 +142,7 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
                             _focusNode.unfocus();
                             notifier.incrementTotalTime();
                             if(state.totalTime < 9999) {
-                              await PreferenceManager.setPreferences(time: state
+                              await PreferencesManager.setPreferences(time: state
                                   .totalTime + 1);
                             }
                           },
@@ -158,7 +158,7 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
                             _focusNode.unfocus();
                             notifier.decrementTotalTime();
                             if(state.totalTime > 0) {
-                              await PreferenceManager.setPreferences(time: state
+                              await PreferencesManager.setPreferences(time: state
                                   .totalTime - 1);
                             }
 

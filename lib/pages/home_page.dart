@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:chime/animation/flip_animation.dart';
 import 'package:chime/enums/session_status.dart';
 import 'package:chime/pages/settings_page.dart';
-import 'package:chime/state/prefs_manager.dart';
+import 'package:chime/state/preferences_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../animation/fade_in_animation.dart';
@@ -29,12 +29,13 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   void initState() {
-    _prefsFuture = PreferenceManager.getPreferences();
+    _prefsFuture = PreferencesManager.getPreferences();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+
     final size = MediaQuery.of(context).size;
 
     final state = ref.watch(stateProvider);

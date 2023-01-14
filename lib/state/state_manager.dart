@@ -1,5 +1,5 @@
 import 'package:chime/enums/session_status.dart';
-import 'package:chime/state/prefs_manager.dart';
+import 'package:chime/state/preferences_manager.dart';
 import 'package:chime/utils/calculate_intervals.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -17,6 +17,7 @@ class AppState {
   final int secondsRemaining;
   final int pausedTime;
   final bool sessionHasStarted;
+  final bool checkIfStatsUpdated;
 
   AppState({
     required this.totalTime,
@@ -29,6 +30,7 @@ class AppState {
     required this.secondsRemaining,
     required this.pausedTime,
     required this.sessionHasStarted,
+    required this.checkIfStatsUpdated,
   });
 
   AppState copyWith({
@@ -43,6 +45,7 @@ class AppState {
     int? secondsRemaining,
     int? pausedTime,
     bool? sessionHasStarted,
+    bool? appHasLoaded,
   }) {
     return AppState(
       totalTime: totalTime ?? this.totalTime,
@@ -55,6 +58,7 @@ class AppState {
       secondsRemaining: secondsRemaining ?? this.secondsRemaining,
       pausedTime: pausedTime ?? this.pausedTime,
       sessionHasStarted: sessionHasStarted ?? this.sessionHasStarted,
+      checkIfStatsUpdated: appHasLoaded ?? this.checkIfStatsUpdated,
     );
   }
 }
@@ -88,7 +92,7 @@ class AppNotifier extends StateNotifier<AppState> {
   }
 
   void setIntervalTime(int time) async {
-    await PreferenceManager.setPreferences(interval: time);
+    await PreferencesManager.setPreferences(interval: time);
     state = state.copyWith(intervalTime: time);
   }
 
@@ -97,14 +101,14 @@ class AppNotifier extends StateNotifier<AppState> {
   }
 
   void setSound(Sounds sound) async {
-    await PreferenceManager.setPreferences(sound: sound);
+    await PreferencesManager.setPreferences(sound: sound);
     state = state.copyWith(soundSelected: sound);
   }
 
   void setSessionStatus(SessionStatus status) async {
     state = state.copyWith(sessionStatus: status);
     if (status == SessionStatus.ended) {
-      await PreferenceManager.addToStreak(DateTime.now());
+      await PreferencesManager.addToStreak(DateTime.now());
     }
   }
 
@@ -136,6 +140,10 @@ class AppNotifier extends StateNotifier<AppState> {
     }
     state = state.copyWith(pausedTime: time);
   }
+
+  void checkIfStatsUpdated(bool check){
+    state = state.copyWith(appHasLoaded: check);
+  }
 }
 
 final stateProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
@@ -150,5 +158,6 @@ final stateProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
     secondsRemaining: 0,
     pausedTime: 0,
     sessionHasStarted: false,
+    checkIfStatsUpdated: false,
   ));
 });

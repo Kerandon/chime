@@ -13,21 +13,11 @@ class ChimeApp extends StatefulWidget {
 }
 
 class _ChimeAppState extends State<ChimeApp> {
+
   @override
   void initState() {
-    // _checkIfStreakStillCurrent();
     super.initState();
   }
-
-  // Future<void> _checkIfStreakStillCurrent() async {
-  //   final isSuccessive = PrefsManager.checkIfSuccessiveDate(
-  //       await PrefsManager.getExistingStreakDates(
-  //           await SharedPreferences.getInstance()),
-  //       DateTime.now().copyWith(day: 16));
-  //   if(!isSuccessive){
-  //     await PrefsManager.clearStreakDates();
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
