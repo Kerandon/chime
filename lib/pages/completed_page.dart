@@ -1,8 +1,8 @@
-import 'package:chime/enums/session_status.dart';
+import 'package:chime/enums/session_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../components/home/lotus_icon.dart';
-import '../state/state_manager.dart';
+import '../state/app_state.dart';
 
 class CompletedPage extends ConsumerWidget {
   const CompletedPage({
@@ -25,7 +25,7 @@ class CompletedPage extends ConsumerWidget {
                 color: Colors.white24,
               ),
               onPressed: () {
-                notifier.setSessionStatus(SessionStatus.notStarted);
+                notifier.setSessionState(SessionState.notStarted);
               },
             ),
           ),
@@ -36,7 +36,7 @@ class CompletedPage extends ConsumerWidget {
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: size.width * 0.10),
               child: Text(
-                'Congratulations\n\nYour ${state.totalTime} minute mediation session is complete',
+                'Congratulations\n\nYour ${state.totalTimeMinutes} minute mediation session is complete',
                 //'Meditation session in process',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium,

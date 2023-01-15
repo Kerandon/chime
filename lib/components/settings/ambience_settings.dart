@@ -1,5 +1,5 @@
 import 'package:chime/enums/ambience.dart';
-import 'package:chime/state/state_manager.dart';
+import 'package:chime/state/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 

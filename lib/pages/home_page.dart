@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:chime/animation/flip_animation.dart';
-import 'package:chime/enums/session_status.dart';
+import 'package:chime/enums/session_state.dart';
 import 'package:chime/pages/settings_page.dart';
 import 'package:chime/state/preferences_manager.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +11,7 @@ import '../components/home/lotus_icon.dart';
 import '../models/prefs_model.dart';
 import '../utils/constants.dart';
 import 'completed_page.dart';
-import '../state/state_manager.dart';
+import '../state/app_state.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({
@@ -109,7 +109,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                         BorderRadius.circular(kBorderRadius),
                                     color: Colors.black.withOpacity(0.95),
                                   ),
-                                  child: state.sessionStatus == SessionStatus.ended
+                                  child: state.sessionState == SessionState.ended
                                       ? const CompletedPage()
                                       : const HomePageContents(),
                                 ),

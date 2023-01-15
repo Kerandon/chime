@@ -13,9 +13,9 @@ class CountdownText extends StatelessWidget {
         pause: const Duration(milliseconds: 600),
         isRepeatingAnimation: false,
         animatedTexts: [
-          buildFadeAnimatedText(context: context, text: '1'),
-          buildFadeAnimatedText(context: context, text: '2'),
           buildFadeAnimatedText(context: context, text: '3'),
+          buildFadeAnimatedText(context: context, text: '2'),
+          buildFadeAnimatedText(context: context, text: '1'),
         ]);
   }
 

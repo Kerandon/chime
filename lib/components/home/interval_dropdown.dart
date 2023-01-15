@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../state/state_manager.dart';
+import '../../state/app_state.dart';
 import '../../utils/constants.dart';
 
 class IntervalDropdown extends ConsumerWidget {
@@ -19,8 +19,8 @@ class IntervalDropdown extends ConsumerWidget {
     Set<DropdownMenuItem<int>> items = {};
     int? selectedValue = 1;
 
-    for (var e in state.intervalTimes) {
-      int totalTime = state.totalTime;
+    for (var e in state.intervalTimesMinutes) {
+      int totalTime = state.totalTimeMinutes;
 
       items.add(
         DropdownMenuItem<int>(
@@ -43,14 +43,14 @@ class IntervalDropdown extends ConsumerWidget {
       );
     }
 
-    selectedValue = state.intervalTime;
+    selectedValue = state.intervalTimeMinutes;
     if (items.every((element) => element.value != selectedValue) &&
         items.isNotEmpty) {
       selectedValue = items.first.value;
     }
 
     bool showOnTimeUpTitleText = false;
-    if (selectedValue == state.totalTime) {
+    if (selectedValue == state.totalTimeMinutes) {
       showOnTimeUpTitleText = true;
     }
 

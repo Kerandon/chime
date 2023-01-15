@@ -1,17 +1,17 @@
 
+import 'package:chime/enums/focus_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../state/preferences_manager.dart';
-import '../../state/state_manager.dart';
+import '../../state/app_state.dart';
 
 class TimeAdjustmentIcons extends ConsumerWidget {
   const TimeAdjustmentIcons({
     super.key,
-    required FocusNode focusNode,
-  }) : _focusNode = focusNode;
+  });
 
-  final FocusNode _focusNode;
+  //final FocusNode _focusNode;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -25,11 +25,12 @@ class TimeAdjustmentIcons extends ConsumerWidget {
       children: [
         IconButton(
           onPressed: () async {
-            _focusNode.unfocus();
+            notifier.setTimerFocusState(FocusState.unFocus);
+            //_focusNode.unfocus();
             notifier.incrementTotalTime();
-            if (state.totalTime < 9999) {
+            if (state.totalTimeMinutes < 9999) {
               await PreferencesManager.setPreferences(
-                time: state.totalTime + 1,
+                time: state.totalTimeMinutes + 1,
               );
             }
           },
@@ -43,11 +44,11 @@ class TimeAdjustmentIcons extends ConsumerWidget {
         ),
         IconButton(
           onPressed: () async {
-            _focusNode.unfocus();
+            notifier.setTimerFocusState(FocusState.unFocus);
             notifier.decrementTotalTime();
-            if (state.totalTime > 0) {
+            if (state.totalTimeMinutes > 0) {
               await PreferencesManager.setPreferences(
-                time: state.totalTime - 1,
+                time: state.totalTimeMinutes - 1,
               );
             }
           },

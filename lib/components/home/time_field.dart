@@ -5,7 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../enums/focus_state.dart';
 import '../../state/preferences_manager.dart';
-import '../../state/state_manager.dart';
+import '../../state/app_state.dart';
 
 class TimeField extends ConsumerWidget {
   const TimeField({

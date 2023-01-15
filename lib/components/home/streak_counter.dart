@@ -1,6 +1,6 @@
 import 'package:chime/components/settings/streak_settings.dart';
 import 'package:chime/state/preferences_manager.dart';
-import 'package:chime/state/state_manager.dart';
+import 'package:chime/state/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -18,12 +18,20 @@ class StreakCounter extends ConsumerStatefulWidget {
 class _StreakCounterState extends ConsumerState<StreakCounter> {
   @override
   Widget build(BuildContext context) {
+    if (ref.watch(stateProvider).checkIfStatsUpdated) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        setState(() {});
+      });
+
+    }
 
     final checkStreakCurrentFuture =
         PreferencesManager.checkIfStreakStillCurrent();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      ref.read(stateProvider.notifier).checkIfStatsUpdated(false);
+      if(mounted) {
+        ref.read(stateProvider.notifier).checkIfStatsUpdated(false);
+      }
     });
 
     final size = MediaQuery.of(context).size;

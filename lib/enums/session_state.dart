@@ -1,5 +1,6 @@
-enum SessionStatus {
+enum SessionState {
   notStarted,
+  countdown,
   inProgress,
   paused,
   continueAfterPause,

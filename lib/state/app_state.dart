@@ -1,4 +1,4 @@
-import 'package:chime/enums/session_status.dart';
+import 'package:chime/enums/session_state.dart';
 import 'package:chime/state/preferences_manager.dart';
 import 'package:chime/utils/calculate_intervals.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,30 +8,28 @@ import '../enums/focus_state.dart';
 import '../enums/sounds.dart';
 
 class AppState {
-  final int totalTime;
-  final Set<int> intervalTimes;
-  final int intervalTime;
+  final int totalTimeMinutes;
+  final Set<int> intervalTimesMinutes;
+  final int intervalTimeMinutes;
   final Sounds soundSelected;
-  final SessionStatus sessionStatus;
+  final SessionState sessionState;
   final FocusState focusState;
   final bool initialTimeIsSet;
   final int secondsRemaining;
-  final int milliSecondsElapsed;
   final int pausedTime;
   final bool sessionHasStarted;
   final bool checkIfStatsUpdated;
   final Ambience ambienceSelected;
 
   AppState({
-    required this.totalTime,
-    required this.intervalTimes,
-    required this.intervalTime,
+    required this.totalTimeMinutes,
+    required this.intervalTimesMinutes,
+    required this.intervalTimeMinutes,
     required this.soundSelected,
-    required this.sessionStatus,
+    required this.sessionState,
     required this.focusState,
     required this.initialTimeIsSet,
     required this.secondsRemaining,
-    required this.milliSecondsElapsed,
     required this.pausedTime,
     required this.sessionHasStarted,
     required this.checkIfStatsUpdated,
@@ -39,35 +37,31 @@ class AppState {
   });
 
   AppState copyWith({
-    int? totalTime,
-    Set<int>? intervalTimes,
-    int? intervalTime,
+    int? totalTimeMinutes,
+    Set<int>? intervalTimesMinutes,
+    int? intervalTimeMinutes,
     Sounds? soundSelected,
-    SessionStatus? sessionStatus,
+    SessionState? sessionState,
     FocusState? focusState,
     bool? initialTimeIsSet,
-    bool? sessionInProgress,
     int? secondsRemaining,
-    int? milliSecondsElapsed,
     int? pausedTime,
     bool? sessionHasStarted,
-    bool? appHasLoaded,
     bool? checkIfStatsUpdated,
     Ambience? ambienceSelected,
   }) {
     return AppState(
-      totalTime: totalTime ?? this.totalTime,
-      intervalTimes: intervalTimes ?? this.intervalTimes,
-      intervalTime: intervalTime ?? this.intervalTime,
+      totalTimeMinutes: totalTimeMinutes ?? this.totalTimeMinutes,
+      intervalTimesMinutes: intervalTimesMinutes ?? this.intervalTimesMinutes,
+      intervalTimeMinutes: intervalTimeMinutes ?? this.intervalTimeMinutes,
       soundSelected: soundSelected ?? this.soundSelected,
-      sessionStatus: sessionStatus ?? this.sessionStatus,
+      sessionState: sessionState ?? this.sessionState,
       focusState: focusState ?? this.focusState,
       initialTimeIsSet: initialTimeIsSet ?? this.initialTimeIsSet,
       secondsRemaining: secondsRemaining ?? this.secondsRemaining,
       pausedTime: pausedTime ?? this.pausedTime,
       sessionHasStarted: sessionHasStarted ?? this.sessionHasStarted,
-      checkIfStatsUpdated: appHasLoaded ?? this.checkIfStatsUpdated,
-      milliSecondsElapsed: milliSecondsElapsed ?? this.milliSecondsElapsed,
+      checkIfStatsUpdated: checkIfStatsUpdated ?? this.checkIfStatsUpdated,
       ambienceSelected: ambienceSelected ?? this.ambienceSelected,
     );
   }
@@ -78,7 +72,7 @@ class AppNotifier extends StateNotifier<AppState> {
 
   void setTotalTime(int time) async {
     state = state.copyWith(
-        totalTime: time, intervalTimes: calculateIntervals(time));
+        totalTimeMinutes: time, intervalTimesMinutes: calculateIntervals(time));
   }
 
   void isInitialTimeSet(bool set) {
@@ -86,28 +80,28 @@ class AppNotifier extends StateNotifier<AppState> {
   }
 
   void incrementTotalTime() {
-    if (state.totalTime < 9999) {
-      state = state.copyWith(totalTime: state.totalTime + 1);
+    if (state.totalTimeMinutes < 9999) {
+      state = state.copyWith(totalTimeMinutes: state.totalTimeMinutes + 1);
       state =
-          state.copyWith(intervalTimes: calculateIntervals(state.totalTime));
+          state.copyWith(intervalTimesMinutes: calculateIntervals(state.totalTimeMinutes));
     }
   }
 
   void decrementTotalTime() {
-    if (state.totalTime > 0) {
-      state = state.copyWith(totalTime: state.totalTime - 1);
+    if (state.totalTimeMinutes > 0) {
+      state = state.copyWith(totalTimeMinutes: state.totalTimeMinutes - 1);
       state =
-          state.copyWith(intervalTimes: calculateIntervals(state.totalTime));
+          state.copyWith(intervalTimesMinutes: calculateIntervals(state.totalTimeMinutes));
     }
   }
 
   void setIntervalTime(int time) async {
     await PreferencesManager.setPreferences(interval: time);
-    state = state.copyWith(intervalTime: time);
+    state = state.copyWith(intervalTimeMinutes: time);
   }
 
   void setIntervalTimes(Set<int> times) {
-    state = state.copyWith(intervalTimes: times);
+    state = state.copyWith(intervalTimesMinutes: times);
   }
 
   void setSound(Sounds sound) async {
@@ -115,9 +109,10 @@ class AppNotifier extends StateNotifier<AppState> {
     state = state.copyWith(soundSelected: sound);
   }
 
-  void setSessionStatus(SessionStatus status) async {
-    state = state.copyWith(sessionStatus: status);
-    if (status == SessionStatus.ended) {
+  void setSessionState(SessionState sessionState) async {
+    state = state.copyWith(sessionState: sessionState);
+    print('session state is ${sessionState}');
+    if (sessionState == SessionState.ended) {
       await PreferencesManager.addToStreak(DateTime.now());
     }
   }
@@ -128,7 +123,7 @@ class AppNotifier extends StateNotifier<AppState> {
 
   void resetSession() {
     state = state.copyWith(
-      pausedTime: 0,
+      pausedTime: 0, sessionHasStarted: false, secondsRemaining: 0
     );
   }
 
@@ -143,10 +138,6 @@ class AppNotifier extends StateNotifier<AppState> {
     state = state.copyWith(secondsRemaining: seconds);
   }
 
-  void setMillisecondsElapsed(int milliseconds) {
-    state = state.copyWith(milliSecondsElapsed: milliseconds);
-  }
-
   void setPausedTime({bool? reset}) {
     int time = state.secondsRemaining;
     if (reset == true) {
@@ -156,7 +147,7 @@ class AppNotifier extends StateNotifier<AppState> {
   }
 
   void checkIfStatsUpdated(bool check) {
-    state = state.copyWith(appHasLoaded: check);
+    state = state.copyWith(checkIfStatsUpdated: check);
   }
 
   void selectAmbience(Ambience ambience){
@@ -167,18 +158,17 @@ class AppNotifier extends StateNotifier<AppState> {
 
 final stateProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
   return AppNotifier(AppState(
-    totalTime: 60,
-    intervalTimes: {1},
-    intervalTime: 1,
+    totalTimeMinutes: 60,
+    intervalTimesMinutes: {1},
+    intervalTimeMinutes: 1,
     soundSelected: Sounds.chime,
-    sessionStatus: SessionStatus.notStarted,
+    sessionState: SessionState.notStarted,
     focusState: FocusState.none,
     initialTimeIsSet: false,
     secondsRemaining: 0,
     pausedTime: 0,
     sessionHasStarted: false,
     checkIfStatsUpdated: false,
-    milliSecondsElapsed: 0,
     ambienceSelected: Ambience.none,
   ));
 });

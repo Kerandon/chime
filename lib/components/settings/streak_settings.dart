@@ -1,6 +1,6 @@
 
 import 'package:chime/models/streak_model.dart';
-import 'package:chime/state/state_manager.dart';
+import 'package:chime/state/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -100,9 +100,9 @@ class _StreakSettingsState extends ConsumerState<StreakSettings> {
 
                                     PreferencesManager.clearAllStreakData().then((value)
                                     => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Streak stats cleared'))));
-                                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                                      ref.read(stateProvider.notifier).checkIfStatsUpdated(true);
-                                    });
+                                    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                                    //   ref.read(stateProvider.notifier).checkIfStatsUpdated(true);
+                                    // });
 
                                   }),
                             );
