@@ -13,30 +13,19 @@ class CountdownText extends StatelessWidget {
         pause: const Duration(milliseconds: 600),
         isRepeatingAnimation: false,
         animatedTexts: [
-          FadeAnimatedText('3',
-              textStyle: Theme.of(context)
-                  .textTheme
-                  .displayLarge!
-                  .copyWith(color: Colors.white),
-              duration: const Duration(milliseconds: 1500),
-              fadeOutBegin: 0.90,
-              fadeInEnd: 0.7),
-          FadeAnimatedText('2',
-              textStyle: Theme.of(context)
-                  .textTheme
-                  .displayLarge!
-                  .copyWith(color: Colors.white),
-              duration: const Duration(milliseconds: 1500),
-              fadeOutBegin: 0.90,
-              fadeInEnd: 0.7),
-          FadeAnimatedText('1',
-              textStyle: Theme.of(context)
-                  .textTheme
-                  .displayLarge!
-                  .copyWith(color: Colors.white),
-              duration: const Duration(milliseconds: 1500),
-              fadeOutBegin: 0.90,
-              fadeInEnd: 0.7),
+          buildFadeAnimatedText(context: context, text: '1'),
+          buildFadeAnimatedText(context: context, text: '2'),
+          buildFadeAnimatedText(context: context, text: '3'),
         ]);
+  }
+
+  FadeAnimatedText buildFadeAnimatedText({required BuildContext context, required String text}) {
+    return FadeAnimatedText(text,
+            textStyle: Theme.of(context)
+                .textTheme
+                .displayLarge,
+            duration: const Duration(milliseconds: 1500),
+            fadeOutBegin: 0.90,
+            fadeInEnd: 0.7,);
   }
 }

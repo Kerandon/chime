@@ -8,7 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quiver/async.dart';
 
-import 'custom_circular_indicator.dart';
+import '../../utils/constants.dart';
+import 'custom_progress_indicator.dart';
 import 'lotus_icon.dart';
 
 class StartButton extends ConsumerStatefulWidget {
@@ -22,18 +23,18 @@ class StartButton extends ConsumerStatefulWidget {
 
 class _StartButtonState extends ConsumerState<StartButton> {
   CountdownTimer? _timer;
-  static const _kLongPressDurationMilliseconds = 2000;
+
   bool _longTapInProgress = false;
   int _restartMillisecondsRemaining = 0;
 
-  bool _startIndicator = false;
+  bool _animateLight = false;
 
   Widget _buttonImage = const Icon(Icons.play_arrow_outlined);
 
   @override
   Widget build(BuildContext context) {
     double restartPercent =
-        _restartMillisecondsRemaining / _kLongPressDurationMilliseconds;
+        _restartMillisecondsRemaining / kLongPressDurationMilliseconds;
     if (restartPercent.isNegative) {
       restartPercent = 0;
     }
@@ -52,18 +53,20 @@ class _StartButtonState extends ConsumerState<StartButton> {
           );
         }, (TapGestureRecognizer instance) {
           instance.onTap = () {
-              _startIndicator = true;
-              setState(() {
 
-              });
+
 
 
             if (state.sessionStatus == SessionStatus.notStarted) {
               notifier.setSessionStatus(SessionStatus.inProgress);
             }
             if (state.sessionStatus == SessionStatus.inProgress) {
-              notifier.setPausedTime();
-              notifier.setSessionStatus(SessionStatus.paused);
+
+                notifier.setPausedTime();
+                notifier.setSessionStatus(SessionStatus.paused);
+                setState(() {
+                  _animateLight = true;
+                });
             }
             if (state.sessionStatus == SessionStatus.paused) {
               notifier.setSessionStatus(SessionStatus.inProgress);
@@ -79,42 +82,44 @@ class _StartButtonState extends ConsumerState<StartButton> {
             );
           },
           (LongPressGestureRecognizer instance) {
-            instance.onLongPress = () {
-              _longTapInProgress = true;
+              instance.onLongPress = () {
+                _longTapInProgress = true;
 
-              _timer = CountdownTimer(
-                  const Duration(milliseconds: _kLongPressDurationMilliseconds),
-                  const Duration(milliseconds: 20));
+                _timer = CountdownTimer(
+                    const Duration(
+                        milliseconds: kLongPressDurationMilliseconds),
+                    const Duration(milliseconds: 20));
 
-              _timer?.listen((event) {
-                _restartMillisecondsRemaining = event.remaining.inMilliseconds;
-                setState(() {});
-              }, onDone: () {
-                notifier.setSessionStatus(SessionStatus.notStarted,
-                );
-                setState(() {
-                  _longTapInProgress = false;
-                  notifier.resetSession();
+                _timer?.listen((event) {
+                  _restartMillisecondsRemaining =
+                      event.remaining.inMilliseconds;
+                  setState(() {});
+                }, onDone: () {
+                  notifier.setSessionStatus(SessionStatus.notStarted,
+                  );
+                  setState(() {
+                    _longTapInProgress = false;
+                    notifier.resetSession();
+                  });
                 });
-              });
-            };
-            instance.onLongPressEnd = (details) {
-              setState(
-                () {
-                  _longTapInProgress = false;
-                  _timer?.cancel();
-                },
-              );
-            };
-            instance.onLongPressCancel = () {
-              setState(
-                () {
-                  _longTapInProgress = false;
-                  _timer?.cancel();
-                },
-              );
-            };
-          },
+              };
+              instance.onLongPressEnd = (details) {
+                setState(
+                      () {
+                    _longTapInProgress = false;
+                    _timer?.cancel();
+                  },
+                );
+              };
+              instance.onLongPressCancel = () {
+                setState(
+                      () {
+                    _longTapInProgress = false;
+                    _timer?.cancel();
+                  },
+                );
+              };
+            }
         ),
       },
 
@@ -125,7 +130,7 @@ class _StartButtonState extends ConsumerState<StartButton> {
             animate: _longTapInProgress,
             cancel: !_longTapInProgress,
             radius: size.width * 0.16,
-            duration: _kLongPressDurationMilliseconds,
+            duration: kLongPressDurationMilliseconds,
             colorsList: const [
               Colors.orangeAccent,
               Colors.orange,
@@ -136,9 +141,9 @@ class _StartButtonState extends ConsumerState<StartButton> {
 
           StopColorRing(
             animate: state.sessionStatus == SessionStatus.paused,
-            cancel: state.sessionStatus != SessionStatus.paused,
+            cancel: state.sessionStatus != SessionStatus.paused && state.sessionHasStarted,
             radius: size.width * 0.16,
-            duration: 12000,
+            duration: kLongPressDurationMilliseconds,
             loop: true,
             colorsList: const [
               Colors.yellow,
@@ -149,19 +154,9 @@ class _StartButtonState extends ConsumerState<StartButton> {
               Colors.yellow
             ],
           ),
-          StopColorRing(
-            animate: state.sessionStatus == SessionStatus.notStarted,
-            radius: size.width * 0.15,
-            duration: 5000,
-            loop: true,
-            colorsList: const [
-              Colors.white24,
-              Colors.white10,
-            ],
-          ),
           CustomCircularIndicator(
             radius: size.width * 0.15,
-            animate: _startIndicator,
+            animate: _animateLight,
             colorStart: Colors.teal,
             colorEnd: Colors.yellowAccent,
             duration: state.totalTime * 60,
@@ -203,16 +198,16 @@ class _StartButtonState extends ConsumerState<StartButton> {
 
   void _setButtonIcon(AppState state) {
     if(state.sessionStatus == SessionStatus.notStarted){
-      _buttonImage = const Icon(Icons.play_arrow_outlined);
+      _buttonImage = const Icon(Icons.play_arrow_outlined, size: 25);
     }
     if (state.sessionStatus == SessionStatus.inProgress) {
       _buttonImage = const LotusIcon();
     }
     if (state.sessionStatus == SessionStatus.paused) {
-      _buttonImage = const Icon(Icons.pause);
+      _buttonImage = const Icon(Icons.pause, size: 25,);
     }
     if (_longTapInProgress) {
-      _buttonImage = const Icon(Icons.stop);
+      _buttonImage = const Icon(Icons.stop, size: 25);
     }
   }
 }

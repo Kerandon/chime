@@ -1,5 +1,5 @@
 
-import 'package:chime/models/streak_data.dart';
+import 'package:chime/models/streak_model.dart';
 import 'package:chime/state/state_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -50,7 +50,7 @@ class _StreakSettingsState extends ConsumerState<StreakSettings> {
         ],
       ),
       content: SizedBox(
-        height: size.height * 0.20,
+        height: size.height * 0.30,
         child: FutureBuilder<StreakData>(
             future: PreferencesManager.getStreakData(),
             builder: (context, snapshot) {
@@ -66,6 +66,7 @@ class _StreakSettingsState extends ConsumerState<StreakSettings> {
 
                 }
                 return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Table(
                       children: [
@@ -83,37 +84,50 @@ class _StreakSettingsState extends ConsumerState<StreakSettings> {
                         ]),
                       ],
                     ),
+                    SizedBox(height: size.height * 0.08,),
+                    SizedBox(
+                      width: size.width * 0.60,
+                      child: CustomOutlineButton(
+                          disable: _disableReset,
+                          text: 'Reset',
+                          onPressed:  () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => ConfirmationBox(
+                                  text: 'Confirm reset?',
+                                  onPressed: () {
+                                    Navigator.of(context).maybePop().then((value) => Navigator.of(context).maybePop());
+
+                                    PreferencesManager.clearAllStreakData().then((value)
+                                    => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Streak stats cleared'))));
+                                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                                      ref.read(stateProvider.notifier).checkIfStatsUpdated(true);
+                                    });
+
+                                  }),
+                            );
+                          }
+                      ),
+                    ),
                   ],
                 );
               }
               return const SizedBox.shrink();
             }),
       ),
-      actionsAlignment: MainAxisAlignment.center,
       actions: [
-        SizedBox(
-          width: size.width * 0.60,
-          child: CustomOutlineButton(
-            disable: _disableReset,
-            text: 'Reset',
-            onPressed:  () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => ConfirmationBox(
-                          text: 'Confirm reset?',
-                          onPressed: () {
-                            Navigator.of(context).maybePop().then((value) => Navigator.of(context).maybePop());
+        Column(
+          children: [
 
-                            PreferencesManager.clearAllStreakData().then((value)
-                            => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Streak stats cleared'))));
-                            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                              ref.read(stateProvider.notifier).checkIfStatsUpdated(true);
-                            });
-
-                          }),
-                    );
-                  }
-          ),
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                side: BorderSide.none,
+              ),
+              onPressed: ()async{await Navigator.of(context).maybePop();}, child: Text('CLOSE', style: TextStyle(
+                fontSize: 14, color: Colors.black, fontWeight: FontWeight.normal
+            ),
+            ),),
+          ],
         ),
       ],
     );

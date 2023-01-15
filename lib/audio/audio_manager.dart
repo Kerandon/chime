@@ -1,4 +1,5 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:chime/enums/ambience.dart';
 
 class AudioManager {
   AudioManager._private();
@@ -7,9 +8,15 @@ class AudioManager {
 
   factory AudioManager() => _instance;
 
-  AudioPlayer audioPlayer = AudioPlayer();
+  AudioPlayer audioPlayerSound = AudioPlayer();
+  AudioPlayer audioPlayerAmbience = AudioPlayer();
 
-  Future<void> playAudio({required String sound}) async {
-    await audioPlayer.play(AssetSource('audio/$sound.mp3'));
+  Future<void> playSound({required String sound}) async {
+    await audioPlayerSound.play(AssetSource('audio/sounds/$sound.mp3'));
   }
+
+  Future<void> playAmbience({required Ambience ambience}) async {
+    await audioPlayerAmbience.play(AssetSource('audio/ambience/${ambience.name}.mp3'));
+  }
+
 }

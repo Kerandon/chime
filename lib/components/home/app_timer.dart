@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:chime/audio/audio_manager.dart';
+import 'package:chime/components/home/time_adjustment_icons.dart';
 import 'package:chime/components/home/time_field.dart';
 import 'package:chime/enums/session_status.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quiver/async.dart';
 import '../../enums/focus_state.dart';
 import '../../enums/sounds.dart';
-import '../../state/preferences_manager.dart';
 import '../../state/state_manager.dart';
 import '../../utils/constants.dart';
 import 'countdown_text.dart';
@@ -27,18 +27,20 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
   final _focusNode = FocusNode();
   int _minRemaining = 0;
   int _secRemaining = 0;
+  int _milliSecElapsed = 0;
   bool _sessionStarted = false;
   bool _startCountdownInProgress = false;
   bool _sessionIsCompleted = false;
 
   void _setTimer(int totalTime) {
     _timer = CountdownTimer(
-        Duration(seconds: totalTime + 2 - 59), const Duration(seconds: 1))
+        Duration(seconds: (totalTime) + 2 - 59), const Duration(seconds: 1))
       ..listen(
         (event) {
           _startCountdownInProgress = false;
           _minRemaining = event.remaining.inMinutes;
           _secRemaining = event.remaining.inSeconds;
+          _milliSecElapsed = event.elapsed.inMilliseconds;
           setState(() {});
         },
         onDone: () {
@@ -60,16 +62,28 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
     if (state.sessionStatus == SessionStatus.notStarted) {
       _secRemaining = 0;
       _minRemaining = 0;
+      _milliSecElapsed = 0;
       _timer?.cancel();
       _sessionStarted = false;
       _sessionIsCompleted = false;
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        notifier.setSessionHasStarted(false);
+      });
     } else if (state.sessionStatus == SessionStatus.inProgress) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        notifier.setSecondsRemaining(_secRemaining);
+        notifier.setMillisecondsElapsed(_milliSecElapsed);
+      });
+
       if (!_sessionStarted) {
         _startCountdownInProgress = true;
         int totalTimeInSeconds = state.totalTime * 60;
         Timer(const Duration(milliseconds: kStartingScreenDuration), () {
           setState(() {});
           _setTimer(totalTimeInSeconds);
+          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+            notifier.setSessionHasStarted(true);
+          });
         });
 
         _sessionStarted = true;
@@ -88,7 +102,6 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
     _calculateBellIntervals(numberOfSounds, state);
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      notifier.setSecondsRemaining(_secRemaining);
       if (_sessionIsCompleted) {
         if (state.sessionStatus != SessionStatus.notStarted) {
           notifier.setSessionStatus(SessionStatus.ended);
@@ -98,9 +111,9 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
 
     final size = MediaQuery.of(context).size;
     return SizedBox(
-      width: size.width * 0.70,
+      width: size.width * kHomePageLineWidth,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           if (_startCountdownInProgress) ...[
@@ -111,7 +124,6 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
                     state.sessionStatus == SessionStatus.paused &&
                         !_startCountdownInProgress
                 ? RichText(
-                    textAlign: TextAlign.center,
                     text: TextSpan(
                       children: [
                         TextSpan(
@@ -119,11 +131,12 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
                           style: Theme.of(context).textTheme.displayLarge,
                         ),
                         TextSpan(
-                            text: (_secRemaining % 60).toString(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .displaySmall!
-                                .copyWith(fontWeight: FontWeight.normal)),
+                          text: (_secRemaining % 60).toString(),
+                          style:
+                              Theme.of(context).textTheme.displaySmall!.copyWith(
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                        ),
                       ],
                     ),
                   )
@@ -132,47 +145,8 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
                     textEditingController: _textEditingController,
                   ),
             state.sessionStatus == SessionStatus.notStarted
-                ? SizedBox(
-                    height: size.height * 0.05,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        IconButton(
-                          onPressed: () async {
-                            _focusNode.unfocus();
-                            notifier.incrementTotalTime();
-                            if(state.totalTime < 9999) {
-                              await PreferencesManager.setPreferences(time: state
-                                  .totalTime + 1);
-                            }
-                          },
-                          icon: const Icon(
-                            Icons.add,
-                          ),
-                        ),
-                        SizedBox(
-                          width: size.width * 0.10,
-                        ),
-                        IconButton(
-                          onPressed: () async {
-                            _focusNode.unfocus();
-                            notifier.decrementTotalTime();
-                            if(state.totalTime > 0) {
-                              await PreferencesManager.setPreferences(time: state
-                                  .totalTime - 1);
-                            }
-
-
-
-                          },
-                          icon: const Icon(Icons.remove),
-                        ),
-                      ],
-                    ),
-                  )
-                : SizedBox(
-                    height: size.height * 0.05,
-                  ),
+                ? TimeAdjustmentIcons(focusNode: _focusNode)
+                : SizedBox.shrink(),
           ],
         ],
       ),
@@ -200,7 +174,7 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
 
     if (bellTimes
         .any((element) => element == _minRemaining && _secRemaining == 0)) {
-      AudioManager().playAudio(sound: Sounds.gong.name);
+      AudioManager().playSound(sound: Sounds.gong.name);
     }
   }
 

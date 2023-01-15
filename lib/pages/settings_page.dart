@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../components/home/lotus_icon.dart';
+import '../components/settings/ambience_settings.dart';
 import '../components/settings/meditation_guide.dart';
 import '../components/settings/streak_settings.dart';
 
@@ -61,10 +62,26 @@ class _SettingsPageState extends State<SettingsPage> {
                 ],
               ),
             ),
+            SizedBox(
+              height: size.height * 0.02,
+            ),
+            ListTile(
+              leading: const Icon(
+                Icons.audiotrack_outlined,
+                size: 20,
+              ),
+              title: const Text('Ambient sounds'),
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => const AmbienceSettings(),
+                );
+              },
+            ),
             ListTile(
               leading: const Icon(
                 Icons.tips_and_updates_outlined,
-                size: 15,
+                size: 20,
               ),
               title: const Text('Meditation guide'),
               onTap: () {
@@ -77,7 +94,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ListTile(
               leading: const FaIcon(
                 FontAwesomeIcons.award,
-                size: 15,
+                size: 20,
               ),
               title: const Text('Streak stats'),
               onTap: () {
@@ -88,18 +105,17 @@ class _SettingsPageState extends State<SettingsPage> {
               },
             ),
             ListTile(
-              leading: const FaIcon(
-                FontAwesomeIcons.info,
-                size: 15,
-              ),
-              title:
-              const Text('About app'),
-              onTap: () => showAboutDialog(context: context, applicationName: 'Zense Meditation Timer',
-                applicationVersion: '1.0',
-                applicationIcon: LotusIcon(),
-
-              ))
-
+                leading: const FaIcon(
+                  FontAwesomeIcons.info,
+                  size: 20,
+                ),
+                title: const Text('About app'),
+                onTap: () => showAboutDialog(
+                      context: context,
+                      applicationName: 'Zense Meditation Timer',
+                      applicationVersion: '1.0',
+                      applicationIcon: const LotusIcon(),
+                    ))
           ],
         ),
       ),

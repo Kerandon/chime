@@ -3,7 +3,7 @@ import 'package:chime/models/prefs_model.dart';
 import 'package:chime/utils/pref_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../models/streak_data.dart';
+import '../models/streak_model.dart';
 
 class PreferencesManager {
   static Future<int> getCurrentStreakTotal() async {

@@ -77,6 +77,7 @@ class _StopColorRingState extends State<StopColorRing>
     if (widget.animate) {
       if (widget.loop) {
         _controller.repeat();
+        print('animate!!!!');
       } else {
         _controller.forward();
       }

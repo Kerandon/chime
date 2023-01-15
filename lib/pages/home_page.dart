@@ -35,7 +35,6 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-
     final size = MediaQuery.of(context).size;
 
     final state = ref.watch(stateProvider);
@@ -43,6 +42,21 @@ class _HomePageState extends ConsumerState<HomePage> {
 
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const SettingsPage()));
+              },
+              icon: const Icon(
+                Icons.settings_outlined,
+              ),
+            ),
+          ],
+        ),
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.black,
         body: FutureBuilder<PrefsModel>(
@@ -65,72 +79,71 @@ class _HomePageState extends ConsumerState<HomePage> {
               }
               return Stack(
                 children: [
-                  SizedBox(
-                    width: size.width,
-                    height: size.height,
-                    child: Stack(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(kBorderRadius),
-                            image: const DecorationImage(
-                              fit: BoxFit.cover,
-                              image: AssetImage(
-                                'assets/images/rocks.jpg',
+                  Container(
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: AssetImage(
+                          'assets/images/rocks.jpg',
+                        ),
+                      ),
+                    ),
+                  ),
+                  FadeInAnimation(
+                    child: FlipAnimation(
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          final biggest = constraints.biggest;
+                          return Align(
+                          alignment: const Alignment(0, 0),
+                          child: ClipRect(
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                              child: Padding(
+                                padding: EdgeInsets.all(size.width * 0.02),
+                                child: Container(
+                                  // width: size.width * 0.95,
+                                  // height: size.height * 0.82,
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.circular(kBorderRadius),
+                                    color: Colors.black.withOpacity(0.95),
+                                  ),
+                                  child: state.sessionStatus == SessionStatus.ended
+                                      ? const CompletedPage()
+                                      : const HomePageContents(),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        FadeInAnimation(
-                          child: FlipAnimation(
-                            child: Stack(
-                              children: [
-                                Align(
-                                  alignment: const Alignment(0, 0.70),
-                                  child: ClipRect(
-                                    child: BackdropFilter(
-                                      filter: ImageFilter.blur(
-                                          sigmaX: 20, sigmaY: 20),
-                                      child: Container(
-                                        width: size.width * 0.92,
-                                        height: size.height * 0.85,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(
-                                              size.width * 0.02),
-                                          color: Colors.black.withOpacity(0.92),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                state.sessionStatus == SessionStatus.ended
-                                    ? const CompletedPage()
-                                    : const CountDownText(),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Container(
-                          width: size.width,
-                          height: size.height * 0.05,
-                          color: Colors.black,
-                          child: IconButton(
-                              alignment: const Alignment(0.90, 0),
-                              onPressed: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsPage()));
-                              },
-                              icon: Icon(
-                                Icons.settings_outlined,
-                                size: size.height * 0.02,
-                              )),
-                        ),
-                      ],
+                        );
+                        },
+                      ),
                     ),
                   ),
+                  // Container(
+                  //   width: size.width,
+                  //   height: size.height * 0.05,
+                  //   color: Colors.black,
+                  //   child: IconButton(
+                  //       alignment: const Alignment(0.90, 0),
+                  //       onPressed: () {
+                  //         Navigator.push(
+                  //             context,
+                  //             MaterialPageRoute(
+                  //                 builder: (context) =>
+                  //                     const SettingsPage()));
+                  //       },
+                  //       icon: Icon(
+                  //         Icons.settings_outlined, color: Colors.white,
+                  //         size: size.height * 0.02,
+                  //       )),
+                  // ),
                 ],
               );
             }
-            return const LotusIcon();
+            return SizedBox.shrink();
+           // return const LotusIcon();
           },
         ),
       ),

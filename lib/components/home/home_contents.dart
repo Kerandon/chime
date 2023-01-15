@@ -1,37 +1,30 @@
-
 import 'package:chime/components/home/sound_selection.dart';
 import 'package:chime/components/home/start_button.dart';
 import 'package:chime/components/home/streak_counter.dart';
 import 'package:flutter/material.dart';
-
 import 'app_timer.dart';
 import 'interval_dropdown.dart';
 
-
-class CountDownText extends StatefulWidget {
-  const CountDownText({
+class HomePageContents extends StatefulWidget {
+  const HomePageContents({
     super.key,
   });
 
   @override
-  State<CountDownText> createState() => _CountDownTextState();
+  State<HomePageContents> createState() => _HomePageContentsState();
 }
 
-class _CountDownTextState extends State<CountDownText> {
+class _HomePageContentsState extends State<HomePageContents> {
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    return SizedBox(
-      width: size.width,
-      height: size.height * 0.90,
+    return Align(
+      alignment: Alignment.center,
       child: Stack(
         children: [
-          const StreakCounter(),
           Column(
             children: const [
-              Expanded(flex: 15, child: SizedBox()),
-              Expanded(flex: 120, child: AppTimer()),
-              Expanded(flex: 5, child: SizedBox()),
+              Expanded(flex: 15, child: StreakCounter()),
+              Expanded(flex: 100, child: AppTimer()),
               Expanded(flex: 40, child: IntervalDropdown()),
               Expanded(flex: 20, child: SoundSelection()),
               Expanded(

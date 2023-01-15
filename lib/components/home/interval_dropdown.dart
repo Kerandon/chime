@@ -26,16 +26,17 @@ class IntervalDropdown extends ConsumerWidget {
         DropdownMenuItem<int>(
           value: e,
           child: SizedBox(
-            width: size.width * 0.70,
+            width: size.width * kHomePageLineWidth,
             child: Center(
               child: Text(
-                  e == totalTime
-                      ? 'On time up only'
-                      : e == 1
-                          ? '$e minute'
-                          : '$e minutes',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.displaySmall),
+                e == totalTime
+                    ? kOnTimeUpOnlyText
+                    : e == 1
+                        ? '$e minute'
+                        : '$e minutes',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.displaySmall,
+              ),
             ),
           ),
         ),
@@ -48,25 +49,27 @@ class IntervalDropdown extends ConsumerWidget {
       selectedValue = items.first.value;
     }
 
+    bool showOnTimeUpTitleText = false;
+    if (selectedValue == state.totalTime) {
+      showOnTimeUpTitleText = true;
+    }
+
     return SizedBox(
       height: size.height * 0.05,
       width: size.width * 0.70,
       child: Column(
         children: [
-          Padding(
-            padding: EdgeInsets.only(bottom: size.height * 0.005),
-            child: Text(
-              'Play a ${state.soundSelected.name} every',
-              style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                    color: Colors.white54,
-                  ),
-            ),
+          Text(
+            showOnTimeUpTitleText
+                ? 'Play a ${state.soundSelected.name}'
+                : 'Play a ${state.soundSelected.name} every',
+            style: Theme.of(context).textTheme.bodySmall,
           ),
           items.isEmpty
-              ? const SizedBox()
+              ? const SizedBox.shrink()
               : DropdownButton<int>(
                   underline: Container(
-                    height: 2,
+                    height: kHomePageLineThickness,
                     color: Theme.of(context).primaryColor,
                   ),
                   borderRadius: BorderRadius.circular(kBorderRadius),

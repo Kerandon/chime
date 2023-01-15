@@ -3,6 +3,7 @@ import 'package:chime/state/preferences_manager.dart';
 import 'package:chime/utils/calculate_intervals.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../enums/ambience.dart';
 import '../enums/focus_state.dart';
 import '../enums/sounds.dart';
 
@@ -15,9 +16,11 @@ class AppState {
   final FocusState focusState;
   final bool initialTimeIsSet;
   final int secondsRemaining;
+  final int milliSecondsElapsed;
   final int pausedTime;
   final bool sessionHasStarted;
   final bool checkIfStatsUpdated;
+  final Ambience ambienceSelected;
 
   AppState({
     required this.totalTime,
@@ -28,9 +31,11 @@ class AppState {
     required this.focusState,
     required this.initialTimeIsSet,
     required this.secondsRemaining,
+    required this.milliSecondsElapsed,
     required this.pausedTime,
     required this.sessionHasStarted,
     required this.checkIfStatsUpdated,
+    required this.ambienceSelected,
   });
 
   AppState copyWith({
@@ -43,9 +48,12 @@ class AppState {
     bool? initialTimeIsSet,
     bool? sessionInProgress,
     int? secondsRemaining,
+    int? milliSecondsElapsed,
     int? pausedTime,
     bool? sessionHasStarted,
     bool? appHasLoaded,
+    bool? checkIfStatsUpdated,
+    Ambience? ambienceSelected,
   }) {
     return AppState(
       totalTime: totalTime ?? this.totalTime,
@@ -59,6 +67,8 @@ class AppState {
       pausedTime: pausedTime ?? this.pausedTime,
       sessionHasStarted: sessionHasStarted ?? this.sessionHasStarted,
       checkIfStatsUpdated: appHasLoaded ?? this.checkIfStatsUpdated,
+      milliSecondsElapsed: milliSecondsElapsed ?? this.milliSecondsElapsed,
+      ambienceSelected: ambienceSelected ?? this.ambienceSelected,
     );
   }
 }
@@ -129,8 +139,12 @@ class AppNotifier extends StateNotifier<AppState> {
     });
   }
 
-  void setSecondsRemaining(int total) {
-    state = state.copyWith(secondsRemaining: total);
+  void setSecondsRemaining(int seconds) {
+    state = state.copyWith(secondsRemaining: seconds);
+  }
+
+  void setMillisecondsElapsed(int milliseconds) {
+    state = state.copyWith(milliSecondsElapsed: milliseconds);
   }
 
   void setPausedTime({bool? reset}) {
@@ -141,9 +155,14 @@ class AppNotifier extends StateNotifier<AppState> {
     state = state.copyWith(pausedTime: time);
   }
 
-  void checkIfStatsUpdated(bool check){
+  void checkIfStatsUpdated(bool check) {
     state = state.copyWith(appHasLoaded: check);
   }
+
+  void selectAmbience(Ambience ambience){
+    state = state.copyWith(ambienceSelected: ambience);
+  }
+
 }
 
 final stateProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
@@ -159,5 +178,7 @@ final stateProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
     pausedTime: 0,
     sessionHasStarted: false,
     checkIfStatsUpdated: false,
+    milliSecondsElapsed: 0,
+    ambienceSelected: Ambience.none,
   ));
 });
