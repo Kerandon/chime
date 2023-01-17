@@ -19,9 +19,7 @@ class CustomOutlineButton extends StatelessWidget {
       onPressed: disable ? null : onPressed,
       child: Text(
         text,
-        style: const TextStyle(
-          color: Colors.black,
-        ),
+        style: Theme.of(context).textTheme.bodySmall
       ),
     );
   }

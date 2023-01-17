@@ -1,11 +1,12 @@
-
+import 'package:chime/components/settings/settings_close.dart';
+import 'package:chime/components/settings/settings_title.dart';
 import 'package:chime/models/streak_model.dart';
 import 'package:chime/state/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../state/preferences_manager.dart';
+import '../../state/preferences_streak.dart';
 import '../app/confirmation_box.dart';
 import '../app/custom_outline_button.dart';
 
@@ -19,12 +20,10 @@ class StreakSettings extends ConsumerStatefulWidget {
 }
 
 class _StreakSettingsState extends ConsumerState<StreakSettings> {
-
   bool _disableReset = true;
 
   @override
   void initState() {
-
     super.initState();
   }
 
@@ -32,38 +31,22 @@ class _StreakSettingsState extends ConsumerState<StreakSettings> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return AlertDialog(
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          FaIcon(
-            FontAwesomeIcons.award,
-            color: Theme.of(context).primaryColor,
-          ),
-          Text(
-            '  Daily Streak',
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                fontSize: 20,
-                color: Theme.of(context).primaryColor,
-                fontWeight: FontWeight.w500),
-          ),
-        ],
-      ),
-      content: SizedBox(
-        height: size.height * 0.30,
+      backgroundColor: Color.fromARGB(255, 50, 50, 50),
+      title: SettingsTitle(text: 'Streak stats', faIcon: FaIcon(FontAwesomeIcons.award, color: Theme.of(context).primaryColor,),),
+      content:
+      SizedBox(
+        height: size.height * 0.20,
         child: FutureBuilder<StreakData>(
-            future: PreferencesManager.getStreakData(),
+            future: PreferencesStreak.getStreakData(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 if (snapshot.data!.current == 0 && snapshot.data!.best == 0) {
                   _disableReset = true;
-                }else{
+                } else {
                   _disableReset = false;
                   WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                    setState(() {
-                    });
+                    setState(() {});
                   });
-
                 }
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -84,30 +67,38 @@ class _StreakSettingsState extends ConsumerState<StreakSettings> {
                         ]),
                       ],
                     ),
-                    SizedBox(height: size.height * 0.08,),
+                    SizedBox(
+                      height: size.height * 0.10,
+                    ),
                     SizedBox(
                       width: size.width * 0.60,
                       child: CustomOutlineButton(
                           disable: _disableReset,
                           text: 'Reset',
-                          onPressed:  () {
+                          onPressed: () {
                             showDialog(
                               context: context,
                               builder: (context) => ConfirmationBox(
                                   text: 'Confirm reset?',
                                   onPressed: () {
-                                    Navigator.of(context).maybePop().then((value) => Navigator.of(context).maybePop());
+                                    Navigator.of(context).maybePop().then(
+                                        (value) =>
+                                            Navigator.of(context).maybePop());
 
-                                    PreferencesManager.clearAllStreakData().then((value)
-                                    => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Streak stats cleared'))));
-                                    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                                    //   ref.read(stateProvider.notifier).checkIfStatsUpdated(true);
-                                    // });
-
+                                    PreferencesStreak.clearAllStreakData().then(
+                                        (value) => ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                                content: Text(
+                                                    'Streak stats cleared'))));
+                                    WidgetsBinding.instance
+                                        .addPostFrameCallback((timeStamp) {
+                                      ref
+                                          .read(stateProvider.notifier)
+                                          .checkIfStatsUpdated(true);
+                                    });
                                   }),
                             );
-                          }
-                      ),
+                          }),
                     ),
                   ],
                 );
@@ -115,20 +106,8 @@ class _StreakSettingsState extends ConsumerState<StreakSettings> {
               return const SizedBox.shrink();
             }),
       ),
-      actions: [
-        Column(
-          children: [
-
-            OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                side: BorderSide.none,
-              ),
-              onPressed: ()async{await Navigator.of(context).maybePop();}, child: Text('CLOSE', style: TextStyle(
-                fontSize: 14, color: Colors.black, fontWeight: FontWeight.normal
-            ),
-            ),),
-          ],
-        ),
+      actions: const [
+        SettingsClose(),
       ],
     );
   }
@@ -143,7 +122,7 @@ class _StreakSettingsState extends ConsumerState<StreakSettings> {
           .textTheme
           .bodySmall!
           .copyWith(fontSize: 20, color: Colors.black),
-    ));
+    ),);
   }
 
   TableCell buildTableCellLeft(

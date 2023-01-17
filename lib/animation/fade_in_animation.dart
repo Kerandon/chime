@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 class FadeInAnimation extends StatefulWidget {
-  const FadeInAnimation({Key? key, required this.child}) : super(key: key);
+  const FadeInAnimation({Key? key, required this.child, this.durationMilliseconds = 1800}) : super(key: key);
 
   final Widget child;
+  final int durationMilliseconds;
 
   @override
   State<FadeInAnimation> createState() => _FadeInAnimationState();
@@ -18,7 +19,7 @@ class _FadeInAnimationState extends State<FadeInAnimation>
   void initState() {
     super.initState();
     _controller = AnimationController(
-        duration: const Duration(milliseconds: 1800), vsync: this);
+        duration: Duration(milliseconds: widget.durationMilliseconds), vsync: this);
 
     _scale = Tween<double>(begin: 0.90, end: 1.0)
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));

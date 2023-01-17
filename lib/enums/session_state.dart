@@ -3,6 +3,5 @@ enum SessionState {
   countdown,
   inProgress,
   paused,
-  continueAfterPause,
   ended,
 }

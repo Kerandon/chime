@@ -1,8 +1,8 @@
-import 'package:chime/components/home/sound_selection.dart';
-import 'package:chime/components/home/start_button.dart';
+import 'package:chime/components/home/start_button/start_button.dart';
 import 'package:chime/components/home/streak_counter.dart';
 import 'package:flutter/material.dart';
-import 'app_timer.dart';
+import 'ambience_display.dart';
+import 'clocks/app_timer.dart';
 import 'interval_dropdown.dart';
 
 class HomePageContents extends StatefulWidget {
@@ -17,20 +17,47 @@ class HomePageContents extends StatefulWidget {
 class _HomePageContentsState extends State<HomePageContents> {
   @override
   Widget build(BuildContext context) {
+
     return Align(
       alignment: Alignment.center,
       child: Stack(
         children: [
           Column(
-            children: const [
-              Expanded(flex: 15, child: StreakCounter()),
-              Expanded(flex: 100, child: AppTimer()),
-              Expanded(flex: 40, child: IntervalDropdown()),
-              Expanded(flex: 20, child: SoundSelection()),
+            children: [
               Expanded(
+                  flex: 15,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: const [
+                      AmbienceDisplay(),
+                      StreakCounter(),
+                    ],
+                  )),
+
+
+              const Expanded(flex: 40, child: AppTimer()),
+              const Expanded(flex: 25, child: IntervalDropdown()),
+              const Expanded(
                 flex: 80,
                 child: StartButton(),
               ),
+
+             //  const Expanded(flex: 20, child: SoundSelection()),
+             //  Expanded(
+             //      flex: 30,
+             //      child: Center(
+             //        child: Container(
+             //          width: size.width * 0.30,
+             //          height: size.height * 0.06,
+             //    decoration: BoxDecoration(
+             //        border: Border.all(
+             //          color: Theme.of(context).primaryColor
+             //        ),
+             //    ),
+             //          child: Icon(Icons.play_arrow_outlined),
+             //  ),
+             //      ))
+
             ],
           ),
         ],

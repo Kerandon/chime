@@ -2,12 +2,12 @@ import 'dart:ui';
 import 'package:chime/animation/flip_animation.dart';
 import 'package:chime/enums/session_state.dart';
 import 'package:chime/pages/settings_page.dart';
-import 'package:chime/state/preferences_manager.dart';
+import 'package:chime/state/preferences_main.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../animation/fade_in_animation.dart';
 import '../components/home/home_contents.dart';
-import '../components/home/lotus_icon.dart';
+import '../configs/app_colors.dart';
 import '../models/prefs_model.dart';
 import '../utils/constants.dart';
 import 'completed_page.dart';
@@ -29,7 +29,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   void initState() {
-    _prefsFuture = PreferencesManager.getPreferences();
+    _prefsFuture = PreferencesMain.getPreferences();
     super.initState();
   }
 
@@ -49,7 +49,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const SettingsPage()));
+                        builder: (context) => const SettingsPage(),),);
               },
               icon: const Icon(
                 Icons.settings_outlined,
@@ -91,58 +91,23 @@ class _HomePageState extends ConsumerState<HomePage> {
                   ),
                   FadeInAnimation(
                     child: FlipAnimation(
-                      child: LayoutBuilder(
-                        builder: (context, constraints) {
-                          final biggest = constraints.biggest;
-                          return Align(
-                          alignment: const Alignment(0, 0),
-                          child: ClipRect(
-                            child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                              child: Padding(
-                                padding: EdgeInsets.all(size.width * 0.02),
-                                child: Container(
-                                  // width: size.width * 0.95,
-                                  // height: size.height * 0.82,
-                                  decoration: BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.circular(kBorderRadius),
-                                    color: Colors.black.withOpacity(0.95),
-                                  ),
-                                  child: state.sessionState == SessionState.ended
-                                      ? const CompletedPage()
-                                      : const HomePageContents(),
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                        },
+                      child: Align(
+                      alignment: const Alignment(0, 0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.almostBlack,
+                        ),
+                        child: state.sessionState == SessionState.ended
+                            ? const CompletedPage()
+                            : const HomePageContents(),
                       ),
+                        ),
                     ),
                   ),
-                  // Container(
-                  //   width: size.width,
-                  //   height: size.height * 0.05,
-                  //   color: Colors.black,
-                  //   child: IconButton(
-                  //       alignment: const Alignment(0.90, 0),
-                  //       onPressed: () {
-                  //         Navigator.push(
-                  //             context,
-                  //             MaterialPageRoute(
-                  //                 builder: (context) =>
-                  //                     const SettingsPage()));
-                  //       },
-                  //       icon: Icon(
-                  //         Icons.settings_outlined, color: Colors.white,
-                  //         size: size.height * 0.02,
-                  //       )),
-                  // ),
                 ],
               );
             }
-            return SizedBox.shrink();
+            return const SizedBox.shrink();
            // return const LotusIcon();
           },
         ),

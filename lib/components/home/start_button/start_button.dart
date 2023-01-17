@@ -1,5 +1,5 @@
 import 'package:chime/animation/bounce_animation.dart';
-import 'package:chime/components/home/stop_color_ring.dart';
+import 'package:chime/components/home/start_button/start_progress_indicator.dart';
 import 'package:chime/enums/session_state.dart';
 import 'package:chime/state/app_state.dart';
 import 'package:flutter/gestures.dart';
@@ -7,9 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quiver/async.dart';
 
-import '../../utils/constants.dart';
-import 'custom_progress_indicator.dart';
-import 'lotus_icon.dart';
+import '../../../utils/constants.dart';
+import '../../app/lotus_icon.dart';
 
 class StartButton extends ConsumerStatefulWidget {
   const StartButton({
@@ -78,10 +77,8 @@ class _StartButtonState extends ConsumerState<StartButton> {
                   const Duration(milliseconds: 20));
 
               _timer?.listen((event) {
-                //_restartMillisecondsRemaining = event.remaining.inMilliseconds;
                 setState(() {});
               }, onDone: () {
-                print('reset session');
                 notifier.setSessionState(
                   SessionState.notStarted,
                 );
@@ -113,43 +110,52 @@ class _StartButtonState extends ConsumerState<StartButton> {
       },
       child: Stack(
         children: [
-          StopColorRing(
-            animate: _longTapInProgress,
-            cancel: !_longTapInProgress,
-            radius: (size.width * kStartButtonRadius) + size.width * 0.01,
-            duration: kLongPressDurationMilliseconds,
-            colorsList: const [
-              Colors.orangeAccent,
-              Colors.orange,
-              Colors.redAccent,
-              Colors.red,
-            ],
-          ),
-          StopColorRing(
-            animate: state.sessionState == SessionState.paused,
-            cancel: state.sessionState != SessionState.paused &&
-                state.sessionHasStarted,
-            radius: (size.width * kStartButtonRadius) + size.width * 0.01,
-            duration: kLongPressDurationMilliseconds,
-            loop: true,
-            colorsList: const [
-              Colors.yellow,
-              Colors.yellowAccent,
-              Colors.yellow,
-              Colors.amberAccent,
-              Colors.amber,
-              Colors.yellow
-            ],
-          ),
-          CustomCircularIndicator(
-            radius: size.width * kStartButtonRadius,
-            animate: _animateLight,
-            colorStart: Colors.teal,
-            colorEnd: Colors.green,
-            duration: state.totalTimeMinutes,
-            pause: state.sessionState == SessionState.paused,
-            cancel: state.sessionState == SessionState.notStarted,
-            backgroundColor: Colors.transparent,
+          // Padding(
+          //   padding: EdgeInsets.all(size.width * 0.02),
+          //   child: StopColorRing(
+          //     animate: _longTapInProgress,
+          //     cancel: !_longTapInProgress,
+          //     radius: (size.width * kStartButtonRadius) + (size.width * 0.01),
+          //     duration: kLongPressDurationMilliseconds,
+          //     colorsList: const [
+          //       Colors.orangeAccent,
+          //       Colors.orange,
+          //       Colors.redAccent,
+          //       Colors.red,
+          //     ],
+          //   ),
+          // ),
+          // Padding(
+          //   padding: EdgeInsets.all(size.width * 0.02),
+          //   child: StopColorRing(
+          //     animate: state.sessionState == SessionState.paused,
+          //     cancel: state.sessionState != SessionState.paused &&
+          //         state.sessionHasStarted,
+          //     radius: (size.width * kStartButtonRadius) + (size.width * 0.01),
+          //     duration: kLongPressDurationMilliseconds,
+          //     loop: true,
+          //     colorsList: const [
+          //       Colors.yellow,
+          //       Colors.yellowAccent,
+          //       Colors.yellow,
+          //       Colors.amberAccent,
+          //       Colors.amber,
+          //       Colors.yellow
+          //     ],
+          //   ),
+          // ),
+          Padding(
+            padding: EdgeInsets.all(size.width * 0.02),
+            child: StartCircularIndicator(
+              radius: size.width * kStartButtonRadius,
+              animate: _animateLight,
+              colorStart: Colors.teal,
+              colorEnd: Colors.teal,
+              duration: state.totalTimeMinutes,
+              pause: state.sessionState == SessionState.paused,
+              cancel: state.sessionState == SessionState.notStarted,
+              backgroundColor: Colors.white10,
+            ),
           ),
           Center(
             child: ClipRRect(

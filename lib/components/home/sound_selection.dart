@@ -50,7 +50,7 @@ class SoundButton extends ConsumerWidget {
         ),
         onPressed: () async {
           if(state.sessionState == SessionState.notStarted) {
-            await AudioManager().playSound(sound: sound.name);
+            await AudioManager().playSound(sound.name);
           }
           notifier.setSound(sound);
           notifier.setTimerFocusState(FocusState.unFocus);

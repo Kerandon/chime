@@ -26,7 +26,7 @@ class IntervalDropdown extends ConsumerWidget {
         DropdownMenuItem<int>(
           value: e,
           child: SizedBox(
-            width: size.width * kHomePageLineWidth,
+            width: size.width * kHomePageLineWidth / 1.5,
             child: Center(
               child: Text(
                 e == totalTime
@@ -56,7 +56,7 @@ class IntervalDropdown extends ConsumerWidget {
 
     return SizedBox(
       height: size.height * 0.05,
-      width: size.width * 0.70,
+      width: size.width * 0.60,
       child: Column(
         children: [
           Text(

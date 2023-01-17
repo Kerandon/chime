@@ -3,8 +3,8 @@ import 'package:chime/enums/focus_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../state/preferences_manager.dart';
-import '../../state/app_state.dart';
+import '../../../state/preferences_main.dart';
+import '../../../state/app_state.dart';
 
 class TimeAdjustmentIcons extends ConsumerWidget {
   const TimeAdjustmentIcons({
@@ -29,32 +29,32 @@ class TimeAdjustmentIcons extends ConsumerWidget {
             //_focusNode.unfocus();
             notifier.incrementTotalTime();
             if (state.totalTimeMinutes < 9999) {
-              await PreferencesManager.setPreferences(
+              await PreferencesMain.setPreferences(
                 time: state.totalTimeMinutes + 1,
               );
             }
           },
           icon: const Icon(
             Icons.add,
-            size: 25,
+            size: 20,
           ),
         ),
         SizedBox(
-          width: size.width * 0.10,
+          width: size.width * 0.05,
         ),
         IconButton(
           onPressed: () async {
             notifier.setTimerFocusState(FocusState.unFocus);
             notifier.decrementTotalTime();
             if (state.totalTimeMinutes > 0) {
-              await PreferencesManager.setPreferences(
+              await PreferencesMain.setPreferences(
                 time: state.totalTimeMinutes - 1,
               );
             }
           },
           icon: const Icon(
             Icons.remove,
-            size: 25,
+            size: 20,
           ),
         ),
       ],

@@ -5,6 +5,8 @@ class PrefConstants {
   static const interval = 'interval';
   static const sound = 'sound';
   static const record = 'record';
+  static const ambienceSelected = 'ambience';
+  static const ambienceVolume = 'volume';
 
 
 }

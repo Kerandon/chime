@@ -1,11 +1,9 @@
-import 'package:chime/enums/sounds.dart';
-import 'package:chime/models/prefs_model.dart';
-import 'package:chime/utils/pref_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/streak_model.dart';
+import '../utils/pref_constants.dart';
 
-class PreferencesManager {
+class PreferencesStreak {
   static Future<int> getCurrentStreakTotal() async {
     final instance = await SharedPreferences.getInstance();
     final streaks = instance.getStringList(PrefConstants.streak) ?? [];
@@ -14,18 +12,18 @@ class PreferencesManager {
 
   static Future<bool> checkIfStreakStillCurrent() async {
     Set<DateTime> currentDates =
-        await PreferencesManager._getExistingStreakDates(
+        await getExistingStreakDates(
             await SharedPreferences.getInstance());
 
     if (currentDates.isEmpty) {
       return false;
     } else {
-      final isSuccessive = PreferencesManager.checkIfEqualOrSuccessiveDay(
+      final isSuccessive = checkIfEqualOrSuccessiveDay(
           currentDates, DateTime.now());
       if (isSuccessive) {
         return true;
       } else {
-        await PreferencesManager._clearStreakDates();
+        await _clearStreakDates();
         return false;
       }
     }
@@ -33,7 +31,7 @@ class PreferencesManager {
 
   static Future<bool> addToStreak(DateTime now) async {
     final instance = await SharedPreferences.getInstance();
-    final existingDates = await _getExistingStreakDates(instance);
+    final existingDates = await getExistingStreakDates(instance);
     bool duplicateDay = false;
 
     if (existingDates.isNotEmpty) {
@@ -63,7 +61,7 @@ class PreferencesManager {
     return await instance.setStringList(PrefConstants.streak, stringDates);
   }
 
-  static Future<Set<DateTime>> _getExistingStreakDates(
+  static Future<Set<DateTime>> getExistingStreakDates(
       SharedPreferences instance) async {
     Set<DateTime> dates = {};
     List<String> existing = instance.getStringList(PrefConstants.streak) ?? [];
@@ -126,38 +124,5 @@ class PreferencesManager {
     await _clearStreakDates();
     await _clearStreakRecord();
     return true;
-  }
-
-
-  static setPreferences({int? time, int? interval, Sounds? sound}) async {
-    final instance = await SharedPreferences.getInstance();
-    if (time != null) {
-      await instance.setInt(PrefConstants.time, time);
-    }
-    if (interval != null) {
-      await instance.setInt(PrefConstants.interval, interval);
-    }
-
-    if (sound != null) {
-      await instance.setString(PrefConstants.sound, sound.name);
-    }
-  }
-
-  static Future<PrefsModel> getPreferences() async {
-    int time;
-    int interval;
-    Sounds sound = Sounds.chime;
-    final instance = await SharedPreferences.getInstance();
-    time = instance.getInt(PrefConstants.time) ?? 60;
-    interval = instance.getInt(PrefConstants.interval) ?? 5;
-    String? s = instance.getString(PrefConstants.sound) ?? 'chime';
-    if (s == Sounds.chime.name) {
-      sound = Sounds.chime;
-    }
-    if (s == Sounds.gong.name) {
-      sound = Sounds.gong;
-    }
-
-    return PrefsModel(time: time, interval: interval, sound: sound);
   }
 }

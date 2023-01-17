@@ -1,123 +1,94 @@
-import 'package:chime/pages/home_page.dart';
+import 'package:chime/enums/ambience.dart';
+import 'package:chime/enums/sounds.dart';
+import 'package:chime/state/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-import '../components/home/lotus_icon.dart';
-import '../components/settings/ambience_settings.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../components/app/lotus_icon.dart';
 import '../components/settings/meditation_guide.dart';
+import '../components/settings/settings_tile.dart';
 import '../components/settings/streak_settings.dart';
+import '../utils/constants.dart';
+import 'achievements_page.dart';
+import 'ambience_page.dart';
+import 'meditation_guide_page.dart';
 
-class SettingsPage extends StatefulWidget {
+class SettingsPage extends ConsumerWidget {
   const SettingsPage({Key? key}) : super(key: key);
 
   @override
-  State<SettingsPage> createState() => _SettingsPageState();
-}
-
-class _SettingsPageState extends State<SettingsPage> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;
-    return SafeArea(
-      child: Scaffold(
-        body: Column(
-          children: [
-            Container(
-              width: size.width,
-              height: size.height * 0.08,
-              decoration: const BoxDecoration(
-                color: Colors.black,
-              ),
-              child: Stack(
-                children: [
-                  Row(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.all(size.width * 0.05),
-                        child: const LotusIcon(),
-                      ),
-                      Text(
-                        'Zense Meditation Timer',
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineSmall!
-                            .copyWith(
-                                color: Theme.of(context).primaryColor,
-                                fontSize: 20),
-                      ),
-                    ],
-                  ),
-                  Align(
-                    alignment: const Alignment(0.90, 0),
-                    child: IconButton(
-                        onPressed: () async {
-                          await Navigator.of(context).maybePop();
-                        },
-                        icon: const Icon(
-                          Icons.clear_outlined,
-                          color: Colors.white,
-                          size: 18,
-                        )),
-                  )
-                ],
-              ),
-            ),
-            SizedBox(
-              height: size.height * 0.02,
-            ),
-            ListTile(
-              leading: const Icon(
-                Icons.audiotrack_outlined,
-                size: 20,
-              ),
-              title: const Text('Ambient sounds'),
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => const AmbienceSettings(),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(
-                Icons.tips_and_updates_outlined,
-                size: 20,
-              ),
-              title: const Text('Meditation guide'),
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => const MeditationGuide(),
-                );
-              },
-            ),
-            ListTile(
-              leading: const FaIcon(
-                FontAwesomeIcons.award,
-                size: 20,
-              ),
-              title: const Text('Streak stats'),
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => const StreakSettings(),
-                );
-              },
-            ),
-            ListTile(
-                leading: const FaIcon(
-                  FontAwesomeIcons.info,
-                  size: 20,
+    final state = ref.read(stateProvider);
+    return Scaffold(
+      appBar: AppBar(),
+      body: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(
+                top: size.height * 0.05, bottom: size.height * 0.01),
+            child: Column(
+              children: [
+                Text(
+                  kAppName,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headlineSmall!
+                      .copyWith(color: Theme.of(context).primaryColor),
                 ),
-                title: const Text('About app'),
-                onTap: () => showAboutDialog(
-                      context: context,
-                      applicationName: 'Zense Meditation Timer',
-                      applicationVersion: '1.0',
-                      applicationIcon: const LotusIcon(),
-                    ))
-          ],
-        ),
+                Padding(
+                  padding: EdgeInsets.all(size.height * 0.01),
+                  child: const LotusIcon(),
+                ),
+              ],
+            ),
+          ),
+          SettingsTile(
+            icon: Icon(
+              Icons.piano_outlined,
+              color: Colors.white,
+            ),
+            title: 'Ambience',
+            subTitle: state.ambienceSelected.toText(),
+            onPressed: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => AmbiencePage()));
+            },
+          ),
+          SettingsTile(
+            icon: Icon(
+              Icons.tips_and_updates_outlined,
+              color: Colors.white,
+            ),
+            title: 'Meditation Guide',
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => MeditationGuidePage()));
+            },
+          ),
+          SettingsTile(
+              faIcon: FaIcon(
+                FontAwesomeIcons.award,
+                color: Colors.white,
+              ),
+              title: 'Achievements',
+              onPressed: () {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => AchievementsPage()),
+                );
+              }),
+          ListTile(
+              leading: const FaIcon(
+                FontAwesomeIcons.info,
+              ),
+              title: const Text('About app'),
+              onTap: () => showAboutDialog(
+                    context: context,
+                    applicationName: 'Zense Meditation Timer',
+                    applicationVersion: '1.0',
+                    applicationIcon: const LotusIcon(),
+                  ))
+        ],
       ),
     );
   }

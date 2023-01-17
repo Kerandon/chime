@@ -1,10 +1,11 @@
-import 'package:chime/enums/session_state.dart';
 import 'package:chime/state/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class CustomCircularIndicator extends ConsumerStatefulWidget {
-  const CustomCircularIndicator({
+import '../../../utils/constants.dart';
+
+class StartCircularIndicator extends ConsumerStatefulWidget {
+  const StartCircularIndicator({
     Key? key,
     required this.radius,
     required this.animate,
@@ -12,9 +13,9 @@ class CustomCircularIndicator extends ConsumerStatefulWidget {
     required this.colorEnd,
     this.cancel = false,
     this.duration = 1000,
-    this.strokeWidth = 2,
+    this.strokeWidth = kSessionTimerStrokeWidth,
     this.reverse = false,
-    this.backgroundColor = Colors.white10,
+    this.backgroundColor = Colors.transparent,
     this.pause = false,
   }) : super(key: key);
 
@@ -30,12 +31,12 @@ class CustomCircularIndicator extends ConsumerStatefulWidget {
   final bool pause;
 
   @override
-  ConsumerState<CustomCircularIndicator> createState() =>
+  ConsumerState<StartCircularIndicator> createState() =>
       _CustomCircularIndicatorState();
 }
 
 class _CustomCircularIndicatorState
-    extends ConsumerState<CustomCircularIndicator>
+    extends ConsumerState<StartCircularIndicator>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Color?> _animationColor;
@@ -64,7 +65,7 @@ class _CustomCircularIndicatorState
   }
 
   @override
-  void didUpdateWidget(covariant CustomCircularIndicator oldWidget) {
+  void didUpdateWidget(covariant StartCircularIndicator oldWidget) {
     if (widget.animate && !_controller.isAnimating) {
       _controller.repeat();
     }
@@ -97,11 +98,14 @@ class _CustomCircularIndicatorState
       child: SizedBox(
         width: widget.radius * 2,
         height: widget.radius * 2,
-        child: CircularProgressIndicator(
-          backgroundColor: Colors.grey,
-          valueColor: _animationColor,
-          value: percent,
-          strokeWidth: widget.strokeWidth,
+        child: FittedBox(
+          fit: BoxFit.contain,
+          child: CircularProgressIndicator(
+            backgroundColor: widget.backgroundColor,
+            valueColor: _animationColor,
+            value: percent,
+            strokeWidth: widget.strokeWidth,
+          ),
         ),
       ),
     );

@@ -2,18 +2,18 @@ import 'package:chime/enums/session_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../state/app_state.dart';
+import '../../../state/app_state.dart';
 
-class SessionClock extends ConsumerStatefulWidget {
-  const SessionClock({
+class SessionTimer extends ConsumerStatefulWidget {
+  const SessionTimer({
     super.key,
   });
 
   @override
-  ConsumerState<SessionClock> createState() => _SessionClockState();
+  ConsumerState<SessionTimer> createState() => _SessionClockState();
 }
 
-class _SessionClockState extends ConsumerState<SessionClock> {
+class _SessionClockState extends ConsumerState<SessionTimer> {
 
   bool _sessionHasStarted = false;
 
@@ -39,6 +39,8 @@ class _SessionClockState extends ConsumerState<SessionClock> {
       _sessionHasStarted = false;
     }
 
+    //print('seconds remaining is ${60}');
+
 
     return RichText(
       text: TextSpan(
@@ -48,9 +50,9 @@ class _SessionClockState extends ConsumerState<SessionClock> {
             style: Theme.of(context).textTheme.displayLarge,
           ),
           TextSpan(
-            text: seconds.toString(),
+            text: ' ${seconds.toString()}',
             style: Theme.of(context).textTheme.displaySmall!.copyWith(
-                  fontWeight: FontWeight.normal,
+                  fontWeight: FontWeight.w100,
                 ),
           ),
         ],

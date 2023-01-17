@@ -1,10 +1,11 @@
 import 'package:chime/components/settings/streak_settings.dart';
-import 'package:chime/state/preferences_manager.dart';
 import 'package:chime/state/app_state.dart';
+import 'package:chime/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../configs/app_colors.dart';
+import '../../state/preferences_streak.dart';
 
 class StreakCounter extends ConsumerStatefulWidget {
   const StreakCounter({
@@ -22,14 +23,13 @@ class _StreakCounterState extends ConsumerState<StreakCounter> {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         setState(() {});
       });
-
     }
 
     final checkStreakCurrentFuture =
-        PreferencesManager.checkIfStreakStillCurrent();
+        PreferencesStreak.checkIfStreakStillCurrent();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if(mounted) {
+      if (mounted) {
         ref.read(stateProvider.notifier).checkIfStatsUpdated(false);
       }
     });
@@ -55,7 +55,7 @@ class _StreakCounterState extends ConsumerState<StreakCounter> {
                   return const SizedBox.shrink();
                 } else {
                   return FutureBuilder<int>(
-                    future: PreferencesManager.getCurrentStreakTotal(),
+                    future: PreferencesStreak.getCurrentStreakTotal(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         final streak = snapshot.data as int;
@@ -69,16 +69,13 @@ class _StreakCounterState extends ConsumerState<StreakCounter> {
                               children: [
                                 const FaIcon(
                                   FontAwesomeIcons.award,
-                                  size: 12,
-                                  color: AppColors.lightWhite,
+                                  size: kHomePageSmallIcon,
+                                  color: AppColors.lightGrey,
                                 ),
                                 SizedBox(width: size.width * 0.02),
-                                Text(
-                                  '$streak',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall
-                                ),
+                                Text('$streak',
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall),
                               ],
                             ),
                           );
