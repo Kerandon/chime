@@ -36,9 +36,9 @@ class _HomePageContentsState extends State<HomePageContents> {
 
 
               const Expanded(flex: 40, child: AppTimer()),
-              const Expanded(flex: 25, child: IntervalDropdown()),
+              const Expanded(flex: 20, child: IntervalDropdown()),
               const Expanded(
-                flex: 80,
+                flex: 60,
                 child: StartButton(),
               ),
 

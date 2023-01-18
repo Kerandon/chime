@@ -1,6 +1,6 @@
 import 'package:chime/components/settings/streak_settings.dart';
 import 'package:chime/state/app_state.dart';
-import 'package:chime/utils/constants.dart';
+import 'package:chime/configs/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';

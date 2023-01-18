@@ -1,41 +1,78 @@
-import 'package:chime/enums/sounds.dart';
 import 'package:chime/models/prefs_model.dart';
-import 'package:chime/utils/pref_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../enums/ambience.dart';
+import '../enums/bell.dart';
+import '../utils/pref_constants.dart';
 
 class PreferencesMain {
-
-
-  static setPreferences({int? time, int? interval, Sounds? sound}) async {
+  static setPreferences({
+    int? totalTime,
+    int? bellInterval,
+    Bell? bellSelected,
+    double? bellVolume,
+    Ambience? ambienceSelected,
+    double? ambienceVolume,
+  }) async {
     final instance = await SharedPreferences.getInstance();
-    if (time != null) {
-      await instance.setInt(PrefConstants.time, time);
+
+    print('set preference ${bellVolume}');
+
+
+    if (totalTime != null) {
+      await instance.setInt(Prefs.totalTime, totalTime);
     }
-    if (interval != null) {
-      await instance.setInt(PrefConstants.interval, interval);
+    if (bellInterval != null) {
+      await instance.setInt(Prefs.bellInterval, bellInterval);
     }
 
-    if (sound != null) {
-      await instance.setString(PrefConstants.sound, sound.name);
+    if (bellSelected != null) {
+      await instance.setString(Prefs.bellSelected, bellSelected.name);
+    }
+    if (bellVolume != null) {
+      print('set bell volune ${bellVolume}');
+      await instance.setDouble(Prefs.bellVolume, bellVolume);
+    }
+    if (ambienceSelected != null) {
+      await instance.setString(Prefs.ambienceSelected, ambienceSelected.name);
+    }
+    if (ambienceVolume != null) {
+      await instance.setDouble(Prefs.ambienceVolume, ambienceVolume);
     }
   }
 
   static Future<PrefsModel> getPreferences() async {
-    int time;
-    int interval;
-    Sounds sound = Sounds.chime;
     final instance = await SharedPreferences.getInstance();
-    time = instance.getInt(PrefConstants.time) ?? 60;
-    interval = instance.getInt(PrefConstants.interval) ?? 5;
-    String? s = instance.getString(PrefConstants.sound) ?? 'chime';
-    if (s == Sounds.chime.name) {
-      sound = Sounds.chime;
-    }
-    if (s == Sounds.gong.name) {
-      sound = Sounds.gong;
-    }
 
-    return PrefsModel(time: time, interval: interval, sound: sound);
+    // int totalTime;
+    // int bellInterval;
+
+    int totalTime = instance.getInt(Prefs.totalTime) ?? 60;
+    int bellInterval = instance.getInt(Prefs.bellInterval) ?? 5;
+    String? b = instance.getString(Prefs.bellSelected) ?? 'chime';
+    Bell bellSelected = Bell.chime;
+    for (var e in Bell.values) {
+      if (b == e.name) {
+        bellSelected = e;
+      }
+    }
+    double bellVolume = instance.getDouble(Prefs.bellVolume) ?? 0.50;
+    String result =
+        instance.getString(Prefs.ambienceSelected) ?? Ambience.none.name;
+    Ambience ambienceSelected = Ambience.none;
+    for (var a in Ambience.values) {
+      if (a.name == result) {
+        ambienceSelected = a;
+      }
+    }
+    double ambienceVolume = instance.getDouble(Prefs.ambienceVolume) ?? 0.50;
+
+    return PrefsModel(
+      totalTime: totalTime,
+      bellInterval: bellInterval,
+      bellSelected: bellSelected,
+      bellVolume: bellVolume,
+      ambienceSelected: ambienceSelected,
+      ambienceVolume: ambienceVolume,
+    );
   }
-
 }

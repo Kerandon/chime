@@ -30,7 +30,7 @@ class _CompletedPageState extends ConsumerState<CompletedPage> {
     final state = ref.watch(stateProvider);
     final notifier = ref.read(stateProvider.notifier);
     if (!_playFinalBell) {
-      AudioManager().playSound('${state.soundSelected.name}_end');
+      AudioManager().playBell('${state.bellSelected.name}_end');
       _playFinalBell = true;
     }
     return Padding(

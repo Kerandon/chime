@@ -21,10 +21,10 @@ class _FadeInAnimationState extends State<FadeInAnimation>
     _controller = AnimationController(
         duration: Duration(milliseconds: widget.durationMilliseconds), vsync: this);
 
-    _scale = Tween<double>(begin: 0.90, end: 1.0)
+    _scale = Tween<double>(begin: 0.95, end: 1.0)
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
-    _opacity = Tween<double>(begin: 0, end: 1.0)
+    _opacity = Tween<double>(begin: 0.80, end: 1.0)
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     Future.delayed(const Duration(milliseconds: 1000),(){

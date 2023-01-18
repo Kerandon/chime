@@ -1,19 +1,17 @@
-import 'package:chime/state/preferences_ambience.dart';
 import 'package:chime/state/preferences_main.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../audio/audio_manager.dart';
-import '../../enums/ambience.dart';
-import '../../models/ambience_model.dart';
+import '../../enums/bell.dart';
 import '../../state/app_state.dart';
 
-class AmbienceCheckBoxTile extends ConsumerWidget {
-  const AmbienceCheckBoxTile({
+class BellsCheckBoxTile extends ConsumerWidget {
+  const BellsCheckBoxTile({
     super.key,
-    required this.ambienceData,
+    required this.bell,
   });
 
-  final AmbienceData ambienceData;
+  final Bell bell;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,20 +22,21 @@ class AmbienceCheckBoxTile extends ConsumerWidget {
     return CheckboxListTile(
       title: Row(
         children: [
-          ambienceData.icon,
           Padding(
             padding: EdgeInsets.only(left: size.width * 0.03),
-            child: Text(ambienceData.ambience.toText(), style: Theme.of(context).textTheme.bodySmall,),
+            child: Text(
+              bell.toText(),
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
           ),
         ],
       ),
-      value: state.ambienceSelected == ambienceData.ambience,
+      value: state.bellSelected == bell,
       onChanged: (value) async {
-        Ambience ambience = ambienceData.ambience;
-        notifier.setAmbience(ambience);
-        await AudioManager().playAmbience(ambience);
-        // await PreferencesAmbience.setAmbienceSelected(ambience);
-        await PreferencesMain.setPreferences(ambienceSelected: ambience);
+        notifier.setBellSelected(bell);
+        await AudioManager().playBell(bell.name);
+        print('setting preferences ${bell}');
+        await PreferencesMain.setPreferences(bellSelected: bell);
       },
       activeColor: Theme.of(context).primaryColor,
       side: BorderSide(color: Colors.white),

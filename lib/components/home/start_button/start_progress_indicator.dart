@@ -2,7 +2,7 @@ import 'package:chime/state/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../utils/constants.dart';
+import '../../../configs/constants.dart';
 
 class StartCircularIndicator extends ConsumerStatefulWidget {
   const StartCircularIndicator({

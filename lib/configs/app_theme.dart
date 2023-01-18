@@ -1,4 +1,4 @@
-import 'package:chime/utils/constants.dart';
+import 'package:chime/configs/constants.dart';
 import 'package:flutter/material.dart';
 
 import 'app_colors.dart';

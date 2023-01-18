@@ -8,14 +8,26 @@ class AudioManager {
 
   factory AudioManager() => _instance;
 
-  AudioPlayer audioPlayerSound = AudioPlayer()
-    ..setReleaseMode(ReleaseMode.stop);
+  AudioPlayer audioPlayerBell = AudioPlayer()..setReleaseMode(ReleaseMode.stop);
   AudioPlayer audioPlayerAmbience = AudioPlayer()
     ..setReleaseMode(ReleaseMode.loop);
 
-  Future<void> playSound(sound) async {
-    print('play audio ${sound}');
-    await audioPlayerSound.play(AssetSource('audio/sounds/$sound.mp3'));
+  Future<void> playBell(sound) async {
+    await audioPlayerBell.play(AssetSource('audio/sounds/$sound.mp3'));
+  }
+
+  Future<void> stopBellAudio() async {
+    await audioPlayerBell.stop().then((value) async {
+      await audioPlayerBell.release();
+    });
+  }
+
+  Future<void> setBellVolume(double volume) async {
+    await audioPlayerBell.setVolume(volume);
+  }
+
+  Future<void> setAmbienceVolume(double volume) async {
+    await audioPlayerAmbience.setVolume(volume);
   }
 
   Future<void> playAmbience(Ambience ambience) async {
@@ -25,16 +37,6 @@ class AudioManager {
       await audioPlayerAmbience
           .play(AssetSource('audio/ambience/${ambience.name}.mp3'), volume: 1);
     }
-  }
-
-  Future<void> setAmbienceVolume(double volume) async {
-    await audioPlayerAmbience.setVolume(volume);
-  }
-
-  Future<void> stopSoundAudio() async {
-    await audioPlayerSound.stop().then((value) async {
-      await audioPlayerAmbience.release();
-    });
   }
 
   Future<void> stopAmbienceAudio() async {
@@ -50,5 +52,4 @@ class AudioManager {
   Future<void> resumeAmbience() async {
     await audioPlayerAmbience.resume();
   }
-
 }

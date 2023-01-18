@@ -1,14 +1,13 @@
 import 'package:chime/enums/ambience.dart';
-import 'package:chime/enums/sounds.dart';
+import 'package:chime/enums/bell.dart';
+import 'package:chime/pages/bells_page.dart';
 import 'package:chime/state/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../components/app/lotus_icon.dart';
-import '../components/settings/meditation_guide.dart';
 import '../components/settings/settings_tile.dart';
-import '../components/settings/streak_settings.dart';
-import '../utils/constants.dart';
+import '../configs/constants.dart';
 import 'achievements_page.dart';
 import 'ambience_page.dart';
 import 'meditation_guide_page.dart';
@@ -19,76 +18,93 @@ class SettingsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;
-    final state = ref.read(stateProvider);
+    final state = ref.watch(stateProvider);
     return Scaffold(
       appBar: AppBar(),
-      body: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(
-                top: size.height * 0.05, bottom: size.height * 0.01),
-            child: Column(
-              children: [
-                Text(
-                  kAppName,
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineSmall!
-                      .copyWith(color: Theme.of(context).primaryColor),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(size.height * 0.01),
-                  child: const LotusIcon(),
-                ),
-              ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(
+                  top: size.height * 0.05, bottom: size.height * 0.01),
+              child: Column(
+                children: [
+                  Text(
+                    kAppName,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineSmall!
+                        .copyWith(color: Theme.of(context).primaryColor),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(size.height * 0.01),
+                    child: const LotusIcon(),
+                  ),
+                ],
+              ),
             ),
-          ),
-          SettingsTile(
-            icon: Icon(
-              Icons.piano_outlined,
-              color: Colors.white,
-            ),
-            title: 'Ambience',
-            subTitle: state.ambienceSelected.toText(),
-            onPressed: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => AmbiencePage()));
-            },
-          ),
-          SettingsTile(
-            icon: Icon(
-              Icons.tips_and_updates_outlined,
-              color: Colors.white,
-            ),
-            title: 'Meditation Guide',
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => MeditationGuidePage()));
-            },
-          ),
-          SettingsTile(
-              faIcon: FaIcon(
-                FontAwesomeIcons.award,
+            SettingsTile(
+              icon: const Icon(
+                Icons.audiotrack_outlined,
                 color: Colors.white,
               ),
-              title: 'Achievements',
+              title: 'Meditation Bell',
+              subTitle: state.bellSelected.toText(),
               onPressed: () {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => AchievementsPage()),
-                );
-              }),
-          ListTile(
-              leading: const FaIcon(
-                FontAwesomeIcons.info,
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const BellsPage()));
+              },
+            ),
+            SettingsTile(
+              icon: const Icon(
+                Icons.piano_outlined,
+                color: Colors.white,
               ),
-              title: const Text('About app'),
-              onTap: () => showAboutDialog(
-                    context: context,
-                    applicationName: 'Zense Meditation Timer',
-                    applicationVersion: '1.0',
-                    applicationIcon: const LotusIcon(),
-                  ))
-        ],
+              title: 'Ambience',
+              subTitle: state.ambienceSelected.toText(),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const AmbiencePage()));
+              },
+            ),
+            SettingsTile(
+              icon: const Icon(
+                Icons.tips_and_updates_outlined,
+                color: Colors.white,
+              ),
+              title: 'Meditation Guide',
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const MeditationGuidePage()));
+              },
+            ),
+            SettingsTile(
+                faIcon: const FaIcon(
+                  FontAwesomeIcons.award,
+                  color: Colors.white,
+                ),
+                title: 'Achievements',
+                onPressed: () {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                        builder: (context) => const AchievementsPage()),
+                  );
+                }),
+            SettingsTile(
+                icon: const Icon(
+                  Icons.info_outlined,
+                  color: Colors.white,
+                ),
+                title: 'About',
+                onPressed: () {
+                  showAboutDialog(
+                      context: context,
+                      applicationName: kAppName,
+                      applicationVersion: '1.0',
+                      applicationIcon: const LotusIcon());
+                }),
+          ],
+        ),
       ),
     );
   }

@@ -8,7 +8,7 @@ import '../components/settings/settings_title.dart';
 import '../models/streak_model.dart';
 import '../state/app_state.dart';
 import '../state/preferences_streak.dart';
-import '../utils/constants.dart';
+import '../configs/constants.dart';
 
 class AchievementsPage extends ConsumerStatefulWidget {
   const AchievementsPage({Key? key}) : super(key: key);
@@ -25,59 +25,67 @@ class _AchievementsPageState extends ConsumerState<AchievementsPage> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(),
-      body: Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: size.width * kSettingsHorizontalPageIndent),
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                SettingsTitle(
-                  faIcon: FaIcon(
-                    FontAwesomeIcons.award,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                  text: 'Your achievements',
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: size.width * kSettingsHorizontalPageIndent),
+          child: Column(
+            children: [
+              SettingsTitle(
+                faIcon: FaIcon(
+                  FontAwesomeIcons.award,
+                  color: Theme.of(context).primaryColor,
                 ),
-                SizedBox(
-                  height: size.height * kSettingsImageHeight,
-                  child: Image.asset('assets/images/people/person_2.png'),
-                ),
-                FutureBuilder<StreakData>(
-                    future: PreferencesStreak.getStreakData(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        if (snapshot.data!.current == 0 &&
-                            snapshot.data!.best == 0) {
-                          _disableReset = true;
-                        } else {
-                          _disableReset = false;
-                          WidgetsBinding.instance
-                              .addPostFrameCallback((timeStamp) {
-                            setState(() {});
-                          });
-                        }
-                        return Column(
+                text: 'Your achievements',
+              ),
+              SizedBox(
+                height: size.height * kSettingsImageHeight,
+                child: Image.asset('assets/images/people/person_2.png'),
+              ),
+              FutureBuilder<StreakData>(
+                  future: PreferencesStreak.getStreakData(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      if (snapshot.data!.current == 0 &&
+                          snapshot.data!.best == 0) {
+                        _disableReset = true;
+                      } else {
+                        _disableReset = false;
+                        WidgetsBinding.instance
+                            .addPostFrameCallback((timeStamp) {
+                          setState(() {});
+                        });
+                      }
+                      return Padding(
+                        padding: EdgeInsets.only(
+                          left: size.width * 0.05,
+                          top: size.height * 0.06,
+                          right: size.width * 0.05,
+                        ),
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Table(
                               children: [
-                                TableRow(children: [
-                                  buildTableCellLeft(
-                                      context: context,
-                                      text: '\nCurrent streak'),
-                                  buildTableCellRight(
-                                      context: context,
-                                      text: '\n${snapshot.data!.current}\n\n')
-                                ]),
-                                TableRow(children: [
-                                  buildTableCellLeft(
-                                      context: context, text: 'Best streak'),
-                                  buildTableCellRight(
-                                      context: context,
-                                      text: '${snapshot.data!.best}')
-                                ]),
+                                TableRow(
+                                  children: [
+                                    buildTableCellLeft(
+                                        context: context,
+                                        text: '\nCurrent streak'),
+                                    buildTableCellRight(
+                                        context: context,
+                                        text: '\n${snapshot.data!.current}\n\n')
+                                  ],
+                                ),
+                                TableRow(
+                                  children: [
+                                    buildTableCellLeft(
+                                        context: context, text: 'Best streak'),
+                                    buildTableCellRight(
+                                        context: context,
+                                        text: '${snapshot.data!.best}')
+                                  ],
+                                ),
                               ],
                             ),
                             Padding(
@@ -85,48 +93,56 @@ class _AchievementsPageState extends ConsumerState<AchievementsPage> {
                                   vertical: size.height * 0.06),
                               child: SizedBox(
                                 width: size.width * 0.60,
-                                child: CustomOutlineButton(
-                                    disable: _disableReset,
-                                    text: 'Reset',
-                                    onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) => ConfirmationBox(
-                                            text: 'Confirm reset?',
-                                            onPressed: () {
-                                              Navigator.of(context)
-                                                  .maybePop()
-                                                  .then((value) =>
-                                                      Navigator.of(context)
-                                                          .maybePop());
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      top: size.height * 0.10,
+                                      bottom: size.height * 0.05),
+                                  child: CustomOutlineButton(
+                                      disable: _disableReset,
+                                      text: 'Reset',
+                                      onPressed: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) => ConfirmationBox(
+                                              text: 'Confirm reset?',
+                                              onPressed: () {
+                                                Navigator.of(context)
+                                                    .maybePop()
+                                                    .then((value) =>
+                                                        Navigator.of(context)
+                                                            .maybePop());
 
-                                              PreferencesStreak
-                                                      .clearAllStreakData()
-                                                  .then((value) => ScaffoldMessenger
-                                                          .of(context)
-                                                      .showSnackBar(const SnackBar(
-                                                          content: Text(
-                                                              'Streak stats cleared'))));
-                                              WidgetsBinding.instance
-                                                  .addPostFrameCallback(
-                                                      (timeStamp) {
-                                                ref
-                                                    .read(
-                                                        stateProvider.notifier)
-                                                    .checkIfStatsUpdated(true);
-                                              });
-                                            }),
-                                      );
-                                    }),
+                                                PreferencesStreak
+                                                        .clearAllStreakData()
+                                                    .then((value) =>
+                                                        ScaffoldMessenger.of(
+                                                                context)
+                                                            .showSnackBar(
+                                                                const SnackBar(
+                                                                    content: Text(
+                                                                        'Streak stats cleared'))));
+                                                WidgetsBinding.instance
+                                                    .addPostFrameCallback(
+                                                        (timeStamp) {
+                                                  ref
+                                                      .read(stateProvider
+                                                          .notifier)
+                                                      .checkIfStatsUpdated(
+                                                          true);
+                                                });
+                                              }),
+                                        );
+                                      }),
+                                ),
                               ),
                             ),
                           ],
-                        );
-                      }
-                      return const SizedBox.shrink();
-                    }),
-              ],
-            ),
+                        ),
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  }),
+            ],
           ),
         ),
       ),
@@ -137,10 +153,11 @@ class _AchievementsPageState extends ConsumerState<AchievementsPage> {
 TableCell buildTableCellLeft(
     {required BuildContext context, required String text}) {
   return TableCell(
-      child: Text(
-    text,
-    style: Theme.of(context).textTheme.bodyMedium,
-  ));
+    child: Text(
+      text,
+      style: Theme.of(context).textTheme.bodyMedium,
+    ),
+  );
 }
 
 TableCell buildTableCellRight(

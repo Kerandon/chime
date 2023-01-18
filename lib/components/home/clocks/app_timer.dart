@@ -8,7 +8,7 @@ import 'package:quiver/async.dart';
 import '../../../audio/audio_manager.dart';
 import '../../../enums/focus_state.dart';
 import '../../../state/app_state.dart';
-import '../../../utils/constants.dart';
+import '../../../configs/constants.dart';
 import 'session_timer.dart';
 import 'countdown_text.dart';
 
@@ -79,7 +79,7 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
       }
     } else if (state.sessionState == SessionState.inProgress) {
       if (!_firstBellHasRung) {
-        AudioManager().playSound(state.soundSelected.name);
+        AudioManager().playBell(state.bellSelected.name);
         _firstBellHasRung = true;
       }
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -97,7 +97,7 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
     } else if (state.sessionState == SessionState.ended) {
       print('state ended!!!');
       if(!_lastBellHAsRung) {
-        AudioManager().playSound('${state.soundSelected.name}_end');
+        AudioManager().playBell('${state.bellSelected.name}_end');
         _lastBellHAsRung = true;
       }
     }

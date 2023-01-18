@@ -30,7 +30,7 @@ class TimeAdjustmentIcons extends ConsumerWidget {
             notifier.incrementTotalTime();
             if (state.totalTimeMinutes < 9999) {
               await PreferencesMain.setPreferences(
-                time: state.totalTimeMinutes + 1,
+                totalTime: state.totalTimeMinutes + 1,
               );
             }
           },
@@ -48,7 +48,7 @@ class TimeAdjustmentIcons extends ConsumerWidget {
             notifier.decrementTotalTime();
             if (state.totalTimeMinutes > 0) {
               await PreferencesMain.setPreferences(
-                time: state.totalTimeMinutes - 1,
+                totalTime: state.totalTimeMinutes - 1,
               );
             }
           },

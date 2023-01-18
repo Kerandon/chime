@@ -2,7 +2,7 @@ import 'package:chime/components/settings/settings_title.dart';
 import 'package:flutter/material.dart';
 import '../audio/audio_manager.dart';
 import '../components/settings/ambience_checkbox_tile.dart';
-import '../components/settings/volume_slider.dart';
+import '../components/settings/ambience_volume_slider.dart';
 import '../data/ambience_data.dart';
 
 class AmbiencePage extends StatelessWidget {
@@ -24,8 +24,7 @@ class AmbiencePage extends StatelessWidget {
           ),
         ),
       ),
-      body:
-      SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Column(
           children: [
             SettingsTitle(
@@ -37,7 +36,7 @@ class AmbiencePage extends StatelessWidget {
             ),
             Padding(
               padding: EdgeInsets.all(size.width * 0.03),
-              child: const VolumeSlider(),
+              child: const AmbienceVolumeSlider(),
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: size.width * 0.03),
@@ -47,8 +46,8 @@ class AmbiencePage extends StatelessWidget {
                 itemCount: ambienceData.length,
                 itemBuilder: (context, index) {
                   return AmbienceCheckBoxTile(
-                  ambienceData: ambienceData[index],
-                );
+                    ambienceData: ambienceData[index],
+                  );
                 },
               ),
             ),

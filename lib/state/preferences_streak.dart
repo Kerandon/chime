@@ -6,7 +6,7 @@ import '../utils/pref_constants.dart';
 class PreferencesStreak {
   static Future<int> getCurrentStreakTotal() async {
     final instance = await SharedPreferences.getInstance();
-    final streaks = instance.getStringList(PrefConstants.streak) ?? [];
+    final streaks = instance.getStringList(Prefs.streak) ?? [];
     return streaks.length;
   }
 
@@ -58,13 +58,13 @@ class PreferencesStreak {
       stringDates.add(s.toString());
     }
 
-    return await instance.setStringList(PrefConstants.streak, stringDates);
+    return await instance.setStringList(Prefs.streak, stringDates);
   }
 
   static Future<Set<DateTime>> getExistingStreakDates(
       SharedPreferences instance) async {
     Set<DateTime> dates = {};
-    List<String> existing = instance.getStringList(PrefConstants.streak) ?? [];
+    List<String> existing = instance.getStringList(Prefs.streak) ?? [];
     for (var d in existing) {
       dates.add(DateTime.parse(d));
     }
@@ -93,9 +93,9 @@ class PreferencesStreak {
   static bool _checkIfRecord(
       Set<DateTime> existingDates, SharedPreferences instance) {
     int currentStreakTotal = existingDates.length;
-    final record = instance.getInt(PrefConstants.record) ?? 0;
+    final record = instance.getInt(Prefs.record) ?? 0;
     if (currentStreakTotal > record) {
-      instance.setInt(PrefConstants.record, currentStreakTotal);
+      instance.setInt(Prefs.record, currentStreakTotal);
       return true;
     }
     return false;
@@ -104,19 +104,19 @@ class PreferencesStreak {
   static Future<StreakData> getStreakData() async {
     final current = await getCurrentStreakTotal();
     final instance = await SharedPreferences.getInstance();
-    final best = instance.getInt(PrefConstants.record) ?? 0;
+    final best = instance.getInt(Prefs.record) ?? 0;
     return StreakData(current: current, best: best);
   }
 
   static Future<bool> _clearStreakDates() async {
     final instance = await SharedPreferences.getInstance();
-    await instance.remove(PrefConstants.streak);
+    await instance.remove(Prefs.streak);
     return true;
   }
 
   static Future<bool> _clearStreakRecord() async {
     final instance = await SharedPreferences.getInstance();
-    await instance.remove(PrefConstants.record);
+    await instance.remove(Prefs.record);
     return true;
   }
 

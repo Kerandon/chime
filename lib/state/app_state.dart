@@ -6,74 +6,89 @@ import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../audio/audio_manager.dart';
 import '../enums/ambience.dart';
+import '../enums/bell.dart';
 import '../enums/focus_state.dart';
-import '../enums/sounds.dart';
 import '../utils/methods.dart';
 
 class AppState {
-  final int totalTimeMinutes;
-  final Set<int> intervalTimesMinutes;
-  final int intervalTimeMinutes;
-  final Sounds soundSelected;
+  //APP STATE
   final SessionState sessionState;
+  final bool sessionHasStarted;
   final FocusState focusState;
+
+  //TIME
+  final int totalTimeMinutes;
   final bool initialTimeIsSet;
   final int secondsRemaining;
   final int pausedTime;
-  final bool sessionHasStarted;
-  final bool checkIfStatsUpdated;
+
+  //BELLS
+  final Set<int> bellIntervalMenuSelection;
+  final Bell bellSelected;
+  final int bellIntervalTimeSelected;
+  final Set<int> bellTimesToRing;
+  final double bellVolume;
+
+  //AMBIENCE
   final Ambience ambienceSelected;
   final double ambienceVolume;
-  final Set<int> bellTimes;
+
+  //STATS
+  final bool checkIfStatsUpdated;
 
   AppState({
-    required this.totalTimeMinutes,
-    required this.intervalTimesMinutes,
-    required this.intervalTimeMinutes,
-    required this.soundSelected,
     required this.sessionState,
+    required this.sessionHasStarted,
     required this.focusState,
+    required this.totalTimeMinutes,
     required this.initialTimeIsSet,
     required this.secondsRemaining,
     required this.pausedTime,
-    required this.sessionHasStarted,
-    required this.checkIfStatsUpdated,
+    required this.bellIntervalMenuSelection,
+    required this.bellSelected,
+    required this.bellIntervalTimeSelected,
+    required this.bellTimesToRing,
+    required this.bellVolume,
     required this.ambienceSelected,
     required this.ambienceVolume,
-    required this.bellTimes,
+    required this.checkIfStatsUpdated,
   });
 
   AppState copyWith({
-    int? totalTimeMinutes,
-    Set<int>? intervalTimesMinutes,
-    int? intervalTimeMinutes,
-    Sounds? soundSelected,
     SessionState? sessionState,
+    bool? sessionHasStarted,
     FocusState? focusState,
+    int? totalTimeMinutes,
     bool? initialTimeIsSet,
     int? secondsRemaining,
     int? pausedTime,
-    bool? sessionHasStarted,
-    bool? checkIfStatsUpdated,
+    Set<int>? bellIntervalMenuSelection,
+    Bell? bellSelected,
+    int? bellIntervalTimeSelected,
+    Set<int>? bellTimesToRing,
+    double? bellVolume,
     Ambience? ambienceSelected,
     double? ambienceVolume,
-    Set<int>? bellTimes,
+    bool? checkIfStatsUpdated,
   }) {
     return AppState(
-      totalTimeMinutes: totalTimeMinutes ?? this.totalTimeMinutes,
-      intervalTimesMinutes: intervalTimesMinutes ?? this.intervalTimesMinutes,
-      intervalTimeMinutes: intervalTimeMinutes ?? this.intervalTimeMinutes,
-      soundSelected: soundSelected ?? this.soundSelected,
       sessionState: sessionState ?? this.sessionState,
+      sessionHasStarted: sessionHasStarted ?? this.sessionHasStarted,
       focusState: focusState ?? this.focusState,
+      totalTimeMinutes: totalTimeMinutes ?? this.totalTimeMinutes,
       initialTimeIsSet: initialTimeIsSet ?? this.initialTimeIsSet,
       secondsRemaining: secondsRemaining ?? this.secondsRemaining,
       pausedTime: pausedTime ?? this.pausedTime,
-      sessionHasStarted: sessionHasStarted ?? this.sessionHasStarted,
-      checkIfStatsUpdated: checkIfStatsUpdated ?? this.checkIfStatsUpdated,
+      bellIntervalMenuSelection:
+          bellIntervalMenuSelection ?? this.bellIntervalMenuSelection,
+      bellSelected: bellSelected ?? this.bellSelected,
+      bellIntervalTimeSelected:
+          bellIntervalTimeSelected ?? this.bellIntervalTimeSelected,
+      bellTimesToRing: bellTimesToRing ?? this.bellTimesToRing,
+      bellVolume: bellVolume ?? this.bellVolume,
       ambienceSelected: ambienceSelected ?? this.ambienceSelected,
       ambienceVolume: ambienceVolume ?? this.ambienceVolume,
-      bellTimes: bellTimes ?? this.bellTimes,
+      checkIfStatsUpdated: checkIfStatsUpdated ?? this.checkIfStatsUpdated,
     );
   }
 }
@@ -83,7 +98,8 @@ class AppNotifier extends StateNotifier<AppState> {
 
   void setTotalTime(int time) async {
     state = state.copyWith(
-        totalTimeMinutes: time, intervalTimesMinutes: calculateIntervals(time));
+        totalTimeMinutes: time,
+        bellIntervalMenuSelection: calculateIntervals(time));
   }
 
   void isInitialTimeSet(bool set) {
@@ -94,7 +110,8 @@ class AppNotifier extends StateNotifier<AppState> {
     if (state.totalTimeMinutes < 9999) {
       state = state.copyWith(totalTimeMinutes: state.totalTimeMinutes + 1);
       state = state.copyWith(
-          intervalTimesMinutes: calculateIntervals(state.totalTimeMinutes));
+          bellIntervalMenuSelection:
+              calculateIntervals(state.totalTimeMinutes));
     }
   }
 
@@ -102,23 +119,9 @@ class AppNotifier extends StateNotifier<AppState> {
     if (state.totalTimeMinutes > 0) {
       state = state.copyWith(totalTimeMinutes: state.totalTimeMinutes - 1);
       state = state.copyWith(
-          intervalTimesMinutes: calculateIntervals(state.totalTimeMinutes));
+          bellIntervalMenuSelection:
+              calculateIntervals(state.totalTimeMinutes));
     }
-  }
-
-  void setIntervalTime(int time) async {
-    await PreferencesMain.setPreferences(interval: time);
-    state = state.copyWith(intervalTimeMinutes: time);
-    _calculateBellIntervalsAndTimes();
-  }
-
-  void setIntervalTimes(Set<int> times) {
-    state = state.copyWith(intervalTimesMinutes: times);
-  }
-
-  void setSound(Sounds sound) async {
-    await PreferencesMain.setPreferences(sound: sound);
-    state = state.copyWith(soundSelected: sound);
   }
 
   void setSessionState(SessionState sessionState) async {
@@ -161,22 +164,6 @@ class AppNotifier extends StateNotifier<AppState> {
     playSessionBells(state);
   }
 
-  void _calculateBellIntervalsAndTimes() {
-    if (state.intervalTimeMinutes == 0) {
-      return;
-    }
-    Set<int> bellTimes = {};
-    int numberOfSounds = state.totalTimeMinutes ~/ state.intervalTimeMinutes;
-    for (int i = 0; i < numberOfSounds; i++) {
-      int bellTime = state.totalTimeMinutes - (state.intervalTimeMinutes * i);
-      bellTimes.add(bellTime);
-    }
-    state = state.copyWith(bellTimes: bellTimes);
-    for (var i in bellTimes) {
-      // print('bell times are $i');
-    }
-  }
-
   void setPausedTime({bool? reset}) {
     int time = state.secondsRemaining;
     if (reset == true) {
@@ -185,8 +172,41 @@ class AppNotifier extends StateNotifier<AppState> {
     state = state.copyWith(pausedTime: time);
   }
 
-  void checkIfStatsUpdated(bool check) {
-    state = state.copyWith(checkIfStatsUpdated: check);
+  void setBellMenuSelection(Set<int> times) {
+    state = state.copyWith(bellIntervalMenuSelection: times);
+  }
+
+  void _calculateBellIntervalsAndTimes() {
+    if (state.bellIntervalTimeSelected == 0) {
+      return;
+    }
+    Set<int> bellTimes = {};
+    int numberOfSounds =
+        state.totalTimeMinutes ~/ state.bellIntervalTimeSelected;
+    for (int i = 0; i < numberOfSounds; i++) {
+      int bellTime =
+          state.totalTimeMinutes - (state.bellIntervalTimeSelected * i);
+      bellTimes.add(bellTime);
+    }
+    state = state.copyWith(bellTimesToRing: bellTimes);
+  }
+
+  void setBellIntervalTime(int time) async {
+    await PreferencesMain.setPreferences(bellInterval: time);
+    state = state.copyWith(bellIntervalTimeSelected: time);
+    _calculateBellIntervalsAndTimes();
+  }
+
+  void setBellSelected(Bell bell) async {
+    await PreferencesMain.setPreferences(bellSelected: bell);
+    state = state.copyWith(bellSelected: bell);
+  }
+
+  void setBellVolume(double volume) async {
+    await PreferencesMain.setPreferences(bellVolume: volume);
+    state = state.copyWith(bellVolume: volume);
+    print('bell volume is set to ${state.bellVolume}');
+    await AudioManager().setBellVolume(volume);
   }
 
   void setAmbience(Ambience ambience) async {
@@ -200,23 +220,28 @@ class AppNotifier extends StateNotifier<AppState> {
     state = state.copyWith(ambienceVolume: volume);
     AudioManager().setAmbienceVolume(state.ambienceVolume);
   }
+
+  void checkIfStatsUpdated(bool check) {
+    state = state.copyWith(checkIfStatsUpdated: check);
+  }
 }
 
 final stateProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
   return AppNotifier(AppState(
-    totalTimeMinutes: 60,
-    intervalTimesMinutes: {1},
-    intervalTimeMinutes: 1,
-    soundSelected: Sounds.chime,
     sessionState: SessionState.notStarted,
+    sessionHasStarted: false,
     focusState: FocusState.none,
+    totalTimeMinutes: 60,
     initialTimeIsSet: false,
     secondsRemaining: 0,
     pausedTime: 0,
-    sessionHasStarted: false,
-    checkIfStatsUpdated: false,
+    bellIntervalMenuSelection: {1},
+    bellSelected: Bell.chime,
+    bellIntervalTimeSelected: 1,
+    bellTimesToRing: {},
+    bellVolume: 0.50,
     ambienceSelected: Ambience.none,
     ambienceVolume: 0.50,
-    bellTimes: {},
+    checkIfStatsUpdated: false,
   ));
 });

@@ -1,11 +1,10 @@
-import 'package:chime/state/preferences_ambience.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../../enums/ambience.dart';
 import '../../state/app_state.dart';
+import '../../state/preferences_main.dart';
 
-class VolumeSlider extends ConsumerWidget {
-  const VolumeSlider({
+class BellVolumeSlider extends ConsumerWidget {
+  const BellVolumeSlider({
     super.key,
   });
 
@@ -23,17 +22,14 @@ class VolumeSlider extends ConsumerWidget {
             horizontal: size.width * 0.05,
           ),
           child: Icon(
-            state.ambienceVolume == 0.0 ||
-                    state.ambienceSelected == Ambience.none
+            state.bellVolume == 0.0
                 ? Icons.volume_mute_outlined
                 : Icons.volume_up_outlined,
             color: Colors.white,
           ),
         ),
         Text(
-          state.ambienceSelected == Ambience.none
-              ? '0'
-              : (state.ambienceVolume * 10).round().toString(),
+          (state.bellVolume * 10).round().toString(),
           style: Theme.of(context)
               .textTheme
               .bodyMedium!
@@ -42,16 +38,12 @@ class VolumeSlider extends ConsumerWidget {
         Expanded(
           flex: 18,
           child: Slider(
-            value: state.ambienceSelected == Ambience.none
-                ? 0
-                : state.ambienceVolume,
-            onChanged: state.ambienceSelected == Ambience.none
-                ? null
-                : (value) async {
-                    double volume = value;
-                    notifier.setAmbienceVolume(volume);
-                    await PreferencesAmbience.setAmbienceVolume(value);
-                  },
+            value: state.bellVolume,
+            onChanged: (value) async {
+              double volume = value;
+              notifier.setBellVolume(volume);
+              await PreferencesMain.setPreferences(bellVolume: volume);
+            },
             min: 0.0,
             max: 1.0,
           ),

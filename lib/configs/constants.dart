@@ -8,7 +8,7 @@ const kHomePageLineThickness = 2.0;
 const kStartButtonIconSize = 30.0;
 const kStartButtonRadius = 0.20;
 const kHomePageSmallIcon = 18.0;
-const kSessionTimerStrokeWidth = 0.45;
+const kSessionTimerStrokeWidth = 1.5;
 const kSettingsImageHeight = 0.25;
 const kSettingsHorizontalPageIndent = 0.09;
 

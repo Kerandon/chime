@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quiver/async.dart';
 
-import '../../../utils/constants.dart';
+import '../../../configs/constants.dart';
 import '../../app/lotus_icon.dart';
 
 class StartButton extends ConsumerStatefulWidget {

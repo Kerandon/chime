@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../state/app_state.dart';
-import '../../utils/constants.dart';
+import '../../configs/constants.dart';
 
 class IntervalDropdown extends ConsumerWidget {
   const IntervalDropdown({
@@ -19,7 +19,7 @@ class IntervalDropdown extends ConsumerWidget {
     Set<DropdownMenuItem<int>> items = {};
     int? selectedValue = 1;
 
-    for (var e in state.intervalTimesMinutes) {
+    for (var e in state.bellIntervalMenuSelection) {
       int totalTime = state.totalTimeMinutes;
 
       items.add(
@@ -43,7 +43,7 @@ class IntervalDropdown extends ConsumerWidget {
       );
     }
 
-    selectedValue = state.intervalTimeMinutes;
+    selectedValue = state.bellIntervalTimeSelected;
     if (items.every((element) => element.value != selectedValue) &&
         items.isNotEmpty) {
       selectedValue = items.first.value;
@@ -61,8 +61,8 @@ class IntervalDropdown extends ConsumerWidget {
         children: [
           Text(
             showOnTimeUpTitleText
-                ? 'Play a ${state.soundSelected.name}'
-                : 'Play a ${state.soundSelected.name} every',
+                ? 'Play a ${state.bellSelected.name}'
+                : 'Play a ${state.bellSelected.name} every',
             style: Theme.of(context).textTheme.bodySmall,
           ),
           items.isEmpty
@@ -78,7 +78,7 @@ class IntervalDropdown extends ConsumerWidget {
                   iconSize: 0,
                   items: items.toList(),
                   onChanged: (Object? value) {
-                    notifier.setIntervalTime(value as int);
+                    notifier.setBellIntervalTime(value as int);
                   },
                 ),
         ],
