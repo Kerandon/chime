@@ -1,19 +1,16 @@
 import 'dart:async';
-import 'dart:ui';
-import 'package:chime/animation/flip_animation.dart';
 import 'package:chime/components/app/lotus_icon.dart';
 import 'package:chime/enums/session_state.dart';
 import 'package:chime/pages/settings_page.dart';
 import 'package:chime/state/preferences_main.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../animation/fade_in_animation.dart';
 import '../components/home/home_contents.dart';
 import '../configs/app_colors.dart';
 import '../models/prefs_model.dart';
-import '../configs/constants.dart';
 import 'completed_page.dart';
 import '../state/app_state.dart';
+import 'error_page.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({
@@ -38,8 +35,6 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
     final state = ref.watch(stateProvider);
     final notifier = ref.read(stateProvider.notifier);
 
@@ -63,17 +58,15 @@ class _HomePageState extends ConsumerState<HomePage> {
           ],
         ),
         resizeToAvoidBottomInset: false,
-        backgroundColor: Colors.black,
+        backgroundColor: AppColors.almostBlack,
         body: FutureBuilder<PrefsModel>(
           future: _prefsFuture,
           builder: (context, snapshot) {
-
-            if(_showUI){
+            if (_showUI) {
               return Align(
                 alignment: const Alignment(0, 0),
                 child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.almostBlack,
+                  decoration: const BoxDecoration(
                   ),
                   child: state.sessionState == SessionState.ended
                       ? const CompletedPage()
@@ -82,39 +75,28 @@ class _HomePageState extends ConsumerState<HomePage> {
               );
             }
 
-
             if (snapshot.hasError) {
-              return const Text('Error');
+              return const ErrorPage();
             }
             if (snapshot.hasData) {
-
-              Timer(Duration(milliseconds: 100), () {
-                print('timer up!');
+              Timer(const Duration(milliseconds: 100), () {
                 _showUI = true;
-                setState(() {
-
-                });
+                setState(() {});
               });
 
               if (!_prefsDataUpdated) {
                 PrefsModel data = snapshot.data as PrefsModel;
 
-                print(
-                    '${data.totalTime} ${data.bellSelected} ${data.bellInterval}'
-                    ' ${data.bellVolume} ${data.ambienceVolume} ${data.ambienceSelected}');
-
                 WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
                   notifier.setTotalTime(data.totalTime);
-                  notifier.setBellIntervalTime(data.bellInterval);
                   notifier.setBellSelected(data.bellSelected);
+                  notifier.setBellIntervalTime(data.bellInterval);
                   notifier.setBellVolume(data.bellVolume);
                 });
                 _prefsDataUpdated = true;
               }
-
-              print('show UI? ${_showUI}');
             }
-            return Center(child: const LotusIcon());
+            return const Center(child: LotusIcon());
             // return const LotusIcon();
           },
         ),

@@ -6,7 +6,8 @@ enum Ambience {
   meditationMusic1,
   meditationMusic2,
   meditationMusic3,
-  meditationMusic4
+  meditationMusic4,
+  song,
 }
 
 extension AmbienceText on Ambience {
@@ -28,6 +29,8 @@ extension AmbienceText on Ambience {
         return 'Meditation Music 3';
       case Ambience.meditationMusic4:
         return 'Meditation Music 4';
+      case Ambience.song:
+        return 'pop song';
     }
   }
 }

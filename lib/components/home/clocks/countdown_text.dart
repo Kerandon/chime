@@ -1,4 +1,3 @@
-
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 
@@ -19,13 +18,14 @@ class CountdownText extends StatelessWidget {
         ]);
   }
 
-  FadeAnimatedText buildFadeAnimatedText({required BuildContext context, required String text}) {
-    return FadeAnimatedText(text,
-            textStyle: Theme.of(context)
-                .textTheme
-                .displayLarge,
-            duration: const Duration(milliseconds: 1500),
-            fadeOutBegin: 0.90,
-            fadeInEnd: 0.7,);
+  FadeAnimatedText buildFadeAnimatedText(
+      {required BuildContext context, required String text}) {
+    return FadeAnimatedText(
+      text,
+      textStyle: Theme.of(context).textTheme.displayLarge,
+      duration: const Duration(milliseconds: 1500),
+      fadeOutBegin: 0.90,
+      fadeInEnd: 0.7,
+    );
   }
 }

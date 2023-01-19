@@ -27,24 +27,22 @@ class _BounceAnimationState extends State<BounceAnimation>
   void initState() {
     super.initState();
     _controller = AnimationController(
-        duration: Duration(milliseconds: widget.duration),
-        vsync: this);
+        duration: Duration(milliseconds: widget.duration), vsync: this);
 
     _scaleAnimation = TweenSequence<double>([
       TweenSequenceItem(
           tween: Tween<double>(begin: 0.80, end: 1.10), weight: 0.50),
       TweenSequenceItem(
           tween: Tween<double>(begin: 1.10, end: 0.80), weight: 0.80),
-
-    ]).animate(
-        CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+    ]).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
   void didUpdateWidget(covariant BounceAnimation oldWidget) {
     if (widget.animate) {
-      _controller.repeat();    }
-    if(widget.stop){
+      _controller.repeat();
+    }
+    if (widget.stop) {
       _controller.reset();
     }
 
@@ -59,6 +57,9 @@ class _BounceAnimationState extends State<BounceAnimation>
 
   @override
   Widget build(BuildContext context) {
-    return ScaleTransition(scale: _scaleAnimation, child: widget.child,);
+    return ScaleTransition(
+      scale: _scaleAnimation,
+      child: widget.child,
+    );
   }
 }

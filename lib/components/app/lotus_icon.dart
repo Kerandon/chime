@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 class LotusIcon extends StatelessWidget {
   const LotusIcon({
-    super.key, this.width,
+    super.key,
+    this.width,
   });
 
   final double? width;
@@ -13,6 +14,7 @@ class LotusIcon extends StatelessWidget {
     return SizedBox(
         width: width ?? size.width * 0.10,
         height: width ?? size.width * 0.10,
-        child: Image.asset('assets/images/lotus.png', color: Theme.of(context).primaryColor));
+        child: Image.asset('assets/images/lotus.png',
+            color: Theme.of(context).primaryColor));
   }
 }

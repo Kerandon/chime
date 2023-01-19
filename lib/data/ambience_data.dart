@@ -60,4 +60,11 @@ List<AmbienceData> ambienceData = [
       color: Colors.white,
     ),
   ),
+  AmbienceData(
+    ambience: Ambience.song,
+    icon: const Icon(
+      Icons.piano_outlined,
+      color: Colors.white,
+    ),
+  ),
 ];

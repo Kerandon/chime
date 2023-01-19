@@ -34,12 +34,11 @@ class BellsCheckBoxTile extends ConsumerWidget {
       value: state.bellSelected == bell,
       onChanged: (value) async {
         notifier.setBellSelected(bell);
-        await AudioManager().playBell(bell.name);
-        print('setting preferences ${bell}');
+        await AudioManager().playBell(bell: bell);
         await PreferencesMain.setPreferences(bellSelected: bell);
       },
       activeColor: Theme.of(context).primaryColor,
-      side: BorderSide(color: Colors.white),
+      side: const BorderSide(color: Colors.white),
     );
   }
 }

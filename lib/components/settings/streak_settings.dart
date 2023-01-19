@@ -31,7 +31,7 @@ class _StreakSettingsState extends ConsumerState<StreakSettings> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return AlertDialog(
-      backgroundColor: Color.fromARGB(255, 50, 50, 50),
+      backgroundColor: const Color.fromARGB(255, 50, 50, 50),
       title: SettingsTitle(text: 'Streak stats', faIcon: FaIcon(FontAwesomeIcons.award, color: Theme.of(context).primaryColor,),),
       content:
       SizedBox(

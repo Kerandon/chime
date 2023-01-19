@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -22,20 +21,17 @@ class TimeField extends ConsumerWidget {
     final notifier = ref.read(stateProvider.notifier);
 
     return TextFormField(
+      cursorColor: Theme.of(context).primaryColor,
       focusNode: focusNode,
       controller: textEditingController,
       onChanged: (value) async {
         notifier.setTimerFocusState(FocusState.inFocus);
         PreferencesMain.setPreferences(totalTime: int.tryParse(value) ?? 0);
         if (value.trim() == "") {
-          notifier.setTotalTime(0);
+          notifier.setTotalTime(1);
         } else {
-
           int time = int.parse(value);
           notifier.setTotalTime(time);
-
-
-
         }
       },
       maxLength: 4,
@@ -44,8 +40,14 @@ class TimeField extends ConsumerWidget {
       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
       textAlign: TextAlign.center,
       decoration: InputDecoration(
-        enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.transparent),
+        isDense: true,
+        enabledBorder:
+            // OutlineInputBorder(
+            //   borderSide: BorderSide(color: Theme.of(context).primaryColor)
+            // ),
+
+            const UnderlineInputBorder(
+          borderSide: BorderSide.none,
         ),
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(

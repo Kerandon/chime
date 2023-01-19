@@ -12,14 +12,13 @@ class PreferencesStreak {
 
   static Future<bool> checkIfStreakStillCurrent() async {
     Set<DateTime> currentDates =
-        await getExistingStreakDates(
-            await SharedPreferences.getInstance());
+        await getExistingStreakDates(await SharedPreferences.getInstance());
 
     if (currentDates.isEmpty) {
       return false;
     } else {
-      final isSuccessive = checkIfEqualOrSuccessiveDay(
-          currentDates, DateTime.now());
+      final isSuccessive =
+          checkIfEqualOrSuccessiveDay(currentDates, DateTime.now());
       if (isSuccessive) {
         return true;
       } else {

@@ -1,5 +1,4 @@
 import 'package:chime/models/prefs_model.dart';
-import 'package:chime/state/preferences_ambience.dart';
 import 'package:chime/state/preferences_main.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -30,7 +29,7 @@ class AmbienceDisplay extends ConsumerWidget {
             WidgetsBinding.instance.addPostFrameCallback(
               (timeStamp) {
                 notifier.setAmbienceVolume(volume);
-                notifier.setAmbience(ambience);
+                notifier.setAmbienceSelected(ambience);
               },
             );
             Icon? icon;

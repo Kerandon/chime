@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../animation/fade_in_animation.dart';
 import '../components/app/confirmation_box.dart';
 import '../components/app/custom_outline_button.dart';
 import '../components/settings/settings_title.dart';
@@ -40,7 +41,8 @@ class _AchievementsPageState extends ConsumerState<AchievementsPage> {
               ),
               SizedBox(
                 height: size.height * kSettingsImageHeight,
-                child: Image.asset('assets/images/people/person_2.png'),
+                child: FadeInAnimation(
+                    child: Image.asset('assets/images/people/person_2.png')),
               ),
               FutureBuilder<StreakData>(
                   future: PreferencesStreak.getStreakData(),

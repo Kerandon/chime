@@ -1,4 +1,3 @@
-import 'package:chime/state/preferences_ambience.dart';
 import 'package:chime/state/preferences_main.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -7,7 +6,7 @@ import '../../enums/ambience.dart';
 import '../../models/ambience_model.dart';
 import '../../state/app_state.dart';
 
-class AmbienceCheckBoxTile extends ConsumerWidget {
+class AmbienceCheckBoxTile extends ConsumerStatefulWidget {
   const AmbienceCheckBoxTile({
     super.key,
     required this.ambienceData,
@@ -16,31 +15,40 @@ class AmbienceCheckBoxTile extends ConsumerWidget {
   final AmbienceData ambienceData;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final size = MediaQuery.of(context).size;
+  ConsumerState<AmbienceCheckBoxTile> createState() =>
+      _AmbienceCheckBoxTileState();
+}
 
+class _AmbienceCheckBoxTileState extends ConsumerState<AmbienceCheckBoxTile> {
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     final state = ref.watch(stateProvider);
     final notifier = ref.read(stateProvider.notifier);
+
     return CheckboxListTile(
       title: Row(
         children: [
-          ambienceData.icon,
+          widget.ambienceData.icon,
           Padding(
             padding: EdgeInsets.only(left: size.width * 0.03),
-            child: Text(ambienceData.ambience.toText(), style: Theme.of(context).textTheme.bodySmall,),
+            child: Text(
+              widget.ambienceData.ambience.toText(),
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
           ),
         ],
       ),
-      value: state.ambienceSelected == ambienceData.ambience,
+      value: state.ambienceSelected == widget.ambienceData.ambience,
       onChanged: (value) async {
-        Ambience ambience = ambienceData.ambience;
-        notifier.setAmbience(ambience);
-        await AudioManager().playAmbience(ambience);
-        // await PreferencesAmbience.setAmbienceSelected(ambience);
+        Ambience ambience = widget.ambienceData.ambience;
+        notifier.setAmbienceSelected(ambience);
+        await AudioManager().playAmbience(ambience: ambience);
         await PreferencesMain.setPreferences(ambienceSelected: ambience);
       },
       activeColor: Theme.of(context).primaryColor,
-      side: BorderSide(color: Colors.white),
+      side: const BorderSide(color: Colors.white),
     );
   }
 }

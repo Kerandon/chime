@@ -1,7 +1,6 @@
 import 'package:chime/audio/audio_manager.dart';
 import 'package:chime/enums/session_state.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../components/app/lotus_icon.dart';
 import '../data/meditation_quotes.dart';
@@ -30,7 +29,7 @@ class _CompletedPageState extends ConsumerState<CompletedPage> {
     final state = ref.watch(stateProvider);
     final notifier = ref.read(stateProvider.notifier);
     if (!_playFinalBell) {
-      AudioManager().playBell('${state.bellSelected.name}_end');
+      AudioManager().playBell(bell: state.bellSelected, finalBell: true);
       _playFinalBell = true;
     }
     return Padding(
@@ -40,7 +39,7 @@ class _CompletedPageState extends ConsumerState<CompletedPage> {
           Align(
             alignment: Alignment.topRight,
             child: IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.keyboard_return_outlined,
                 color: Colors.white24,
               ),
@@ -52,7 +51,6 @@ class _CompletedPageState extends ConsumerState<CompletedPage> {
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: size.width * 0.10),
                 child: Text(
@@ -68,7 +66,8 @@ class _CompletedPageState extends ConsumerState<CompletedPage> {
                 height: size.height * 0.30,
                 decoration: const BoxDecoration(
                     image: DecorationImage(
-                        image: AssetImage('assets/images/final/final_1.png'))),
+                        image:
+                            AssetImage('assets/images/people/person_3.png'))),
               ),
               Center(
                 child: Text(

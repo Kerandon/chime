@@ -1,3 +1,4 @@
+import 'package:chime/animation/fade_in_animation.dart';
 import 'package:flutter/material.dart';
 
 import '../components/settings/settings_title.dart';
@@ -14,7 +15,8 @@ class MeditationGuidePage extends StatelessWidget {
       appBar: AppBar(),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: size.width * kSettingsHorizontalPageIndent),
+          padding: EdgeInsets.symmetric(
+              horizontal: size.width * kSettingsHorizontalPageIndent),
           child: Column(
             children: [
               SettingsTitle(
@@ -26,9 +28,11 @@ class MeditationGuidePage extends StatelessWidget {
               ),
               SizedBox(
                   height: size.height * kSettingsImageHeight,
-                  child: Image.asset(
-                    'assets/images/people/person_1.png',
-                    fit: BoxFit.fitHeight,
+                  child: FadeInAnimation(
+                    child: Image.asset(
+                      'assets/images/people/person_1.png',
+                      fit: BoxFit.fitHeight,
+                    ),
                   )),
               Text.rich(
                 TextSpan(

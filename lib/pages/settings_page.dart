@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../components/app/lotus_icon.dart';
 import '../components/settings/settings_tile.dart';
+import '../configs/app_colors.dart';
 import '../configs/constants.dart';
 import 'achievements_page.dart';
 import 'ambience_page.dart';
@@ -23,11 +24,14 @@ class SettingsPage extends ConsumerWidget {
       appBar: AppBar(),
       body: SingleChildScrollView(
         child: Column(
+          //crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
               padding: EdgeInsets.only(
                   top: size.height * 0.05, bottom: size.height * 0.01),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     kAppName,
@@ -43,6 +47,7 @@ class SettingsPage extends ConsumerWidget {
                 ],
               ),
             ),
+            const SettingsTitleDivider(title: 'Session adjustments'),
             SettingsTile(
               icon: const Icon(
                 Icons.audiotrack_outlined,
@@ -51,8 +56,8 @@ class SettingsPage extends ConsumerWidget {
               title: 'Meditation Bell',
               subTitle: state.bellSelected.toText(),
               onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const BellsPage()));
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const BellsPage()));
               },
             ),
             SettingsTile(
@@ -67,6 +72,15 @@ class SettingsPage extends ConsumerWidget {
                     builder: (context) => const AmbiencePage()));
               },
             ),
+            SettingsTile(
+                icon: const Icon(
+                  Icons.timer_outlined,
+                  color: Colors.white,
+                ),
+                title: 'Warmup Countdown',
+                subTitle: '${state.countDownTime.toString()} seconds',
+                onPressed: () {}),
+            const SettingsTitleDivider(title: 'Guidance & achievements'),
             SettingsTile(
               icon: const Icon(
                 Icons.tips_and_updates_outlined,
@@ -92,6 +106,38 @@ class SettingsPage extends ConsumerWidget {
                 }),
             SettingsTile(
                 icon: const Icon(
+                  Icons.question_mark_outlined,
+                  color: Colors.white,
+                ),
+                title: 'FAQ',
+                onPressed: () {}),
+            const SettingsTitleDivider(
+              title: 'Appearance',
+            ),
+            SettingsTile(
+                icon: const Icon(
+                  Icons.style_outlined,
+                  color: Colors.white,
+                ),
+                title: 'Color theme',
+                onPressed: () {}),
+            SettingsTile(
+                icon: const Icon(
+                  Icons.layers_outlined,
+                  color: Colors.white,
+                ),
+                title: 'Hide countdown clock',
+                onPressed: () {}),
+            const SettingsTitleDivider(),
+            SettingsTile(
+                icon: const Icon(
+                  Icons.restart_alt_outlined,
+                  color: Colors.white,
+                ),
+                title: 'Reset all settings',
+                onPressed: () {}),
+            SettingsTile(
+                icon: const Icon(
                   Icons.info_outlined,
                   color: Colors.white,
                 ),
@@ -106,6 +152,36 @@ class SettingsPage extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class SettingsTitleDivider extends StatelessWidget {
+  const SettingsTitleDivider({
+    super.key,
+    this.title,
+  });
+
+  final String? title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Divider(),
+        Align(
+          alignment: const Alignment(-0.90, 0),
+          child: title == null
+              ? const SizedBox.shrink()
+              : Text(
+                  title!,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall!
+                      .copyWith(color: AppColors.lightGrey, fontSize: 12),
+                ),
+        ),
+      ],
     );
   }
 }

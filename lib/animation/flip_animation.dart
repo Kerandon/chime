@@ -23,8 +23,8 @@ class _FlipAnimationState extends State<FlipAnimation>
   void initState() {
     super.initState();
     _controller = AnimationController(
-        duration: const Duration(milliseconds: 5000), vsync: this);
-    _rotation = Tween<double>(begin: 0.30, end: 0)
+        duration: const Duration(milliseconds: 1000), vsync: this);
+    _rotation = Tween<double>(begin: 0.20, end: 0)
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
     if(widget.animateOnStart){
       _controller.forward();
@@ -53,10 +53,16 @@ class _FlipAnimationState extends State<FlipAnimation>
       builder: (context, child) => Transform(
         alignment: Alignment.center,
         transform: Matrix4.identity()
-          ..setEntry(3, 2, 0.0005)
+          ..setEntry(3, 2, 0.0010)
           ..rotateY(
-            _rotation.value * math.pi,
-          ),
+            _rotation.value * math.pi * 2,
+          )
+          ..rotateX(
+            _rotation.value * math.pi * 2,
+          )
+          ..rotateZ(
+      _rotation.value * math.pi * 2,
+      ),
         child: widget.child,
       ),
     );

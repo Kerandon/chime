@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../configs/app_colors.dart';
 import '../../state/app_state.dart';
 import '../../configs/constants.dart';
 
@@ -58,20 +59,25 @@ class IntervalDropdown extends ConsumerWidget {
       height: size.height * 0.05,
       width: size.width * 0.60,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            showOnTimeUpTitleText
-                ? 'Play a ${state.bellSelected.name}'
-                : 'Play a ${state.bellSelected.name} every',
-            style: Theme.of(context).textTheme.bodySmall,
+          Padding(
+            padding: EdgeInsets.only(bottom: size.height * 0.01),
+            child: Text(
+              showOnTimeUpTitleText
+                  ? 'Play a ${state.bellSelected.name}'
+                  : 'Play a ${state.bellSelected.name} every',
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(color: AppColors.lightGrey),
+            ),
           ),
           items.isEmpty
               ? const SizedBox.shrink()
               : DropdownButton<int>(
-                  underline: Container(
-                    height: kHomePageLineThickness,
-                    color: Theme.of(context).primaryColor,
-                  ),
+            isDense: true,
+                  // underline: Container(
+                  //   height: kHomePageLineThickness,
+                  //   color: Theme.of(context).primaryColor,
+                  // ),
                   borderRadius: BorderRadius.circular(kBorderRadius),
                   dropdownColor: Colors.black,
                   value: selectedValue,

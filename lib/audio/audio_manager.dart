@@ -1,5 +1,10 @@
 import 'package:audioplayers/audioplayers.dart';
-import 'package:chime/enums/ambience.dart';
+import 'package:chime/configs/constants.dart';
+import 'package:chime/enums/audio_type.dart';
+import 'package:quiver/async.dart';
+
+import '../enums/ambience.dart';
+import '../enums/bell.dart';
 
 class AudioManager {
   AudioManager._private();
@@ -8,48 +13,90 @@ class AudioManager {
 
   factory AudioManager() => _instance;
 
-  AudioPlayer audioPlayerBell = AudioPlayer()..setReleaseMode(ReleaseMode.stop);
-  AudioPlayer audioPlayerAmbience = AudioPlayer()
-    ..setReleaseMode(ReleaseMode.loop);
+  AudioPlayer playerBell = AudioPlayer()..setReleaseMode(ReleaseMode.stop);
+  AudioPlayer playerAmbience = AudioPlayer()..setReleaseMode(ReleaseMode.loop);
 
-  Future<void> playBell(sound) async {
-    await audioPlayerBell.play(AssetSource('audio/sounds/$sound.mp3'));
-  }
-
-  Future<void> stopBellAudio() async {
-    await audioPlayerBell.stop().then((value) async {
-      await audioPlayerBell.release();
-    });
-  }
-
-  Future<void> setBellVolume(double volume) async {
-    await audioPlayerBell.setVolume(volume);
-  }
-
-  Future<void> setAmbienceVolume(double volume) async {
-    await audioPlayerAmbience.setVolume(volume);
-  }
-
-  Future<void> playAmbience(Ambience ambience) async {
-    if (ambience == Ambience.none) {
-      await audioPlayerAmbience.stop();
+  Future<void> playBell({required Bell bell, bool finalBell = false}) async {
+    if (!finalBell) {
+      await playerBell.play(AssetSource('audio/bells/${bell.name}.mp3'));
     } else {
-      await audioPlayerAmbience
-          .play(AssetSource('audio/ambience/${ambience.name}.mp3'), volume: 1);
+      await playerBell.play(AssetSource('audio/bells/${bell.name}_end.mp3'));
     }
   }
 
-  Future<void> stopAmbienceAudio() async {
-    await audioPlayerAmbience.stop().then((value) async {
-      await audioPlayerAmbience.release();
-    });
+  Future<void> playAmbience(
+      {required Ambience ambience,
+      int fadeInMilliseconds = kAudioFadeDuration}) async {
+    if (ambience == Ambience.none) {
+      return;
+    } else {
+      playerAmbience.play(AssetSource('audio/ambience/${ambience.name}.mp3'));
+      CountdownTimer(Duration(milliseconds: fadeInMilliseconds),
+              const Duration(milliseconds: 50))
+          .listen(
+        (event) {
+          setVolume(
+              volume: event.elapsed.inMilliseconds / fadeInMilliseconds,
+              audioType: AudioType.ambience);
+        },
+      );
+    }
+  }
+
+  Future<void> setVolume(
+      {required AudioType audioType, required double volume}) async {
+    if (audioType == AudioType.bells) {
+      await playerBell.setVolume(volume);
+    } else {
+      await playerAmbience.setVolume(volume);
+    }
+  }
+
+  Future<void> stop(
+      {required AudioType audioType, int? fadeOutMilliseconds}) async {
+    if (fadeOutMilliseconds == null) {
+      if (audioType == AudioType.bells) {
+        await _stopAndReleaseBellAudio();
+      } else {
+        await _stopAndReleaseAmbienceAudio();
+      }
+    } else {
+      CountdownTimer(Duration(milliseconds: fadeOutMilliseconds),
+              const Duration(milliseconds: 50))
+          .listen(
+        (event) {
+          setVolume(
+              audioType: audioType,
+              volume: event.remaining.inMilliseconds / fadeOutMilliseconds);
+        },
+        onDone: () async {
+          if (audioType == AudioType.bells) {
+            await _stopAndReleaseBellAudio();
+          } else {
+            await _stopAndReleaseAmbienceAudio();
+          }
+        },
+      );
+    }
   }
 
   Future<void> pauseAmbience() async {
-    await audioPlayerAmbience.pause();
+    await playerAmbience.pause();
   }
 
   Future<void> resumeAmbience() async {
-    await audioPlayerAmbience.resume();
+    await playerAmbience.resume();
+  }
+
+  Future<void> _stopAndReleaseBellAudio() async {
+    await playerBell.stop().then((value) async {
+      await playerBell.release();
+    });
+  }
+
+  Future<void> _stopAndReleaseAmbienceAudio() async {
+    await playerAmbience.stop().then((value) async {
+      playerAmbience.release();
+    });
   }
 }

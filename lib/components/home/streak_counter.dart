@@ -1,4 +1,5 @@
 import 'package:chime/components/settings/streak_settings.dart';
+import 'package:chime/pages/achievements_page.dart';
 import 'package:chime/state/app_state.dart';
 import 'package:chime/configs/constants.dart';
 import 'package:flutter/material.dart';
@@ -39,8 +40,11 @@ class _StreakCounterState extends ConsumerState<StreakCounter> {
       color: Colors.transparent,
       child: InkWell(
         onTap: () {
-          showDialog(
-              context: context, builder: (context) => const StreakSettings());
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => AchievementsPage(),
+            ),
+          );
         },
         child: FutureBuilder<bool>(
             future: checkStreakCurrentFuture,
@@ -60,27 +64,23 @@ class _StreakCounterState extends ConsumerState<StreakCounter> {
                       if (snapshot.hasData) {
                         final streak = snapshot.data as int;
 
-                        if (streak > 0) {
-                          return Padding(
-                            padding: EdgeInsets.only(right: size.width * 0.06),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const FaIcon(
-                                  FontAwesomeIcons.award,
-                                  size: kHomePageSmallIcon,
-                                  color: AppColors.lightGrey,
-                                ),
-                                SizedBox(width: size.width * 0.02),
-                                Text('$streak',
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall),
-                              ],
-                            ),
-                          );
-                        }
-                        return const SizedBox.shrink();
+                        return Padding(
+                          padding: EdgeInsets.only(right: size.width * 0.06),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const FaIcon(
+                                FontAwesomeIcons.award,
+                                size: kHomePageSmallIcon,
+                                color: AppColors.lightGrey,
+                              ),
+                              SizedBox(width: size.width * 0.02),
+                              Text('$streak',
+                                  style: Theme.of(context).textTheme.bodySmall),
+                            ],
+                          ),
+                        );
                       }
                       return const SizedBox.shrink();
                     },

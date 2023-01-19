@@ -1,5 +1,4 @@
 import 'package:chime/components/settings/settings_title.dart';
-import 'package:chime/components/settings/ambience_volume_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../components/settings/bell_volume_slider.dart';

@@ -14,33 +14,27 @@ class SessionTimer extends ConsumerStatefulWidget {
 }
 
 class _SessionClockState extends ConsumerState<SessionTimer> {
-
   bool _sessionHasStarted = false;
-
 
   @override
   Widget build(BuildContext context) {
-
     final state = ref.watch(stateProvider);
 
     int minutes = state.totalTimeMinutes;
     int seconds = 0;
 
-    if (state.secondsRemaining > 0 || _sessionHasStarted) {
-      minutes = state.secondsRemaining ~/ 60;
-      seconds = state.secondsRemaining % 60;
+    if (state.millisecondsRemaining > 0 || _sessionHasStarted) {
+      minutes = (state.millisecondsRemaining / 1000) ~/ 60;
+      seconds = (state.millisecondsRemaining ~/ 1000) % 60;
     }
 
-    if(seconds > 0){
+    if (seconds > 0) {
       _sessionHasStarted = true;
     }
 
-    if(state.sessionState == SessionState.notStarted){
+    if (state.sessionState == SessionState.notStarted) {
       _sessionHasStarted = false;
     }
-
-    //print('seconds remaining is ${60}');
-
 
     return RichText(
       text: TextSpan(

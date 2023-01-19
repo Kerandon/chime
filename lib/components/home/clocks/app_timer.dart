@@ -1,11 +1,11 @@
 import 'dart:async';
+import 'package:chime/audio/audio_manager.dart';
 import 'package:chime/components/home/clocks/time_adjustment_icons.dart';
 import 'package:chime/components/home/clocks/time_field.dart';
 import 'package:chime/enums/session_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quiver/async.dart';
-import '../../../audio/audio_manager.dart';
 import '../../../enums/focus_state.dart';
 import '../../../state/app_state.dart';
 import '../../../configs/constants.dart';
@@ -25,18 +25,17 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
   CountdownTimer? _timer;
   final _textEditingController = TextEditingController();
   final _focusNode = FocusNode();
-  int _secRemaining = 0;
+  int _millisecondsRemaining = 0;
   bool _mainTimerIsSet = false;
   bool _sessionIsCompleted = false;
   bool _firstBellHasRung = false;
-  bool _lastBellHAsRung = false;
 
-  void _setTimer(int totalTime) {
+  void _setTimer({required Duration duration}) {
     _timer = CountdownTimer(
-        Duration(seconds: (totalTime) + 1 - 59), const Duration(seconds: 1))
+        duration, const Duration(milliseconds: 100))
       ..listen(
         (event) {
-          _secRemaining = event.remaining.inSeconds;
+          _millisecondsRemaining = event.remaining.inMilliseconds;
           setState(() {});
         },
         onDone: () {
@@ -53,21 +52,20 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
     _setFocus(state);
 
     if (state.sessionState == SessionState.notStarted) {
-      _secRemaining = 0;
+      _millisecondsRemaining = 0;
       _timer?.cancel();
       _mainTimerIsSet = false;
       _sessionIsCompleted = false;
       _firstBellHasRung = false;
-      _lastBellHAsRung = false;
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         notifier.setSessionHasStarted(false);
       });
     } else if (state.sessionState == SessionState.countdown) {
       if (!_mainTimerIsSet) {
-        int totalTimeInSeconds = state.totalTimeMinutes * 60;
+        int totalSeconds = state.totalTimeMinutes * 60;
 
         Timer(const Duration(milliseconds: kStartingScreenDuration), () {
-          _setTimer(totalTimeInSeconds);
+          _setTimer(duration: Duration(seconds: totalSeconds + 1));
           WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
             notifier.setSessionState(SessionState.inProgress);
             notifier.setSessionHasStarted(true);
@@ -79,27 +77,22 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
       }
     } else if (state.sessionState == SessionState.inProgress) {
       if (!_firstBellHasRung) {
-        AudioManager().playBell(state.bellSelected.name);
+        AudioManager().playBell(bell: state.bellSelected);
         _firstBellHasRung = true;
       }
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        notifier.setSecondsRemaining(_secRemaining);
+        notifier.seMillisecondsRemaining(_millisecondsRemaining);
       });
       if (state.pausedTime != 0) {
-        _setTimer(state.pausedTime);
+
+        _setTimer(duration: Duration(milliseconds: state.pausedTime));
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-          notifier.setPausedTime(reset: true);
+          notifier.setPausedTimeMillisecondsRemaining(reset: true);
         });
       }
     } else if (state.sessionState == SessionState.paused) {
       _cancelTimer();
       _sessionIsCompleted = false;
-    } else if (state.sessionState == SessionState.ended) {
-      print('state ended!!!');
-      if(!_lastBellHAsRung) {
-        AudioManager().playBell('${state.bellSelected.name}_end');
-        _lastBellHAsRung = true;
-      }
     }
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
@@ -111,29 +104,42 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
     });
 
     final size = MediaQuery.of(context).size;
-    return SizedBox(
-      width: size.width * kHomePageLineWidth,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          if (state.sessionState == SessionState.notStarted ||
-              state.sessionState == SessionState.ended) ...[
-            TimeField(
-              focusNode: _focusNode,
-              textEditingController: _textEditingController,
-            ),
-            const TimeAdjustmentIcons()
-          ],
-          if (state.sessionState == SessionState.countdown) ...[
-            const CountdownText(),
-          ],
-          if (state.sessionState == SessionState.inProgress ||
-              state.sessionState == SessionState.paused) ...[
-            const SessionTimer()
-          ],
-        ],
-      ),
+    return Stack(
+      children: [
+        SizedBox(
+          width: size.width * 0.30,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (state.sessionState == SessionState.notStarted ||
+                  state.sessionState == SessionState.ended) ...[
+                SizedBox(
+                  height: size.height * 0.02,
+                ),
+                TimeField(
+                  focusNode: _focusNode,
+                  textEditingController: _textEditingController,
+                ),
+                const TimeAdjustmentIcons()
+              ],
+              if (state.sessionState == SessionState.countdown) ...[
+                SizedBox(
+                  height: size.height * 0.02,
+                ),
+                const CountdownText(),
+              ],
+              if (state.sessionState == SessionState.inProgress ||
+                  state.sessionState == SessionState.paused) ...[
+                SizedBox(
+                  height: size.height * 0.02,
+                ),
+                const SessionTimer()
+              ],
+            ],
+          ),
+        ),
+      ],
     );
   }
 

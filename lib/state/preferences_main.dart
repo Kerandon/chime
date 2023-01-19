@@ -14,10 +14,6 @@ class PreferencesMain {
     double? ambienceVolume,
   }) async {
     final instance = await SharedPreferences.getInstance();
-
-    print('set preference ${bellVolume}');
-
-
     if (totalTime != null) {
       await instance.setInt(Prefs.totalTime, totalTime);
     }
@@ -29,7 +25,6 @@ class PreferencesMain {
       await instance.setString(Prefs.bellSelected, bellSelected.name);
     }
     if (bellVolume != null) {
-      print('set bell volune ${bellVolume}');
       await instance.setDouble(Prefs.bellVolume, bellVolume);
     }
     if (ambienceSelected != null) {

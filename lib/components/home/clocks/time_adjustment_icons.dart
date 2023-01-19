@@ -1,8 +1,8 @@
-
 import 'package:chime/enums/focus_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../configs/app_colors.dart';
 import '../../../state/preferences_main.dart';
 import '../../../state/app_state.dart';
 
@@ -10,8 +10,6 @@ class TimeAdjustmentIcons extends ConsumerWidget {
   const TimeAdjustmentIcons({
     super.key,
   });
-
-  //final FocusNode _focusNode;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,9 +22,9 @@ class TimeAdjustmentIcons extends ConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         IconButton(
+          color: AppColors.lightGrey,
           onPressed: () async {
             notifier.setTimerFocusState(FocusState.unFocus);
-            //_focusNode.unfocus();
             notifier.incrementTotalTime();
             if (state.totalTimeMinutes < 9999) {
               await PreferencesMain.setPreferences(
@@ -43,6 +41,7 @@ class TimeAdjustmentIcons extends ConsumerWidget {
           width: size.width * 0.05,
         ),
         IconButton(
+          color: AppColors.lightGrey,
           onPressed: () async {
             notifier.setTimerFocusState(FocusState.unFocus);
             notifier.decrementTotalTime();

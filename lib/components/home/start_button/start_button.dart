@@ -1,4 +1,5 @@
 import 'package:chime/animation/bounce_animation.dart';
+import 'package:chime/animation/fade_in_animation.dart';
 import 'package:chime/components/home/start_button/start_progress_indicator.dart';
 import 'package:chime/enums/session_state.dart';
 import 'package:chime/state/app_state.dart';
@@ -6,7 +7,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quiver/async.dart';
-
+import '../../../configs/app_colors.dart';
 import '../../../configs/constants.dart';
 import '../../app/lotus_icon.dart';
 
@@ -36,6 +37,21 @@ class _StartButtonState extends ConsumerState<StartButton> {
 
     _setButtonIcon(state);
 
+   Color progressBarColor = Theme.of(context).primaryColor;
+   if(state.sessionState == SessionState.countdown){
+     progressBarColor = Colors.transparent;
+   }
+   if(state.sessionState == SessionState.paused){
+     progressBarColor = Theme.of(context).primaryColor.withOpacity(0.50);
+   }
+   if(_longTapInProgress){
+     progressBarColor = AppColors.darkGrey;
+   }
+   if(state.sessionState == SessionState.inProgress && state.millisecondsRemaining == 0){
+     progressBarColor = Colors.transparent;
+   }
+
+
     return RawGestureDetector(
       gestures: <Type, GestureRecognizerFactory>{
         TapGestureRecognizer:
@@ -48,8 +64,9 @@ class _StartButtonState extends ConsumerState<StartButton> {
             if (state.sessionState == SessionState.notStarted) {
               notifier.setSessionState(SessionState.countdown);
             }
-            if (state.sessionState == SessionState.inProgress) {
-              notifier.setPausedTime();
+            if (state.sessionState == SessionState.inProgress &&
+                state.millisecondsRemaining > 0) {
+              notifier.setPausedTimeMillisecondsRemaining();
               notifier.setSessionState(SessionState.paused);
               setState(() {
                 _animateLight = true;
@@ -85,7 +102,6 @@ class _StartButtonState extends ConsumerState<StartButton> {
                 notifier.resetSession();
                 setState(() {
                   _longTapInProgress = false;
-
                 });
               });
             }
@@ -110,73 +126,45 @@ class _StartButtonState extends ConsumerState<StartButton> {
       },
       child: Stack(
         children: [
-          // Padding(
-          //   padding: EdgeInsets.all(size.width * 0.02),
-          //   child: StopColorRing(
-          //     animate: _longTapInProgress,
-          //     cancel: !_longTapInProgress,
-          //     radius: (size.width * kStartButtonRadius) + (size.width * 0.01),
-          //     duration: kLongPressDurationMilliseconds,
-          //     colorsList: const [
-          //       Colors.orangeAccent,
-          //       Colors.orange,
-          //       Colors.redAccent,
-          //       Colors.red,
-          //     ],
-          //   ),
-          // ),
-          // Padding(
-          //   padding: EdgeInsets.all(size.width * 0.02),
-          //   child: StopColorRing(
-          //     animate: state.sessionState == SessionState.paused,
-          //     cancel: state.sessionState != SessionState.paused &&
-          //         state.sessionHasStarted,
-          //     radius: (size.width * kStartButtonRadius) + (size.width * 0.01),
-          //     duration: kLongPressDurationMilliseconds,
-          //     loop: true,
-          //     colorsList: const [
-          //       Colors.yellow,
-          //       Colors.yellowAccent,
-          //       Colors.yellow,
-          //       Colors.amberAccent,
-          //       Colors.amber,
-          //       Colors.yellow
-          //     ],
-          //   ),
-          // ),
           Padding(
             padding: EdgeInsets.all(size.width * 0.02),
             child: StartCircularIndicator(
+              progressColor: progressBarColor,
+
+
+
+
+
               radius: size.width * kStartButtonRadius,
-              animate: _animateLight,
-              colorStart: Colors.teal,
-              colorEnd: Colors.teal,
               duration: state.totalTimeMinutes,
               pause: state.sessionState == SessionState.paused,
               cancel: state.sessionState == SessionState.notStarted,
               backgroundColor: Colors.white10,
             ),
           ),
-          Center(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(size.width),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  child: SizedBox(
-                    width: size.width * kStartButtonRadius * 2,
-                    height: size.width * kStartButtonRadius * 2,
-                    child: Padding(
-                      padding: EdgeInsets.all(size.width * 0.05),
-                      child: BounceAnimation(
-                        animate:
-                            state.sessionState == SessionState.inProgress,
-                        stop: state.sessionState != SessionState.inProgress,
-                        child: AnimatedSwitcher(
-                          duration: const Duration(
-                            milliseconds: 300,
+          FadeInAnimation(
+            delayMilliseconds: 800,
+            child: Center(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(size.width),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    child: SizedBox(
+                      width: size.width * kStartButtonRadius * 2,
+                      height: size.width * kStartButtonRadius * 2,
+                      child: Padding(
+                        padding: EdgeInsets.all(size.width * 0.05),
+                        child: BounceAnimation(
+                          animate:
+                              state.sessionState == SessionState.inProgress,
+                          stop: state.sessionState != SessionState.inProgress,
+                          child: AnimatedSwitcher(
+                            duration: const Duration(
+                              milliseconds: 300,
+                            ),
+                            child: _buttonImage,
                           ),
-                          child: _buttonImage,
                         ),
                       ),
                     ),
