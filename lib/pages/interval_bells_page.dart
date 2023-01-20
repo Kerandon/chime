@@ -1,30 +1,31 @@
 import 'package:chime/components/settings/settings_title.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../components/settings/bell_volume_slider.dart';
-import '../components/settings/bells_checkbox_tile.dart';
+import '../components/settings/interval_bells/bell_volume_slider.dart';
+import '../components/settings/interval_bells/bells_checkbox_tile.dart';
+import '../configs/constants.dart';
 import '../enums/bell.dart';
 
-class BellsPage extends ConsumerWidget {
-  const BellsPage({Key? key}) : super(key: key);
+class IntervalBellsPage extends ConsumerWidget {
+  const IntervalBellsPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const SettingsTitle(
+            icon: Icon(Icons.audiotrack_outlined), text: 'Interval Bells'),
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SettingsTitle(
-                icon: Icon(
-                  Icons.audiotrack_outlined,
-                  color: Colors.white,
-                ),
-                text: 'Interval Bell'),
-            const BellVolumeSlider(),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: size.width * 0.03),
+              padding: EdgeInsets.all(size.height * kSettingsListWidthIndentation ),
+              child: const BellVolumeSlider(),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: size.width * kSettingsListWidthIndentation ),
               child: ListView.builder(
                 itemCount: Bell.values.length,
                 shrinkWrap: true,

@@ -8,6 +8,7 @@ class PrefsModel {
   final double bellVolume;
   final Ambience ambienceSelected;
   final double ambienceVolume;
+  final int countdownTime;
 
   PrefsModel({
     required this.totalTime,
@@ -16,5 +17,6 @@ class PrefsModel {
     required this.bellVolume,
     required this.ambienceSelected,
     required this.ambienceVolume,
+    required this.countdownTime,
   });
 }

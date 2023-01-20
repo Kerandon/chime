@@ -1,10 +1,11 @@
+import 'package:chime/state/preferences_main.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../../state/app_state.dart';
-import '../../state/preferences_main.dart';
+import '../../../enums/ambience.dart';
+import '../../../state/app_state.dart';
 
-class BellVolumeSlider extends ConsumerWidget {
-  const BellVolumeSlider({
+class AmbienceVolumeSlider extends ConsumerWidget {
+  const AmbienceVolumeSlider({
     super.key,
   });
 
@@ -22,14 +23,17 @@ class BellVolumeSlider extends ConsumerWidget {
             horizontal: size.width * 0.05,
           ),
           child: Icon(
-            state.bellVolume == 0.0
+            state.ambienceVolume == 0.0 ||
+                    state.ambienceSelected == Ambience.none
                 ? Icons.volume_mute_outlined
                 : Icons.volume_up_outlined,
             color: Colors.white,
           ),
         ),
         Text(
-          (state.bellVolume * 10).round().toString(),
+          state.ambienceSelected == Ambience.none
+              ? '0'
+              : (state.ambienceVolume * 10).round().toString(),
           style: Theme.of(context)
               .textTheme
               .bodyMedium!
@@ -38,12 +42,16 @@ class BellVolumeSlider extends ConsumerWidget {
         Expanded(
           flex: 18,
           child: Slider(
-            value: state.bellVolume,
-            onChanged: (value) async {
-              double volume = value;
-              notifier.setBellVolume(volume);
-              await PreferencesMain.setPreferences(bellVolume: volume);
-            },
+            value: state.ambienceSelected == Ambience.none
+                ? 0
+                : state.ambienceVolume,
+            onChanged: state.ambienceSelected == Ambience.none
+                ? null
+                : (value) async {
+                    double volume = value;
+                    notifier.setAmbienceVolume(volume);
+                    await PreferencesMain.setPreferences(ambienceVolume: value);
+                  },
             min: 0.0,
             max: 1.0,
           ),

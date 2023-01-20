@@ -5,8 +5,8 @@ import 'package:chime/state/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../audio/audio_manager.dart';
-import '../components/settings/ambience_checkbox_tile.dart';
-import '../components/settings/ambience_volume_slider.dart';
+import '../components/settings/ambience/ambience_checkbox_tile.dart';
+import '../components/settings/ambience/ambience_volume_slider.dart';
 import '../data/ambience_data.dart';
 
 class AmbiencePage extends ConsumerStatefulWidget {
@@ -48,23 +48,19 @@ class _AmbiencePageState extends ConsumerState<AmbiencePage> {
             Icons.arrow_back_outlined,
           ),
         ),
+        title:             SettingsTitle(
+          text: 'Ambience',
+          icon: Icon(
+            Icons.piano_outlined,
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SettingsTitle(
-              text: 'Ambience',
-              icon: Icon(
-                Icons.piano_outlined,
-                color: Theme.of(context).primaryColor,
-              ),
-            ),
+            const AmbienceVolumeSlider(),
             Padding(
-              padding: EdgeInsets.all(size.width * 0.03),
-              child: const AmbienceVolumeSlider(),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: size.width * 0.03),
+              padding: EdgeInsets.symmetric(horizontal: size.width * kSettingsListWidthIndentation ),
               child: ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),

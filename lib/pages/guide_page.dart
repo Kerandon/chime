@@ -5,8 +5,8 @@ import '../components/settings/settings_title.dart';
 import '../configs/app_colors.dart';
 import '../configs/constants.dart';
 
-class MeditationGuidePage extends StatelessWidget {
-  const MeditationGuidePage({Key? key}) : super(key: key);
+class GuidePage extends StatelessWidget {
+  const GuidePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +55,7 @@ class MeditationGuidePage extends StatelessWidget {
                     ),
                     TextSpan(
                       text:
-                          '\n\nIf your mind has wandered, the interval bells are a gentle reminder to return your attention to your breath',
+                          '\n\nIf you find your mind has wandered, gently return your attention to your breath',
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     TextSpan(

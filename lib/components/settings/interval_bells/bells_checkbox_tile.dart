@@ -1,9 +1,9 @@
 import 'package:chime/state/preferences_main.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../../audio/audio_manager.dart';
-import '../../enums/bell.dart';
-import '../../state/app_state.dart';
+import '../../../audio/audio_manager.dart';
+import '../../../enums/bell.dart';
+import '../../../state/app_state.dart';
 
 class BellsCheckBoxTile extends ConsumerWidget {
   const BellsCheckBoxTile({
@@ -37,8 +37,6 @@ class BellsCheckBoxTile extends ConsumerWidget {
         await AudioManager().playBell(bell: bell);
         await PreferencesMain.setPreferences(bellSelected: bell);
       },
-      activeColor: Theme.of(context).primaryColor,
-      side: const BorderSide(color: Colors.white),
     );
   }
 }

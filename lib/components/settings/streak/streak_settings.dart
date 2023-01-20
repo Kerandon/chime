@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../state/preferences_streak.dart';
-import '../app/confirmation_box.dart';
-import '../app/custom_outline_button.dart';
+import '../../../state/preferences_streak.dart';
+import '../../app/confirmation_box.dart';
+import '../../app/custom_outline_button.dart';
 
 class StreakSettings extends ConsumerStatefulWidget {
   const StreakSettings({

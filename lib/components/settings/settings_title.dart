@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -20,7 +19,7 @@ class SettingsTitle extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: size.height * 0.05),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           icon ?? faIcon!,
           Padding(
@@ -28,9 +27,6 @@ class SettingsTitle extends StatelessWidget {
             child: Text(
               text,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.w500),
             ),
           ),
         ],

@@ -31,9 +31,9 @@ class _BounceAnimationState extends State<BounceAnimation>
 
     _scaleAnimation = TweenSequence<double>([
       TweenSequenceItem(
-          tween: Tween<double>(begin: 0.80, end: 1.10), weight: 0.50),
+          tween: Tween<double>(begin: 0.80, end: 1.20), weight: 0.50),
       TweenSequenceItem(
-          tween: Tween<double>(begin: 1.10, end: 0.80), weight: 0.80),
+          tween: Tween<double>(begin: 1.20, end: 0.80), weight: 0.80),
     ]).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 

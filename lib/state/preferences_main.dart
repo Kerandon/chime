@@ -12,6 +12,7 @@ class PreferencesMain {
     double? bellVolume,
     Ambience? ambienceSelected,
     double? ambienceVolume,
+    int? countdownTime,
   }) async {
     final instance = await SharedPreferences.getInstance();
     if (totalTime != null) {
@@ -33,13 +34,13 @@ class PreferencesMain {
     if (ambienceVolume != null) {
       await instance.setDouble(Prefs.ambienceVolume, ambienceVolume);
     }
+    if(countdownTime != null){
+      await instance.setInt(Prefs.countdownTime, countdownTime);
+    }
   }
 
   static Future<PrefsModel> getPreferences() async {
     final instance = await SharedPreferences.getInstance();
-
-    // int totalTime;
-    // int bellInterval;
 
     int totalTime = instance.getInt(Prefs.totalTime) ?? 60;
     int bellInterval = instance.getInt(Prefs.bellInterval) ?? 5;
@@ -60,6 +61,7 @@ class PreferencesMain {
       }
     }
     double ambienceVolume = instance.getDouble(Prefs.ambienceVolume) ?? 0.50;
+    int countdownTime = instance.getInt(Prefs.countdownTime) ?? 5;
 
     return PrefsModel(
       totalTime: totalTime,
@@ -68,6 +70,7 @@ class PreferencesMain {
       bellVolume: bellVolume,
       ambienceSelected: ambienceSelected,
       ambienceVolume: ambienceVolume,
+      countdownTime: countdownTime
     );
   }
 }

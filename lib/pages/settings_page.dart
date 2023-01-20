@@ -1,6 +1,7 @@
 import 'package:chime/enums/ambience.dart';
 import 'package:chime/enums/bell.dart';
-import 'package:chime/pages/bells_page.dart';
+import 'package:chime/pages/interval_bells_page.dart';
+import 'package:chime/pages/countdown_page.dart';
 import 'package:chime/state/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -9,45 +10,25 @@ import '../components/app/lotus_icon.dart';
 import '../components/settings/settings_tile.dart';
 import '../configs/app_colors.dart';
 import '../configs/constants.dart';
+import '../data/countdown_times.dart';
 import 'achievements_page.dart';
 import 'ambience_page.dart';
-import 'meditation_guide_page.dart';
+import 'guide_page.dart';
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final size = MediaQuery.of(context).size;
     final state = ref.watch(stateProvider);
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text('Settings'),
+      ),
       body: SingleChildScrollView(
         child: Column(
-          //crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Padding(
-              padding: EdgeInsets.only(
-                  top: size.height * 0.05, bottom: size.height * 0.01),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    kAppName,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headlineSmall!
-                        .copyWith(color: Theme.of(context).primaryColor),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(size.height * 0.01),
-                    child: const LotusIcon(),
-                  ),
-                ],
-              ),
-            ),
-            const SettingsTitleDivider(title: 'Session adjustments'),
+            const SettingsTitleDivider(title: 'Session adjustments', hideDivider: true,),
             SettingsTile(
               icon: const Icon(
                 Icons.audiotrack_outlined,
@@ -57,7 +38,7 @@ class SettingsPage extends ConsumerWidget {
               subTitle: state.bellSelected.toText(),
               onPressed: () {
                 Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const BellsPage()));
+                    MaterialPageRoute(builder: (context) => const IntervalBellsPage()));
               },
             ),
             SettingsTile(
@@ -78,8 +59,11 @@ class SettingsPage extends ConsumerWidget {
                   color: Colors.white,
                 ),
                 title: 'Warmup Countdown',
-                subTitle: '${state.countDownTime.toString()} seconds',
-                onPressed: () {}),
+                subTitle: '${state.totalCountdownTime.toString()} seconds',
+                onPressed: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => CountdownPage()));
+                }),
             const SettingsTitleDivider(title: 'Guidance & achievements'),
             SettingsTile(
               icon: const Icon(
@@ -88,8 +72,8 @@ class SettingsPage extends ConsumerWidget {
               ),
               title: 'Meditation Guide',
               onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const MeditationGuidePage()));
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const GuidePage()));
               },
             ),
             SettingsTile(
@@ -160,15 +144,18 @@ class SettingsTitleDivider extends StatelessWidget {
   const SettingsTitleDivider({
     super.key,
     this.title,
+    this.hideDivider = false,
   });
 
   final String? title;
+  final bool hideDivider;
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Column(
       children: [
-        const Divider(),
+        hideDivider ? SizedBox(height: size.height * 0.03,) : Divider(),
         Align(
           alignment: const Alignment(-0.90, 0),
           child: title == null

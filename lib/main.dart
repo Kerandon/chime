@@ -1,3 +1,4 @@
+import 'package:chime/audio/audio_manager.dart';
 import 'package:chime/pages/home_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,6 @@ import 'configs/app_theme.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 Future<void> main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
   FirebaseOptions? options;
   if (kIsWeb) {
@@ -35,7 +35,12 @@ class ChimeApp extends StatefulWidget {
 class _ChimeAppState extends State<ChimeApp> {
   @override
   void initState() {
+    _initAudioPlayers();
     super.initState();
+  }
+
+  _initAudioPlayers() async {
+    await AudioManager().initAudioPlayers();
   }
 
   @override

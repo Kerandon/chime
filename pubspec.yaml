@@ -71,6 +71,7 @@ flutter:
   assets:
     - assets/images/
     - assets/images/people/
+    - assets/audio/
     - assets/audio/bells/
     - assets/audio/ambience/
 

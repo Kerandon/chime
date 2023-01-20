@@ -1,10 +1,10 @@
 import 'package:chime/state/preferences_main.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../../audio/audio_manager.dart';
-import '../../enums/ambience.dart';
-import '../../models/ambience_model.dart';
-import '../../state/app_state.dart';
+import '../../../audio/audio_manager.dart';
+import '../../../enums/ambience.dart';
+import '../../../models/ambience_model.dart';
+import '../../../state/app_state.dart';
 
 class AmbienceCheckBoxTile extends ConsumerStatefulWidget {
   const AmbienceCheckBoxTile({
@@ -47,8 +47,6 @@ class _AmbienceCheckBoxTileState extends ConsumerState<AmbienceCheckBoxTile> {
         await AudioManager().playAmbience(ambience: ambience);
         await PreferencesMain.setPreferences(ambienceSelected: ambience);
       },
-      activeColor: Theme.of(context).primaryColor,
-      side: const BorderSide(color: Colors.white),
     );
   }
 }

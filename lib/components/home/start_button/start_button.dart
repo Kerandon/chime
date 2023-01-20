@@ -23,10 +23,7 @@ class StartButton extends ConsumerStatefulWidget {
 class _StartButtonState extends ConsumerState<StartButton> {
   CountdownTimer? _timer;
 
-  bool _longTapInProgress = false;
-
-  bool _animateLight = false;
-
+  // bool _longTapInProgress = false;
   Widget _buttonImage = const Icon(Icons.play_arrow_outlined);
 
   @override
@@ -37,20 +34,20 @@ class _StartButtonState extends ConsumerState<StartButton> {
 
     _setButtonIcon(state);
 
-   Color progressBarColor = Theme.of(context).primaryColor;
-   if(state.sessionState == SessionState.countdown){
-     progressBarColor = Colors.transparent;
-   }
-   if(state.sessionState == SessionState.paused){
-     progressBarColor = Theme.of(context).primaryColor.withOpacity(0.50);
-   }
-   if(_longTapInProgress){
-     progressBarColor = AppColors.darkGrey;
-   }
-   if(state.sessionState == SessionState.inProgress && state.millisecondsRemaining == 0){
-     progressBarColor = Colors.transparent;
-   }
-
+    Color progressBarColor = Theme.of(context).primaryColor;
+    if (state.sessionState == SessionState.countdown) {
+      progressBarColor = Colors.transparent;
+    }
+    if (state.sessionState == SessionState.paused) {
+      progressBarColor = Theme.of(context).primaryColor.withOpacity(0.50);
+    }
+    if (state.longTapInProgress) {
+      progressBarColor = AppColors.darkGrey;
+    }
+    if (state.sessionState == SessionState.inProgress &&
+        state.millisecondsRemaining == 0) {
+      progressBarColor = Colors.transparent;
+    }
 
     return RawGestureDetector(
       gestures: <Type, GestureRecognizerFactory>{
@@ -68,9 +65,6 @@ class _StartButtonState extends ConsumerState<StartButton> {
                 state.millisecondsRemaining > 0) {
               notifier.setPausedTimeMillisecondsRemaining();
               notifier.setSessionState(SessionState.paused);
-              setState(() {
-                _animateLight = true;
-              });
             }
             if (state.sessionState == SessionState.paused) {
               notifier.setSessionState(SessionState.inProgress);
@@ -87,40 +81,42 @@ class _StartButtonState extends ConsumerState<StartButton> {
         }, (LongPressGestureRecognizer instance) {
           instance.onLongPress = () {
             if (state.sessionHasStarted) {
-              _longTapInProgress = true;
+              notifier.setLongTapInProgress(true);
 
               _timer = CountdownTimer(
                   const Duration(milliseconds: kLongPressDurationMilliseconds),
                   const Duration(milliseconds: 20));
 
               _timer?.listen((event) {
-                setState(() {});
+                // setState(() {});
               }, onDone: () {
                 notifier.setSessionState(
                   SessionState.notStarted,
                 );
                 notifier.resetSession();
-                setState(() {
-                  _longTapInProgress = false;
-                });
+                // setState(() {
+                notifier.setLongTapInProgress(false);
+                // });
               });
             }
           };
           instance.onLongPressEnd = (details) {
-            setState(
-              () {
-                _longTapInProgress = false;
-                _timer?.cancel();
-              },
-            );
+            // setState(
+            //   () {
+            //     _longTapInProgress = false;
+            notifier.setLongTapInProgress(false);
+            _timer?.cancel();
+            //   },
+            // );
           };
           instance.onLongPressCancel = () {
-            setState(
-              () {
-                _longTapInProgress = false;
-                _timer?.cancel();
-              },
-            );
+            // setState(
+            //   () {
+            notifier.setLongTapInProgress(false);
+            //_longTapInProgress = false;//
+            _timer?.cancel();
+            //   },
+            // );
           };
         }),
       },
@@ -130,11 +126,6 @@ class _StartButtonState extends ConsumerState<StartButton> {
             padding: EdgeInsets.all(size.width * 0.02),
             child: StartCircularIndicator(
               progressColor: progressBarColor,
-
-
-
-
-
               radius: size.width * kStartButtonRadius,
               duration: state.totalTimeMinutes,
               pause: state.sessionState == SessionState.paused,
@@ -161,7 +152,7 @@ class _StartButtonState extends ConsumerState<StartButton> {
                           stop: state.sessionState != SessionState.inProgress,
                           child: AnimatedSwitcher(
                             duration: const Duration(
-                              milliseconds: 300,
+                              milliseconds: 500,
                             ),
                             child: _buttonImage,
                           ),
@@ -194,7 +185,7 @@ class _StartButtonState extends ConsumerState<StartButton> {
         size: kStartButtonIconSize,
       );
     }
-    if (_longTapInProgress) {
+    if (state.longTapInProgress) {
       _buttonImage = const Icon(
         Icons.stop,
         size: kStartButtonIconSize,

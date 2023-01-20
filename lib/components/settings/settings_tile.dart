@@ -23,7 +23,7 @@ class SettingsTile extends StatelessWidget {
       leading: icon ?? faIcon,
       title: Text(
         title,
-        style: Theme.of(context).textTheme.bodyMedium,
+        style: Theme.of(context).textTheme.bodySmall,
       ),
       subtitle: subTitle != null ? Text(
         subTitle!,

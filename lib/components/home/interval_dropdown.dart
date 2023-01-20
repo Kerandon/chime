@@ -1,3 +1,4 @@
+import 'package:chime/pages/interval_bells_page.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -27,7 +28,7 @@ class IntervalDropdown extends ConsumerWidget {
         DropdownMenuItem<int>(
           value: e,
           child: SizedBox(
-            width: size.width * kHomePageLineWidth / 1.5,
+            width: size.width * kHomePageLineWidth / 2,
             child: Center(
               child: Text(
                 e == totalTime
@@ -36,7 +37,10 @@ class IntervalDropdown extends ConsumerWidget {
                         ? '$e minute'
                         : '$e minutes',
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.displaySmall,
+                style: Theme.of(context)
+                    .textTheme
+                    .displaySmall!
+                    .copyWith(fontSize: 15),
               ),
             ),
           ),
@@ -61,23 +65,42 @@ class IntervalDropdown extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Padding(
-            padding: EdgeInsets.only(bottom: size.height * 0.01),
-            child: Text(
-              showOnTimeUpTitleText
-                  ? 'Play a ${state.bellSelected.name}'
-                  : 'Play a ${state.bellSelected.name} every',
-              style: Theme.of(context).textTheme.bodySmall!.copyWith(color: AppColors.lightGrey),
+          InkWell(
+            onTap: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => IntervalBellsPage()));
+            },
+            child: Padding(
+              padding: EdgeInsets.only(bottom: size.height * 0.02),
+              child: RichText(
+                text: TextSpan(
+                  text: 'Play a',
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                        color: AppColors.lightGrey,
+                      ),
+                  children: [
+                    TextSpan(
+                      text: ' ${state.bellSelected.name}',
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    TextSpan(
+                      text: showOnTimeUpTitleText ? '' : ' every',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall!
+                          .copyWith(color: AppColors.lightGrey),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
           items.isEmpty
               ? const SizedBox.shrink()
               : DropdownButton<int>(
-            isDense: true,
-                  // underline: Container(
-                  //   height: kHomePageLineThickness,
-                  //   color: Theme.of(context).primaryColor,
-                  // ),
+                  isDense: true,
                   borderRadius: BorderRadius.circular(kBorderRadius),
                   dropdownColor: Colors.black,
                   value: selectedValue,

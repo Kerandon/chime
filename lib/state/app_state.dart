@@ -17,13 +17,15 @@ class AppState {
   final SessionState sessionState;
   final bool sessionHasStarted;
   final FocusState focusState;
+  final bool longTapInProgress;
 
   //TIME
   final int totalTimeMinutes;
   final bool initialTimeIsSet;
   final int millisecondsRemaining;
-  final int pausedTime;
-  final int countDownTime;
+  final int pausedMillisecondsRemaining;
+  final int totalCountdownTime;
+  final int currentCountdownTime;
 
   //BELLS
   final Set<int> bellIntervalMenuSelection;
@@ -43,11 +45,13 @@ class AppState {
     required this.sessionState,
     required this.sessionHasStarted,
     required this.focusState,
+    required this.longTapInProgress,
     required this.totalTimeMinutes,
     required this.initialTimeIsSet,
     required this.millisecondsRemaining,
-    required this.pausedTime,
-    required this.countDownTime,
+    required this.pausedMillisecondsRemaining,
+    required this.totalCountdownTime,
+    required this.currentCountdownTime,
     required this.bellIntervalMenuSelection,
     required this.bellSelected,
     required this.bellIntervalTimeSelected,
@@ -62,11 +66,13 @@ class AppState {
     SessionState? sessionState,
     bool? sessionHasStarted,
     FocusState? focusState,
+    bool? longTapInProgress,
     int? totalTimeMinutes,
     bool? initialTimeIsSet,
     int? millisecondsRemaining,
     int? pausedMillisecondsRemaining,
-    int? countDownTime,
+    int? totalCountdownTime,
+    int? currentCountdownTime,
     Set<int>? bellIntervalMenuSelection,
     Bell? bellSelected,
     int? bellIntervalTimeSelected,
@@ -80,12 +86,15 @@ class AppState {
       sessionState: sessionState ?? this.sessionState,
       sessionHasStarted: sessionHasStarted ?? this.sessionHasStarted,
       focusState: focusState ?? this.focusState,
+      longTapInProgress: longTapInProgress ?? this.longTapInProgress,
       totalTimeMinutes: totalTimeMinutes ?? this.totalTimeMinutes,
       initialTimeIsSet: initialTimeIsSet ?? this.initialTimeIsSet,
       millisecondsRemaining:
           millisecondsRemaining ?? this.millisecondsRemaining,
-      pausedTime: pausedMillisecondsRemaining ?? this.pausedTime,
-      countDownTime: countDownTime ?? this.countDownTime,
+      pausedMillisecondsRemaining:
+          pausedMillisecondsRemaining ?? this.pausedMillisecondsRemaining,
+      totalCountdownTime: totalCountdownTime ?? this.totalCountdownTime,
+      currentCountdownTime: currentCountdownTime ?? this.currentCountdownTime,
       bellIntervalMenuSelection:
           bellIntervalMenuSelection ?? this.bellIntervalMenuSelection,
       bellSelected: bellSelected ?? this.bellSelected,
@@ -157,7 +166,13 @@ class AppNotifier extends StateNotifier<AppState> {
 
   void resetSession() {
     state = state.copyWith(
-        pausedMillisecondsRemaining: 0, sessionHasStarted: false, millisecondsRemaining: 0);
+        pausedMillisecondsRemaining: 0,
+        sessionHasStarted: false,
+        millisecondsRemaining: 0);
+  }
+
+  void setLongTapInProgress(bool inProgress) {
+    state = state.copyWith(longTapInProgress: inProgress);
   }
 
   void setTimerFocusState(FocusState focus) {
@@ -176,22 +191,24 @@ class AppNotifier extends StateNotifier<AppState> {
     int? time;
     if (reset == true) {
       time = 0;
-    }else{
+    } else {
       time = state.millisecondsRemaining;
     }
     print('time paused is $time');
     state = state.copyWith(pausedMillisecondsRemaining: time);
   }
 
-  void setCountdownTime(int time) {
-    state = state.copyWith(countDownTime: time);
+  void setTotalCountdownTime(int time) {
+    state = state.copyWith(totalCountdownTime: time);
+  }
+
+  void setCurrentCountdownTime(int time) {
+    state = state.copyWith(currentCountdownTime: time);
   }
 
   void setBellMenuSelection(Set<int> times) {
     state = state.copyWith(bellIntervalMenuSelection: times);
   }
-
-
 
   void setBellIntervalTime(int time) async {
     await PreferencesMain.setPreferences(bellInterval: time);
@@ -213,13 +230,12 @@ class AppNotifier extends StateNotifier<AppState> {
       bellTimes.add(bellTime);
     }
 
-    for(var b in state.bellTimesToRing){
+    for (var b in state.bellTimesToRing) {
       print(b);
     }
 
     state = state.copyWith(bellTimesToRing: bellTimes);
   }
-
 
   void setBellSelected(Bell bell) async {
     await PreferencesMain.setPreferences(bellSelected: bell);
@@ -253,11 +269,13 @@ final stateProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
     sessionState: SessionState.notStarted,
     sessionHasStarted: false,
     focusState: FocusState.none,
+    longTapInProgress: false,
     totalTimeMinutes: 60,
     initialTimeIsSet: false,
     millisecondsRemaining: 0,
-    pausedTime: 0,
-    countDownTime: 6,
+    pausedMillisecondsRemaining: 0,
+    currentCountdownTime: 5,
+    totalCountdownTime: 6,
     bellIntervalMenuSelection: {1},
     bellSelected: Bell.chime,
     bellIntervalTimeSelected: 1,

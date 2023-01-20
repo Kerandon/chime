@@ -1,4 +1,4 @@
-import 'package:chime/components/settings/streak_settings.dart';
+import 'package:chime/components/settings/streak/streak_settings.dart';
 import 'package:chime/pages/achievements_page.dart';
 import 'package:chime/state/app_state.dart';
 import 'package:chime/configs/constants.dart';

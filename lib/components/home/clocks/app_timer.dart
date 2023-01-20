@@ -8,7 +8,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quiver/async.dart';
 import '../../../enums/focus_state.dart';
 import '../../../state/app_state.dart';
-import '../../../configs/constants.dart';
 import 'session_timer.dart';
 import 'countdown_text.dart';
 
@@ -47,6 +46,7 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
 
   @override
   Widget build(BuildContext context) {
+
     final state = ref.watch(stateProvider);
     final notifier = ref.read(stateProvider.notifier);
     _setFocus(state);
@@ -64,13 +64,16 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
       if (!_mainTimerIsSet) {
         int totalSeconds = state.totalTimeMinutes * 60;
 
-        Timer(const Duration(milliseconds: kStartingScreenDuration), () {
+        CountdownTimer(Duration(seconds: state.totalCountdownTime + 1), const Duration(milliseconds: 100)).listen((event) {
+        notifier.setCurrentCountdownTime(event.remaining.inSeconds);
+        },onDone: (){
           _setTimer(duration: Duration(seconds: totalSeconds + 1));
           WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
             notifier.setSessionState(SessionState.inProgress);
             notifier.setSessionHasStarted(true);
           });
         });
+
         setState(() {
           _mainTimerIsSet = true;
         });
@@ -83,9 +86,9 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         notifier.seMillisecondsRemaining(_millisecondsRemaining);
       });
-      if (state.pausedTime != 0) {
+      if (state.pausedMillisecondsRemaining != 0) {
 
-        _setTimer(duration: Duration(milliseconds: state.pausedTime));
+        _setTimer(duration: Duration(milliseconds: state.pausedMillisecondsRemaining));
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
           notifier.setPausedTimeMillisecondsRemaining(reset: true);
         });
@@ -107,7 +110,7 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
     return Stack(
       children: [
         SizedBox(
-          width: size.width * 0.30,
+          width: size.width * 0.90,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
