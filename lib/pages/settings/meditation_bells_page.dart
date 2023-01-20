@@ -6,8 +6,8 @@ import '../components/settings/interval_bells/bells_checkbox_tile.dart';
 import '../configs/constants.dart';
 import '../enums/bell.dart';
 
-class IntervalBellsPage extends ConsumerWidget {
-  const IntervalBellsPage({Key? key}) : super(key: key);
+class MeditationBellsPage extends ConsumerWidget {
+  const MeditationBellsPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -15,13 +15,13 @@ class IntervalBellsPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const SettingsTitle(
-            icon: Icon(Icons.audiotrack_outlined), text: 'Interval Bells'),
+            icon: Icon(Icons.audiotrack_outlined), text: 'Meditation Bells'),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.all(size.height * kSettingsListWidthIndentation ),
+              padding: EdgeInsets.all(size.height * kSettingsListWidthIndentation),
               child: const BellVolumeSlider(),
             ),
             Padding(

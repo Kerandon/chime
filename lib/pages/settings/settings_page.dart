@@ -1,16 +1,17 @@
 import 'package:chime/enums/ambience.dart';
 import 'package:chime/enums/bell.dart';
-import 'package:chime/pages/interval_bells_page.dart';
+import 'package:chime/pages/meditation_bells_page.dart';
 import 'package:chime/pages/countdown_page.dart';
 import 'package:chime/state/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../components/app/lotus_icon.dart';
+import '../components/settings/bell_on_start_tile.dart';
+import '../components/settings/open_session_tile.dart';
+import '../components/settings/settings_divider.dart';
 import '../components/settings/settings_tile.dart';
-import '../configs/app_colors.dart';
 import '../configs/constants.dart';
-import '../data/countdown_times.dart';
 import 'achievements_page.dart';
 import 'ambience_page.dart';
 import 'guide_page.dart';
@@ -23,12 +24,16 @@ class SettingsPage extends ConsumerWidget {
     final state = ref.watch(stateProvider);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Settings'),
+        title: const Text('Settings'),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SettingsTitleDivider(title: 'Session adjustments', hideDivider: true,),
+            const SettingsTitleDivider(
+              title: 'Session adjustments',
+              hideDivider: true,
+            ),
+            const OpenSessionTile(),
             SettingsTile(
               icon: const Icon(
                 Icons.audiotrack_outlined,
@@ -37,10 +42,11 @@ class SettingsPage extends ConsumerWidget {
               title: 'Meditation Bell',
               subTitle: state.bellSelected.toText(),
               onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const IntervalBellsPage()));
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const MeditationBellsPage()));
               },
             ),
+            const BellOnStartTile(),
             SettingsTile(
               icon: const Icon(
                 Icons.piano_outlined,
@@ -54,16 +60,17 @@ class SettingsPage extends ConsumerWidget {
               },
             ),
             SettingsTile(
-                icon: const Icon(
-                  Icons.timer_outlined,
-                  color: Colors.white,
-                ),
-                title: 'Warmup Countdown',
-                subTitle: '${state.totalCountdownTime.toString()} seconds',
-                onPressed: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => CountdownPage()));
-                }),
+              icon: const Icon(
+                Icons.timer_outlined,
+                color: Colors.white,
+              ),
+              title: 'Warmup Countdown',
+              subTitle: '${state.totalCountdownTime.toString()} seconds',
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const CountdownPage()));
+              },
+            ),
             const SettingsTitleDivider(title: 'Guidance & achievements'),
             SettingsTile(
               icon: const Icon(
@@ -136,39 +143,6 @@ class SettingsPage extends ConsumerWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class SettingsTitleDivider extends StatelessWidget {
-  const SettingsTitleDivider({
-    super.key,
-    this.title,
-    this.hideDivider = false,
-  });
-
-  final String? title;
-  final bool hideDivider;
-
-  @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    return Column(
-      children: [
-        hideDivider ? SizedBox(height: size.height * 0.03,) : Divider(),
-        Align(
-          alignment: const Alignment(-0.90, 0),
-          child: title == null
-              ? const SizedBox.shrink()
-              : Text(
-                  title!,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall!
-                      .copyWith(color: AppColors.lightGrey, fontSize: 12),
-                ),
-        ),
-      ],
     );
   }
 }

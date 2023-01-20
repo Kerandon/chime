@@ -58,7 +58,10 @@ class _AmbiencePageState extends ConsumerState<AmbiencePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const AmbienceVolumeSlider(),
+            Padding(
+              padding: EdgeInsets.all(size.height * kSettingsListWidthIndentation),
+              child: const AmbienceVolumeSlider(),
+            ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: size.width * kSettingsListWidthIndentation ),
               child: ListView.builder(
