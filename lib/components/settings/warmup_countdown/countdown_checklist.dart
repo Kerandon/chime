@@ -1,7 +1,6 @@
 import 'package:chime/state/preferences_main.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../state/app_state.dart';
 

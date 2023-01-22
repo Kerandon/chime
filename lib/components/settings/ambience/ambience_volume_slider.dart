@@ -27,7 +27,6 @@ class AmbienceVolumeSlider extends ConsumerWidget {
                     state.ambienceSelected == Ambience.none
                 ? Icons.volume_mute_outlined
                 : Icons.volume_up_outlined,
-            color: Colors.white,
           ),
         ),
         Text(
@@ -37,7 +36,7 @@ class AmbienceVolumeSlider extends ConsumerWidget {
           style: Theme.of(context)
               .textTheme
               .bodyMedium!
-              .copyWith(color: Colors.white, fontSize: 16),
+              .copyWith(fontSize: 16),
         ),
         Expanded(
           flex: 18,

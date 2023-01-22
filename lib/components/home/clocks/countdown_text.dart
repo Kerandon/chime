@@ -3,7 +3,6 @@ import 'package:chime/animation/fade_in_animation.dart';
 import 'package:chime/state/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:quiver/async.dart';
 
 import '../../../configs/app_colors.dart';
 
@@ -49,7 +48,7 @@ class _CountdownTextState extends ConsumerState<CountdownText> {
               child: Padding(
             padding: EdgeInsets.only(top: size.height * 0.02),
             child: countdown == 0
-                ? SizedBox.shrink()
+                ? const SizedBox.shrink()
                 : FadeInAnimation(
               durationMilliseconds: 500,
                   child: Text(

@@ -25,7 +25,6 @@ class BellVolumeSlider extends ConsumerWidget {
             state.bellVolume == 0.0
                 ? Icons.volume_mute_outlined
                 : Icons.volume_up_outlined,
-            color: Colors.white,
           ),
         ),
         Text(
@@ -33,7 +32,7 @@ class BellVolumeSlider extends ConsumerWidget {
           style: Theme.of(context)
               .textTheme
               .bodyMedium!
-              .copyWith(color: Colors.white, fontSize: 16),
+              .copyWith(fontSize: 16),
         ),
         Expanded(
           flex: 18,

@@ -1,5 +1,6 @@
 import 'package:chime/configs/constants.dart';
 import 'package:chime/enums/audio_type.dart';
+import 'package:chime/enums/color_themes.dart';
 import 'package:chime/enums/session_state.dart';
 import 'package:chime/state/preferences_main.dart';
 import 'package:chime/state/preferences_streak.dart';
@@ -18,6 +19,7 @@ class AppState {
   final bool sessionHasStarted;
   final FocusState focusState;
   final bool longTapInProgress;
+  final ColorTheme colorTheme;
 
   //TIME
   final int totalTimeMinutes;
@@ -26,6 +28,7 @@ class AppState {
   final int pausedMillisecondsRemaining;
   final int totalCountdownTime;
   final int currentCountdownTime;
+  final bool openSession;
 
   //BELLS
   final Set<int> bellIntervalMenuSelection;
@@ -33,6 +36,7 @@ class AppState {
   final int bellIntervalTimeSelected;
   final Set<int> bellTimesToRing;
   final double bellVolume;
+  final bool bellOnSessionStart;
 
   //AMBIENCE
   final Ambience ambienceSelected;
@@ -46,17 +50,20 @@ class AppState {
     required this.sessionHasStarted,
     required this.focusState,
     required this.longTapInProgress,
+    required this.colorTheme,
     required this.totalTimeMinutes,
     required this.initialTimeIsSet,
     required this.millisecondsRemaining,
     required this.pausedMillisecondsRemaining,
     required this.totalCountdownTime,
     required this.currentCountdownTime,
+    required this.openSession,
     required this.bellIntervalMenuSelection,
     required this.bellSelected,
     required this.bellIntervalTimeSelected,
     required this.bellTimesToRing,
     required this.bellVolume,
+    required this.bellOnSessionStart,
     required this.ambienceSelected,
     required this.ambienceVolume,
     required this.checkIfStatsUpdated,
@@ -66,6 +73,7 @@ class AppState {
     SessionState? sessionState,
     bool? sessionHasStarted,
     FocusState? focusState,
+    ColorTheme? colorTheme,
     bool? longTapInProgress,
     int? totalTimeMinutes,
     bool? initialTimeIsSet,
@@ -73,11 +81,13 @@ class AppState {
     int? pausedMillisecondsRemaining,
     int? totalCountdownTime,
     int? currentCountdownTime,
+    bool? openSession,
     Set<int>? bellIntervalMenuSelection,
     Bell? bellSelected,
     int? bellIntervalTimeSelected,
     Set<int>? bellTimesToRing,
     double? bellVolume,
+    bool? bellOnSessionStart,
     Ambience? ambienceSelected,
     double? ambienceVolume,
     bool? checkIfStatsUpdated,
@@ -87,6 +97,7 @@ class AppState {
       sessionHasStarted: sessionHasStarted ?? this.sessionHasStarted,
       focusState: focusState ?? this.focusState,
       longTapInProgress: longTapInProgress ?? this.longTapInProgress,
+      colorTheme: colorTheme ?? this.colorTheme,
       totalTimeMinutes: totalTimeMinutes ?? this.totalTimeMinutes,
       initialTimeIsSet: initialTimeIsSet ?? this.initialTimeIsSet,
       millisecondsRemaining:
@@ -95,6 +106,7 @@ class AppState {
           pausedMillisecondsRemaining ?? this.pausedMillisecondsRemaining,
       totalCountdownTime: totalCountdownTime ?? this.totalCountdownTime,
       currentCountdownTime: currentCountdownTime ?? this.currentCountdownTime,
+      openSession: openSession ?? this.openSession,
       bellIntervalMenuSelection:
           bellIntervalMenuSelection ?? this.bellIntervalMenuSelection,
       bellSelected: bellSelected ?? this.bellSelected,
@@ -102,6 +114,7 @@ class AppState {
           bellIntervalTimeSelected ?? this.bellIntervalTimeSelected,
       bellTimesToRing: bellTimesToRing ?? this.bellTimesToRing,
       bellVolume: bellVolume ?? this.bellVolume,
+      bellOnSessionStart: bellOnSessionStart ?? this.bellOnSessionStart,
       ambienceSelected: ambienceSelected ?? this.ambienceSelected,
       ambienceVolume: ambienceVolume ?? this.ambienceVolume,
       checkIfStatsUpdated: checkIfStatsUpdated ?? this.checkIfStatsUpdated,
@@ -141,7 +154,6 @@ class AppNotifier extends StateNotifier<AppState> {
   }
 
   void setSessionState(SessionState sessionState) async {
-    print('session state is $sessionState');
 
     state = state.copyWith(sessionState: sessionState);
 
@@ -182,6 +194,10 @@ class AppNotifier extends StateNotifier<AppState> {
     });
   }
 
+  void setColorTheme(ColorTheme colorTheme) {
+    state = state.copyWith(colorTheme: colorTheme);
+  }
+
   void seMillisecondsRemaining(int milliseconds) {
     state = state.copyWith(millisecondsRemaining: milliseconds);
     playSessionBells(state);
@@ -194,7 +210,6 @@ class AppNotifier extends StateNotifier<AppState> {
     } else {
       time = state.millisecondsRemaining;
     }
-    print('time paused is $time');
     state = state.copyWith(pausedMillisecondsRemaining: time);
   }
 
@@ -204,6 +219,10 @@ class AppNotifier extends StateNotifier<AppState> {
 
   void setCurrentCountdownTime(int time) {
     state = state.copyWith(currentCountdownTime: time);
+  }
+
+  void setOpenSession(bool open) {
+    state = state.copyWith(openSession: open);
   }
 
   void setBellMenuSelection(Set<int> times) {
@@ -217,7 +236,6 @@ class AppNotifier extends StateNotifier<AppState> {
   }
 
   void _calculateBellIntervalsAndTimes() {
-    print('calculating bell times');
     if (state.bellIntervalTimeSelected == 0) {
       return;
     }
@@ -230,16 +248,16 @@ class AppNotifier extends StateNotifier<AppState> {
       bellTimes.add(bellTime);
     }
 
-    for (var b in state.bellTimesToRing) {
-      print(b);
-    }
-
     state = state.copyWith(bellTimesToRing: bellTimes);
   }
 
   void setBellSelected(Bell bell) async {
     await PreferencesMain.setPreferences(bellSelected: bell);
     state = state.copyWith(bellSelected: bell);
+  }
+
+  void setBellOnSessionStart(bool onStart) {
+    state = state.copyWith(bellOnSessionStart: onStart);
   }
 
   void setAmbienceSelected(Ambience ambience) async {
@@ -270,17 +288,20 @@ final stateProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
     sessionHasStarted: false,
     focusState: FocusState.none,
     longTapInProgress: false,
+    colorTheme: ColorTheme.darkTeal,
     totalTimeMinutes: 60,
     initialTimeIsSet: false,
     millisecondsRemaining: 0,
     pausedMillisecondsRemaining: 0,
     currentCountdownTime: 5,
     totalCountdownTime: 6,
+    openSession: false,
     bellIntervalMenuSelection: {1},
     bellSelected: Bell.chime,
     bellIntervalTimeSelected: 1,
     bellTimesToRing: {},
     bellVolume: 0.50,
+    bellOnSessionStart: true,
     ambienceSelected: Ambience.none,
     ambienceVolume: 0.50,
     checkIfStatsUpdated: false,

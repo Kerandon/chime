@@ -39,7 +39,7 @@ class _HomePageContentsState extends ConsumerState<HomePageContents> {
               children: [
                 Expanded(
                     flex: 10,
-                    child:  sessionUnderway ? SizedBox.shrink() : Row(
+                    child:  sessionUnderway ? const SizedBox.shrink() : Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: const [
                         AmbienceDisplay(),
@@ -47,14 +47,18 @@ class _HomePageContentsState extends ConsumerState<HomePageContents> {
                       ],
                     )),
                 const Expanded(
-                    flex: 35, child: FadeInAnimation(child: AppTimer())),
+                    flex: 35, child: FadeInAnimation(child:
+
+                AppTimer()),
+
+                ),
                 const Expanded(
                   flex: 80,
                   child: FlipAnimation(child: StartButton()),
                 ),
                 Expanded(
                     flex: 40,
-                    child: sessionUnderway ? SizedBox.shrink() : FadeInAnimation(child: IntervalDropdown())),
+                    child: sessionUnderway ? const SizedBox.shrink() : const FadeInAnimation(child: IntervalDropdown())),
               ],
             ),
           ],

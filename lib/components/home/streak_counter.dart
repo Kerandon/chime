@@ -1,11 +1,9 @@
-import 'package:chime/components/settings/streak/streak_settings.dart';
-import 'package:chime/pages/achievements_page.dart';
+import 'package:chime/pages/settings/achievements_page.dart';
 import 'package:chime/state/app_state.dart';
 import 'package:chime/configs/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../../configs/app_colors.dart';
 import '../../state/preferences_streak.dart';
 
 class StreakCounter extends ConsumerStatefulWidget {
@@ -42,7 +40,7 @@ class _StreakCounterState extends ConsumerState<StreakCounter> {
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => AchievementsPage(),
+              builder: (context) => const AchievementsPage(),
             ),
           );
         },
@@ -70,10 +68,10 @@ class _StreakCounterState extends ConsumerState<StreakCounter> {
                             mainAxisAlignment: MainAxisAlignment.end,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              const FaIcon(
+                               FaIcon(
                                 FontAwesomeIcons.award,
                                 size: kHomePageSmallIcon,
-                                color: AppColors.lightGrey,
+                                color: Theme.of(context).secondaryHeaderColor,
                               ),
                               SizedBox(width: size.width * 0.02),
                               Text('$streak',

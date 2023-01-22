@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:chime/audio/audio_manager.dart';
 import 'package:chime/components/home/clocks/time_adjustment_icons.dart';
 import 'package:chime/components/home/clocks/time_field.dart';
@@ -30,8 +29,7 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
   bool _firstBellHasRung = false;
 
   void _setTimer({required Duration duration}) {
-    _timer = CountdownTimer(
-        duration, const Duration(milliseconds: 100))
+    _timer = CountdownTimer(duration, const Duration(milliseconds: 100))
       ..listen(
         (event) {
           _millisecondsRemaining = event.remaining.inMilliseconds;
@@ -46,7 +44,6 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
 
   @override
   Widget build(BuildContext context) {
-
     final state = ref.watch(stateProvider);
     final notifier = ref.read(stateProvider.notifier);
     _setFocus(state);
@@ -64,9 +61,11 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
       if (!_mainTimerIsSet) {
         int totalSeconds = state.totalTimeMinutes * 60;
 
-        CountdownTimer(Duration(seconds: state.totalCountdownTime + 1), const Duration(milliseconds: 100)).listen((event) {
-        notifier.setCurrentCountdownTime(event.remaining.inSeconds);
-        },onDone: (){
+        CountdownTimer(Duration(seconds: state.totalCountdownTime + 1),
+                const Duration(milliseconds: 100))
+            .listen((event) {
+          notifier.setCurrentCountdownTime(event.remaining.inSeconds);
+        }, onDone: () {
           _setTimer(duration: Duration(seconds: totalSeconds + 1));
           WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
             notifier.setSessionState(SessionState.inProgress);
@@ -79,7 +78,7 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
         });
       }
     } else if (state.sessionState == SessionState.inProgress) {
-      if (!_firstBellHasRung) {
+      if (!_firstBellHasRung && state.bellOnSessionStart) {
         AudioManager().playBell(bell: state.bellSelected);
         _firstBellHasRung = true;
       }
@@ -87,8 +86,9 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
         notifier.seMillisecondsRemaining(_millisecondsRemaining);
       });
       if (state.pausedMillisecondsRemaining != 0) {
-
-        _setTimer(duration: Duration(milliseconds: state.pausedMillisecondsRemaining));
+        _setTimer(
+            duration:
+                Duration(milliseconds: state.pausedMillisecondsRemaining));
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
           notifier.setPausedTimeMillisecondsRemaining(reset: true);
         });
@@ -107,43 +107,49 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
     });
 
     final size = MediaQuery.of(context).size;
-    return Stack(
-      children: [
-        SizedBox(
-          width: size.width * 0.90,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
+    return state.openSession
+        ? Text(
+            'Open session',
+            style: Theme.of(context).textTheme.displayMedium,
+            textAlign: TextAlign.center,
+          )
+        : Stack(
             children: [
-              if (state.sessionState == SessionState.notStarted ||
-                  state.sessionState == SessionState.ended) ...[
-                SizedBox(
-                  height: size.height * 0.02,
+              SizedBox(
+                width: size.width * 0.90,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    if (state.sessionState == SessionState.notStarted ||
+                        state.sessionState == SessionState.ended) ...[
+                      SizedBox(
+                        height: size.height * 0.02,
+                      ),
+                      TimeField(
+                        focusNode: _focusNode,
+                        textEditingController: _textEditingController,
+                      ),
+                      const TimeAdjustmentIcons()
+                    ],
+                    if (state.sessionState == SessionState.countdown) ...[
+                      SizedBox(
+                        height: size.height * 0.02,
+                      ),
+                      const CountdownText(),
+                    ],
+                    if (state.sessionState == SessionState.inProgress ||
+                        state.sessionState == SessionState.paused) ...[
+                      SizedBox(
+                        height: size.height * 0.02,
+                      ),
+                      const SessionTimer()
+                    ],
+                  ],
                 ),
-                TimeField(
-                  focusNode: _focusNode,
-                  textEditingController: _textEditingController,
-                ),
-                const TimeAdjustmentIcons()
-              ],
-              if (state.sessionState == SessionState.countdown) ...[
-                SizedBox(
-                  height: size.height * 0.02,
-                ),
-                const CountdownText(),
-              ],
-              if (state.sessionState == SessionState.inProgress ||
-                  state.sessionState == SessionState.paused) ...[
-                SizedBox(
-                  height: size.height * 0.02,
-                ),
-                const SessionTimer()
-              ],
+              ),
             ],
-          ),
-        ),
-      ],
-    );
+          );
   }
 
   _cancelTimer() {

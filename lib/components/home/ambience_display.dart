@@ -1,10 +1,9 @@
 import 'package:chime/models/prefs_model.dart';
-import 'package:chime/pages/ambience_page.dart';
+import 'package:chime/pages/settings/ambience_page.dart';
 import 'package:chime/state/preferences_main.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../configs/app_colors.dart';
 import '../../data/ambience_data.dart';
 import '../../enums/ambience.dart';
 import '../../state/app_state.dart';
@@ -22,7 +21,7 @@ class AmbienceDisplay extends ConsumerWidget {
     return InkWell(
       onTap: () {
         Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => AmbiencePage()));
+            .push(MaterialPageRoute(builder: (context) => const AmbiencePage()));
       },
       child: FutureBuilder<dynamic>(
           future: PreferencesMain.getPreferences(),
@@ -43,7 +42,7 @@ class AmbienceDisplay extends ConsumerWidget {
                 if (d.ambience == ambience) {
                   icon = Icon(
                     d.icon.icon,
-                    color: AppColors.lightGrey,
+                    color: Theme.of(context).secondaryHeaderColor,
                     size: kHomePageSmallIcon,
                   );
                 }

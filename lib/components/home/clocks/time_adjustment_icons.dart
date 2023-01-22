@@ -32,9 +32,10 @@ class TimeAdjustmentIcons extends ConsumerWidget {
               );
             }
           },
-          icon: const Icon(
+          icon: Icon(
             Icons.add,
             size: 20,
+            color: Theme.of(context).secondaryHeaderColor,
           ),
         ),
         SizedBox(
@@ -51,9 +52,10 @@ class TimeAdjustmentIcons extends ConsumerWidget {
               );
             }
           },
-          icon: const Icon(
+          icon: Icon(
             Icons.remove,
             size: 20,
+            color: Theme.of(context).secondaryHeaderColor,
           ),
         ),
       ],

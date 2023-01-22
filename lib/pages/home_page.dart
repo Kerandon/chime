@@ -1,10 +1,9 @@
 import 'dart:async';
 import 'package:chime/components/app/lotus_icon.dart';
 import 'package:chime/enums/session_state.dart';
-import 'package:chime/pages/settings_page.dart';
+import 'package:chime/pages/settings/settings_page.dart';
 import 'package:chime/state/preferences_main.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../components/home/home_contents.dart';
 import '../configs/app_colors.dart';
@@ -54,9 +53,9 @@ class _HomePageState extends ConsumerState<HomePage> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(width: size.width * 0.10,),
+              SizedBox(width: size.width * 0.08,),
               LotusIcon(width: size.width * 0.05,),
-              Text('   Zense Meditation Timer'),
+              const Text('  Zense Meditation Timer'),
             ],
           ),
           actions: [
@@ -76,7 +75,6 @@ class _HomePageState extends ConsumerState<HomePage> {
           ],
         ),
         resizeToAvoidBottomInset: false,
-        backgroundColor: AppColors.almostBlack,
         body: FutureBuilder<PrefsModel>(
           future: _prefsFuture,
           builder: (context, snapshot) {

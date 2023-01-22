@@ -42,7 +42,7 @@ class _StartButtonState extends ConsumerState<StartButton> {
       progressBarColor = Theme.of(context).primaryColor.withOpacity(0.50);
     }
     if (state.longTapInProgress) {
-      progressBarColor = AppColors.darkGrey;
+      progressBarColor = AppColors.grey;
     }
     if (state.sessionState == SessionState.inProgress &&
         state.millisecondsRemaining == 0) {
@@ -130,7 +130,7 @@ class _StartButtonState extends ConsumerState<StartButton> {
               duration: state.totalTimeMinutes,
               pause: state.sessionState == SessionState.paused,
               cancel: state.sessionState == SessionState.notStarted,
-              backgroundColor: Colors.white10,
+              backgroundColor: Theme.of(context).primaryColorLight,
             ),
           ),
           FadeInAnimation(
@@ -171,24 +171,27 @@ class _StartButtonState extends ConsumerState<StartButton> {
 
   void _setButtonIcon(AppState state) {
     if (state.sessionState == SessionState.notStarted) {
-      _buttonImage = const Icon(
+      _buttonImage = Icon(
         Icons.play_arrow_outlined,
         size: kStartButtonIconSize,
+        color: Theme.of(context).primaryColor,
       );
     }
     if (state.sessionState == SessionState.inProgress) {
       _buttonImage = const LotusIcon();
     }
     if (state.sessionState == SessionState.paused) {
-      _buttonImage = const Icon(
+      _buttonImage = Icon(
         Icons.pause,
         size: kStartButtonIconSize,
+        color: Theme.of(context).primaryColor,
       );
     }
     if (state.longTapInProgress) {
-      _buttonImage = const Icon(
+      _buttonImage = Icon(
         Icons.stop,
         size: kStartButtonIconSize,
+        color: Theme.of(context).primaryColor,
       );
     }
   }

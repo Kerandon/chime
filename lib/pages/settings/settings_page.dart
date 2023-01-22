@@ -1,17 +1,18 @@
 import 'package:chime/enums/ambience.dart';
 import 'package:chime/enums/bell.dart';
-import 'package:chime/pages/meditation_bells_page.dart';
-import 'package:chime/pages/countdown_page.dart';
+import 'package:chime/pages/settings/color_theme_page.dart';
+import 'package:chime/pages/settings/meditation_bells_page.dart';
+import 'package:chime/pages/settings/countdown_page.dart';
 import 'package:chime/state/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../components/app/lotus_icon.dart';
-import '../components/settings/bell_on_start_tile.dart';
-import '../components/settings/open_session_tile.dart';
-import '../components/settings/settings_divider.dart';
-import '../components/settings/settings_tile.dart';
-import '../configs/constants.dart';
+import '../../components/app/lotus_icon.dart';
+import '../../components/settings/bell_on_start_tile.dart';
+import '../../components/settings/open_session_tile.dart';
+import '../../components/settings/settings_divider.dart';
+import '../../components/settings/settings_tile.dart';
+import '../../configs/constants.dart';
 import 'achievements_page.dart';
 import 'ambience_page.dart';
 import 'guide_page.dart';
@@ -36,10 +37,9 @@ class SettingsPage extends ConsumerWidget {
             const OpenSessionTile(),
             SettingsTile(
               icon: const Icon(
-                Icons.audiotrack_outlined,
-                color: Colors.white,
+                FontAwesomeIcons.bell,
               ),
-              title: 'Meditation Bell',
+              title: 'Meditation bell',
               subTitle: state.bellSelected.toText(),
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
@@ -50,7 +50,6 @@ class SettingsPage extends ConsumerWidget {
             SettingsTile(
               icon: const Icon(
                 Icons.piano_outlined,
-                color: Colors.white,
               ),
               title: 'Ambience',
               subTitle: state.ambienceSelected.toText(),
@@ -62,20 +61,18 @@ class SettingsPage extends ConsumerWidget {
             SettingsTile(
               icon: const Icon(
                 Icons.timer_outlined,
-                color: Colors.white,
               ),
-              title: 'Warmup Countdown',
+              title: 'Warmup countdown',
               subTitle: '${state.totalCountdownTime.toString()} seconds',
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => const CountdownPage()));
               },
             ),
-            const SettingsTitleDivider(title: 'Guidance & achievements'),
+            const SettingsTitleDivider(title: 'Guide & stats'),
             SettingsTile(
               icon: const Icon(
-                Icons.tips_and_updates_outlined,
-                color: Colors.white,
+                  FontAwesomeIcons.book
               ),
               title: 'Meditation Guide',
               onPressed: () {
@@ -84,38 +81,31 @@ class SettingsPage extends ConsumerWidget {
               },
             ),
             SettingsTile(
-                faIcon: const FaIcon(
-                  FontAwesomeIcons.award,
-                  color: Colors.white,
+                icon: const Icon(
+                  Icons.bar_chart_outlined,
                 ),
-                title: 'Achievements',
+                title: 'Meditation stats',
                 onPressed: () {
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
                         builder: (context) => const AchievementsPage()),
                   );
                 }),
-            SettingsTile(
-                icon: const Icon(
-                  Icons.question_mark_outlined,
-                  color: Colors.white,
-                ),
-                title: 'FAQ',
-                onPressed: () {}),
             const SettingsTitleDivider(
               title: 'Appearance',
             ),
             SettingsTile(
                 icon: const Icon(
-                  Icons.style_outlined,
-                  color: Colors.white,
+                  Icons.color_lens_outlined,
                 ),
                 title: 'Color theme',
-                onPressed: () {}),
+                onPressed: () {
+
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ColorThemePage(),),);
+                }),
             SettingsTile(
                 icon: const Icon(
-                  Icons.layers_outlined,
-                  color: Colors.white,
+                  FontAwesomeIcons.clock,
                 ),
                 title: 'Hide countdown clock',
                 onPressed: () {}),
@@ -123,14 +113,12 @@ class SettingsPage extends ConsumerWidget {
             SettingsTile(
                 icon: const Icon(
                   Icons.restart_alt_outlined,
-                  color: Colors.white,
                 ),
                 title: 'Reset all settings',
                 onPressed: () {}),
             SettingsTile(
                 icon: const Icon(
                   Icons.info_outlined,
-                  color: Colors.white,
                 ),
                 title: 'About',
                 onPressed: () {
