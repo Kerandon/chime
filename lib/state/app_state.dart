@@ -1,9 +1,8 @@
 import 'package:chime/configs/constants.dart';
+import 'package:chime/database_manager.dart';
 import 'package:chime/enums/audio_type.dart';
 import 'package:chime/enums/color_themes.dart';
 import 'package:chime/enums/session_state.dart';
-import 'package:chime/state/preferences_main.dart';
-import 'package:chime/state/preferences_streak.dart';
 import 'package:chime/utils/calculate_intervals.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -11,6 +10,7 @@ import '../audio/audio_manager.dart';
 import '../enums/ambience.dart';
 import '../enums/bell.dart';
 import '../enums/focus_state.dart';
+import '../enums/prefs.dart';
 import '../utils/methods.dart';
 
 class AppState {
@@ -45,6 +45,9 @@ class AppState {
   //STATS
   final bool checkIfStatsUpdated;
 
+  //Layout
+  final bool hideClock;
+
   AppState({
     required this.sessionState,
     required this.sessionHasStarted,
@@ -67,6 +70,7 @@ class AppState {
     required this.ambienceSelected,
     required this.ambienceVolume,
     required this.checkIfStatsUpdated,
+    required this.hideClock,
   });
 
   AppState copyWith({
@@ -91,6 +95,7 @@ class AppState {
     Ambience? ambienceSelected,
     double? ambienceVolume,
     bool? checkIfStatsUpdated,
+    bool? hideClock,
   }) {
     return AppState(
       sessionState: sessionState ?? this.sessionState,
@@ -118,6 +123,7 @@ class AppState {
       ambienceSelected: ambienceSelected ?? this.ambienceSelected,
       ambienceVolume: ambienceVolume ?? this.ambienceVolume,
       checkIfStatsUpdated: checkIfStatsUpdated ?? this.checkIfStatsUpdated,
+      hideClock: hideClock ?? this.hideClock,
     );
   }
 }
@@ -168,7 +174,8 @@ class AppNotifier extends StateNotifier<AppState> {
     } else if (sessionState == SessionState.paused) {
       await AudioManager().pauseAmbience();
     } else if (sessionState == SessionState.ended) {
-      await PreferencesStreak.addToStreak(DateTime.now());
+      //todo add streak
+      // await PreferencesStreak.addToStreak(DateTime.now());
     }
   }
 
@@ -230,7 +237,7 @@ class AppNotifier extends StateNotifier<AppState> {
   }
 
   void setBellIntervalTime(int time) async {
-    await PreferencesMain.setPreferences(bellInterval: time);
+    await DatabaseManager().insertIntoPrefs(k: Prefs.bellInterval.name, v: time);
     state = state.copyWith(bellIntervalTimeSelected: time);
     _calculateBellIntervalsAndTimes();
   }
@@ -252,7 +259,7 @@ class AppNotifier extends StateNotifier<AppState> {
   }
 
   void setBellSelected(Bell bell) async {
-    await PreferencesMain.setPreferences(bellSelected: bell);
+    //await DatabaseManager().insertIntoPrefs(k: Prefs.bellSelected.name, v: bell);
     state = state.copyWith(bellSelected: bell);
   }
 
@@ -261,6 +268,7 @@ class AppNotifier extends StateNotifier<AppState> {
   }
 
   void setAmbienceSelected(Ambience ambience) async {
+    print('ambience received notify is $ambience');
     state = state.copyWith(ambienceSelected: ambience);
     if (ambience == Ambience.none) {
       await AudioManager().stop(audioType: AudioType.ambience);
@@ -279,6 +287,10 @@ class AppNotifier extends StateNotifier<AppState> {
 
   void checkIfStatsUpdated(bool check) {
     state = state.copyWith(checkIfStatsUpdated: check);
+  }
+
+  void setHideClock(bool hide){
+    state = state.copyWith(hideClock: hide);
   }
 }
 
@@ -305,5 +317,6 @@ final stateProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
     ambienceSelected: Ambience.none,
     ambienceVolume: 0.50,
     checkIfStatsUpdated: false,
+    hideClock: false,
   ));
 });

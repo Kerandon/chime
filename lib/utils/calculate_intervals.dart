@@ -28,7 +28,6 @@ Set<int> calculateIntervals(int totalTime) {
         intervalTimes.add(t);
       }
     }
-
     intervalTimes.add(totalTime);
   }
   return intervalTimes;

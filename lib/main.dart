@@ -42,8 +42,13 @@ class ChimeApp extends ConsumerStatefulWidget {
 }
 
 class _ChimeAppState extends ConsumerState<ChimeApp> {
+  bool _prefsUpdated = false;
+
+  late final Future<PrefsModel2> _futurePref;
+
   @override
   void initState() {
+    _futurePref = DatabaseManager().getPrefs();
     _initAudioPlayers();
     super.initState();
   }
@@ -59,7 +64,7 @@ class _ChimeAppState extends ConsumerState<ChimeApp> {
     ThemeData appTheme = darkTealTheme;
 
     return FutureBuilder<PrefsModel2>(
-      future: DatabaseManager().getPrefs(),
+      future: _futurePref,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           final prefsModel = snapshot.data;
@@ -82,7 +87,22 @@ class _ChimeAppState extends ConsumerState<ChimeApp> {
               break;
           }
           WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-            notifier.setColorTheme(prefsModel!.colorTheme);
+            if (!_prefsUpdated) {
+
+              print('bell ${prefsModel!.bellSelected}');
+              notifier.setTotalTime(prefsModel!.totalTime);
+              notifier.setTotalCountdownTime(prefsModel.totalCountdown);
+              notifier.setBellSelected(prefsModel.bellSelected);
+              notifier.setBellIntervalTime(prefsModel.bellInterval);
+              notifier.setBellVolume(prefsModel.bellVolume);
+              notifier.setBellOnSessionStart(prefsModel.bellOnStart);
+              notifier.setAmbienceSelected(prefsModel.ambienceSelected);
+              notifier.setAmbienceVolume(prefsModel.ambienceVolume);
+              notifier.setColorTheme(prefsModel.colorTheme);
+              notifier.setHideClock(prefsModel.hideClock);
+
+              _prefsUpdated = true;
+            }
           });
           return MaterialApp(
             debugShowCheckedModeBanner: false,
@@ -102,31 +122,3 @@ class _ChimeAppState extends ConsumerState<ChimeApp> {
     );
   }
 }
-
-//
-// class DATABASETEST extends StatefulWidget {
-//   const DATABASETEST({Key? key}) : super(key: key);
-//
-//   @override
-//   State<DATABASETEST> createState() => _DATABASETESTState();
-// }
-//
-// class _DATABASETESTState extends State<DATABASETEST> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(),
-//       body: Column(
-//         mainAxisAlignment: MainAxisAlignment.center,
-//         children: [
-//           ElevatedButton(onPressed: (){
-//             DatabaseManager().insertIntoPrefs(k: Prefs.colorTheme.name, v: ColorTheme.darkOrange.name);
-//           }, child: const Text('insert')),
-//           ElevatedButton(onPressed: () async {
-//             final data = await DatabaseManager().getPrefs();
-//           }, child: const Text('get')),
-//         ],
-//       ),
-//     );
-//   }
-// }

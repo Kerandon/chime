@@ -1,8 +1,9 @@
-import 'package:chime/state/preferences_main.dart';
+import 'package:chime/database_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../audio/audio_manager.dart';
 import '../../../enums/bell.dart';
+import '../../../enums/prefs.dart';
 import '../../../state/app_state.dart';
 
 class BellsCheckBoxTile extends ConsumerWidget {
@@ -35,7 +36,7 @@ class BellsCheckBoxTile extends ConsumerWidget {
       onChanged: (value) async {
         notifier.setBellSelected(bell);
         await AudioManager().playBell(bell: bell);
-        await PreferencesMain.setPreferences(bellSelected: bell);
+        await DatabaseManager().insertIntoPrefs(k: Prefs.bellSelected.name, v: bell.name);
       },
     );
   }

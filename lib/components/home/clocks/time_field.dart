@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
+import '../../../database_manager.dart';
 import '../../../enums/focus_state.dart';
-import '../../../state/preferences_main.dart';
+import '../../../enums/prefs.dart';
 import '../../../state/app_state.dart';
 
 class TimeField extends ConsumerWidget {
@@ -29,7 +29,10 @@ class TimeField extends ConsumerWidget {
         controller: textEditingController,
         onChanged: (value) async {
           notifier.setTimerFocusState(FocusState.inFocus);
-          PreferencesMain.setPreferences(totalTime: int.tryParse(value) ?? 0);
+          //todo save time
+          DatabaseManager().insertIntoPrefs(
+              k: Prefs.timeTotal.name, v: int.tryParse(value) ?? 0);
+          // PreferencesMain.setPreferences(totalTime: int.tryParse(value) ?? 0);
           if (value.trim() == "") {
             notifier.setTotalTime(1);
           } else {
@@ -44,12 +47,7 @@ class TimeField extends ConsumerWidget {
         textAlign: TextAlign.center,
         decoration: InputDecoration(
           isDense: true,
-          enabledBorder:
-              // OutlineInputBorder(
-              //   borderSide: BorderSide(color: Theme.of(context).primaryColor)
-              // ),
-
-              const UnderlineInputBorder(
+          enabledBorder: const UnderlineInputBorder(
             borderSide: BorderSide.none,
           ),
           focusedBorder: UnderlineInputBorder(

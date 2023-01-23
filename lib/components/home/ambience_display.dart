@@ -1,6 +1,5 @@
 import 'package:chime/models/prefs_model.dart';
 import 'package:chime/pages/settings/ambience_page.dart';
-import 'package:chime/state/preferences_main.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -24,19 +23,19 @@ class AmbienceDisplay extends ConsumerWidget {
             .push(MaterialPageRoute(builder: (context) => const AmbiencePage()));
       },
       child: FutureBuilder<dynamic>(
-          future: PreferencesMain.getPreferences(),
+          // future: PreferencesMain.getPreferences(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               PrefsModel prefsData = snapshot.data!;
               double volume = prefsData.ambienceVolume;
               Ambience ambience = prefsData.ambienceSelected;
 
-              WidgetsBinding.instance.addPostFrameCallback(
-                (timeStamp) {
-                  notifier.setAmbienceVolume(volume);
-                  notifier.setAmbienceSelected(ambience);
-                },
-              );
+              // WidgetsBinding.instance.addPostFrameCallback(
+              //   (timeStamp) {
+              //     notifier.setAmbienceVolume(volume);
+              //     notifier.setAmbienceSelected(ambience);
+              //   },
+              // );
               Icon? icon;
               for (var d in ambienceData) {
                 if (d.ambience == ambience) {

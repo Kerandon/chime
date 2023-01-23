@@ -1,9 +1,9 @@
 import 'package:chime/enums/focus_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
 import '../../../configs/app_colors.dart';
-import '../../../state/preferences_main.dart';
+import '../../../database_manager.dart';
+import '../../../enums/prefs.dart';
 import '../../../state/app_state.dart';
 
 class TimeAdjustmentIcons extends ConsumerWidget {
@@ -27,9 +27,10 @@ class TimeAdjustmentIcons extends ConsumerWidget {
             notifier.setTimerFocusState(FocusState.unFocus);
             notifier.incrementTotalTime();
             if (state.totalTimeMinutes < 9999) {
-              await PreferencesMain.setPreferences(
-                totalTime: state.totalTimeMinutes + 1,
-              );
+              DatabaseManager().insertIntoPrefs(k: Prefs.timeTotal.name, v: state.totalTimeMinutes + 1);
+              // await PreferencesMain.setPreferences(
+              //   totalTime: state.totalTimeMinutes + 1,
+              // );
             }
           },
           icon: Icon(
@@ -47,9 +48,11 @@ class TimeAdjustmentIcons extends ConsumerWidget {
             notifier.setTimerFocusState(FocusState.unFocus);
             notifier.decrementTotalTime();
             if (state.totalTimeMinutes > 0) {
-              await PreferencesMain.setPreferences(
-                totalTime: state.totalTimeMinutes - 1,
-              );
+              DatabaseManager().insertIntoPrefs(k: Prefs.timeTotal.name, v: state.totalTimeMinutes - 1);
+              // await PreferencesMain.setPreferences(
+              //
+              //  // totalTime: state.totalTimeMinutes - 1,
+              // );
             }
           },
           icon: Icon(

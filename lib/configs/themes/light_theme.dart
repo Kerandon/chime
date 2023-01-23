@@ -16,9 +16,10 @@ final lightTheme = darkTealTheme.copyWith(
     ),
   ),
   iconTheme: const IconThemeData(color: Colors.black, size: 22),
+  dialogBackgroundColor: AppColors.offWhite,
   appBarTheme: AppBarTheme(
     iconTheme: const IconThemeData(color: Colors.black,),
-    backgroundColor: AppColors.offWhite,
+    backgroundColor: AppColors.lightGrey,
     elevation: 0,
     centerTitle: true,
     titleTextStyle: lightThemeTextStyle.copyWith(fontSize: 15),

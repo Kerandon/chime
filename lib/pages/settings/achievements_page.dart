@@ -25,7 +25,7 @@ class _AchievementsPageState extends ConsumerState<AchievementsPage> {
     return Scaffold(
       appBar: AppBar(
         title: const SettingsTitle(
-         icon: Icon(Icons.bar_chart_outlined),
+          icon: Icon(Icons.bar_chart_outlined),
           text: 'Meditation Stats',
         ),
       ),
@@ -34,130 +34,10 @@ class _AchievementsPageState extends ConsumerState<AchievementsPage> {
           padding: EdgeInsets.symmetric(
               horizontal: size.width * kSettingsHorizontalPageIndent),
           child: Column(
-            children: [
-              FutureBuilder<StreakData>(
-                future: PreferencesStreak.getStreakData(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    if (snapshot.data!.current == 0 &&
-                        snapshot.data!.best == 0) {
-                      _disableReset = true;
-                    } else {
-                      _disableReset = false;
-                      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                        setState(() {});
-                      });
-                    }
-                    return Padding(
-                      padding: EdgeInsets.only(
-                        left: size.width * 0.05,
-                        top: size.height * 0.06,
-                        right: size.width * 0.05,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Table(
-                            children: [
-                              TableRow(
-                                children: [
-                                  buildTableCellLeft(
-                                      context: context,
-                                      text: '\nCurrent streak'),
-                                  buildTableCellRight(
-                                      context: context,
-                                      text: '\n${snapshot.data!.current}\n\n')
-                                ],
-                              ),
-                              TableRow(
-                                children: [
-                                  buildTableCellLeft(
-                                      context: context, text: 'Best streak'),
-                                  buildTableCellRight(
-                                      context: context,
-                                      text: '${snapshot.data!.best}')
-                                ],
-                              ),
-                            ],
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: size.height * 0.06),
-                            child: SizedBox(
-                              width: size.width * 0.60,
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                    top: size.height * 0.10,
-                                    bottom: size.height * 0.05),
-                                child: CustomOutlineButton(
-                                    disable: _disableReset,
-                                    text: 'Reset',
-                                    onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) => ConfirmationBox(
-                                            text: 'Confirm reset?',
-                                            onPressed: () {
-                                              Navigator.of(context)
-                                                  .maybePop()
-                                                  .then((value) =>
-                                                      Navigator.of(context)
-                                                          .maybePop());
-
-                                              PreferencesStreak
-                                                      .clearAllStreakData()
-                                                  .then((value) => ScaffoldMessenger
-                                                          .of(context)
-                                                      .showSnackBar(const SnackBar(
-                                                          content: Text(
-                                                              'Streak stats cleared'))));
-                                              WidgetsBinding.instance
-                                                  .addPostFrameCallback(
-                                                      (timeStamp) {
-                                                ref
-                                                    .read(
-                                                        stateProvider.notifier)
-                                                    .checkIfStatsUpdated(true);
-                                              });
-                                            }),
-                                      );
-                                    }),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                  return const SizedBox.shrink();
-                },
-              ),
-            ],
+            children: [],
           ),
         ),
       ),
     );
   }
-}
-
-TableCell buildTableCellLeft(
-    {required BuildContext context, required String text}) {
-  return TableCell(
-    child: Text(
-      text,
-      style: Theme.of(context).textTheme.bodyMedium,
-    ),
-  );
-}
-
-TableCell buildTableCellRight(
-    {required BuildContext context, required String text}) {
-  return TableCell(
-    child: Text(text,
-        textAlign: TextAlign.end,
-        style: Theme.of(context)
-            .textTheme
-            .bodyMedium!
-            .copyWith(color: Theme.of(context).primaryColor)),
-  );
 }

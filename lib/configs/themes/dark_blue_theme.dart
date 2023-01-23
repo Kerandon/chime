@@ -15,6 +15,7 @@ final darkBlueTheme = darkTealTheme.copyWith(
   checkboxTheme: CheckboxThemeData(
     fillColor: MaterialStateProperty.all<Color>(AppColors.bluePrimary),
   ),
+
   switchTheme: SwitchThemeData(
     thumbColor: MaterialStateProperty.all<Color>(AppColors.bluePrimary),
     trackColor: MaterialStateProperty.all<Color>(AppColors.blueDark),

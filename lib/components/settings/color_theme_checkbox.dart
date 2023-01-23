@@ -38,6 +38,7 @@ class ColorThemeCheckbox extends ConsumerWidget {
         ),
         value: colorTheme == state.colorTheme,
         onChanged: (value) async {
+          print('insert color in ${Prefs.colorTheme.name} and ${colorTheme.name}');
           await DatabaseManager()
               .insertIntoPrefs(k: Prefs.colorTheme.name, v: colorTheme.name);
           notifier.setColorTheme(colorTheme);

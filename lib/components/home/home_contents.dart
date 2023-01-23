@@ -1,6 +1,5 @@
 import 'package:chime/animation/flip_animation.dart';
 import 'package:chime/components/home/start_button/start_button.dart';
-import 'package:chime/components/home/streak_counter.dart';
 import 'package:chime/enums/session_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -43,7 +42,6 @@ class _HomePageContentsState extends ConsumerState<HomePageContents> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: const [
                         AmbienceDisplay(),
-                        StreakCounter(),
                       ],
                     )),
                 const Expanded(

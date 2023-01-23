@@ -89,7 +89,7 @@ class IntervalDropdown extends ConsumerWidget {
                       style: Theme.of(context)
                           .textTheme
                           .bodySmall!
-                          .copyWith(color:        Theme.of(context).secondaryHeaderColor,
+                          .copyWith(color:Theme.of(context).secondaryHeaderColor,
                       ),
                     ),
                   ],
@@ -102,7 +102,7 @@ class IntervalDropdown extends ConsumerWidget {
               : DropdownButton<int>(
                   isDense: true,
                   borderRadius: BorderRadius.circular(kBorderRadius),
-                  dropdownColor: Colors.black,
+                  dropdownColor: Theme.of(context).dialogBackgroundColor,
                   value: selectedValue,
                   iconSize: 0,
                   items: items.toList(),

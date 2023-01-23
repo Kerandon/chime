@@ -40,6 +40,7 @@ final darkTealTheme = ThemeData(
     ),
   ),
   iconTheme: const IconThemeData(color: Colors.white, size: 22),
+  dialogBackgroundColor: AppColors.darkGrey,
   dialogTheme: DialogTheme(
     alignment: Alignment.center,
     shape: RoundedRectangleBorder(

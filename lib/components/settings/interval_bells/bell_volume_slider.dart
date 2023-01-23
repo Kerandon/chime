@@ -1,7 +1,8 @@
+import 'package:chime/database_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../../../enums/prefs.dart';
 import '../../../state/app_state.dart';
-import '../../../state/preferences_main.dart';
 
 class BellVolumeSlider extends ConsumerWidget {
   const BellVolumeSlider({
@@ -41,7 +42,7 @@ class BellVolumeSlider extends ConsumerWidget {
             onChanged: (value) async {
               double volume = value;
               notifier.setBellVolume(volume);
-              await PreferencesMain.setPreferences(bellVolume: volume);
+              await DatabaseManager().insertIntoPrefs(k: Prefs.bellVolume.name, v: volume);
             },
             min: 0.0,
             max: 1.0,

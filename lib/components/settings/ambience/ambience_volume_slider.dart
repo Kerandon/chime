@@ -1,7 +1,8 @@
-import 'package:chime/state/preferences_main.dart';
+import 'package:chime/database_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../enums/ambience.dart';
+import '../../../enums/prefs.dart';
 import '../../../state/app_state.dart';
 
 class AmbienceVolumeSlider extends ConsumerWidget {
@@ -49,7 +50,7 @@ class AmbienceVolumeSlider extends ConsumerWidget {
                 : (value) async {
                     double volume = value;
                     notifier.setAmbienceVolume(volume);
-                    await PreferencesMain.setPreferences(ambienceVolume: value);
+                    await DatabaseManager().insertIntoPrefs(k: Prefs.ambienceVolume.name, v: value);
                   },
             min: 0.0,
             max: 1.0,
