@@ -107,13 +107,14 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
     });
 
     final size = MediaQuery.of(context).size;
-    return state.openSession
-        ? Text(
+    if (state.openSession) {
+      return Text(
             'Open session',
             style: Theme.of(context).textTheme.displayMedium,
             textAlign: TextAlign.center,
-          )
-        : Stack(
+          );
+    } else {
+      return Stack(
             children: [
               SizedBox(
                 width: size.width * 0.90,
@@ -123,14 +124,14 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
                   children: [
                     if (state.sessionState == SessionState.notStarted ||
                         state.sessionState == SessionState.ended) ...[
-                      SizedBox(
-                        height: size.height * 0.02,
+                      Expanded(
+                        flex: 2,
+                        child: TimeField(
+                          focusNode: _focusNode,
+                          textEditingController: _textEditingController,
+                        ),
                       ),
-                      TimeField(
-                        focusNode: _focusNode,
-                        textEditingController: _textEditingController,
-                      ),
-                      const TimeAdjustmentIcons()
+                      const Expanded(child: TimeAdjustmentIcons())
                     ],
                     if (state.sessionState == SessionState.countdown) ...[
                       SizedBox(
@@ -150,6 +151,7 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
               ),
             ],
           );
+    }
   }
 
   _cancelTimer() {

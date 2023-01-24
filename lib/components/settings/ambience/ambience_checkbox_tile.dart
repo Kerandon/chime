@@ -1,4 +1,4 @@
-import 'package:chime/database_manager.dart';
+import 'package:chime/state/database_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../audio/audio_manager.dart';
@@ -46,7 +46,6 @@ class _AmbienceCheckBoxTileState extends ConsumerState<AmbienceCheckBoxTile> {
         Ambience ambience = widget.ambienceData.ambience;
         notifier.setAmbienceSelected(ambience);
         await AudioManager().playAmbience(ambience: ambience);
-        print('insert in database ${Prefs.ambienceSelected.name} and $ambience');
         await DatabaseManager().insertIntoPrefs(k: Prefs.ambienceSelected.name, v: ambience.name);
       },
     );

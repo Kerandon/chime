@@ -1,5 +1,5 @@
 import 'package:chime/configs/constants.dart';
-import 'package:chime/database_manager.dart';
+import 'package:chime/state/database_manager.dart';
 import 'package:chime/enums/audio_type.dart';
 import 'package:chime/enums/color_themes.dart';
 import 'package:chime/enums/session_state.dart';
@@ -20,6 +20,8 @@ class AppState {
   final FocusState focusState;
   final bool longTapInProgress;
   final ColorTheme colorTheme;
+  final int currentPage;
+
 
   //TIME
   final int totalTimeMinutes;
@@ -54,6 +56,7 @@ class AppState {
     required this.focusState,
     required this.longTapInProgress,
     required this.colorTheme,
+    required this.currentPage,
     required this.totalTimeMinutes,
     required this.initialTimeIsSet,
     required this.millisecondsRemaining,
@@ -78,6 +81,7 @@ class AppState {
     bool? sessionHasStarted,
     FocusState? focusState,
     ColorTheme? colorTheme,
+    int? currentPage,
     bool? longTapInProgress,
     int? totalTimeMinutes,
     bool? initialTimeIsSet,
@@ -103,6 +107,7 @@ class AppState {
       focusState: focusState ?? this.focusState,
       longTapInProgress: longTapInProgress ?? this.longTapInProgress,
       colorTheme: colorTheme ?? this.colorTheme,
+      currentPage: currentPage ?? this.currentPage,
       totalTimeMinutes: totalTimeMinutes ?? this.totalTimeMinutes,
       initialTimeIsSet: initialTimeIsSet ?? this.initialTimeIsSet,
       millisecondsRemaining:
@@ -205,6 +210,10 @@ class AppNotifier extends StateNotifier<AppState> {
     state = state.copyWith(colorTheme: colorTheme);
   }
 
+  void setPage(int index){
+    state = state.copyWith(currentPage: index);
+  }
+
   void seMillisecondsRemaining(int milliseconds) {
     state = state.copyWith(millisecondsRemaining: milliseconds);
     playSessionBells(state);
@@ -268,7 +277,6 @@ class AppNotifier extends StateNotifier<AppState> {
   }
 
   void setAmbienceSelected(Ambience ambience) async {
-    print('ambience received notify is $ambience');
     state = state.copyWith(ambienceSelected: ambience);
     if (ambience == Ambience.none) {
       await AudioManager().stop(audioType: AudioType.ambience);
@@ -301,6 +309,7 @@ final stateProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
     focusState: FocusState.none,
     longTapInProgress: false,
     colorTheme: ColorTheme.darkTeal,
+    currentPage: 0,
     totalTimeMinutes: 60,
     initialTimeIsSet: false,
     millisecondsRemaining: 0,

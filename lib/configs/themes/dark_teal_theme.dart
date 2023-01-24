@@ -8,29 +8,7 @@ final darkTealTheme = ThemeData(
   primaryColor: AppColors.tealPrimary,
   primaryColorLight: AppColors.offWhite,
   secondaryHeaderColor: AppColors.grey,
-  textTheme: TextTheme(
-    bodySmall: darkThemeTextStyle.copyWith(
-      fontSize: 15,
-      fontWeight: FontWeight.w300,
-    ),
-    bodyMedium: darkThemeTextStyle.copyWith(
-      fontSize: 20,
-      fontWeight: FontWeight.w300,
-    ),
-    displaySmall: darkThemeTextStyle.copyWith(
-      fontSize: 20,
-      fontWeight: FontWeight.w300,
-    ),
-    displayMedium: darkThemeTextStyle.copyWith(
-      fontSize: 25,
-      fontWeight: FontWeight.w100,
-    ),
-    displayLarge: darkThemeTextStyle.copyWith(
-      fontSize: 50,
-      fontWeight: FontWeight.w100,
-    ),
-    labelSmall: darkThemeTextStyle,
-  ),
+  textTheme: darkThemeTextTheme(),
   outlinedButtonTheme: OutlinedButtonThemeData(
     style: OutlinedButton.styleFrom(
       textStyle: const TextStyle(
@@ -81,5 +59,12 @@ final darkTealTheme = ThemeData(
     trackColor: MaterialStateProperty.all<Color>(AppColors.tealDark),
     overlayColor: MaterialStateProperty.all<Color>(AppColors.lightGrey),
   ),
+  bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+    backgroundColor: AppColors.almostBlack,
+    selectedIconTheme: IconThemeData(color: AppColors.tealPrimary),
+    selectedLabelStyle: TextStyle(color: AppColors.tealPrimary),
+    selectedItemColor: AppColors.tealPrimary,
+    unselectedItemColor: Colors.grey
+  )
 );
 

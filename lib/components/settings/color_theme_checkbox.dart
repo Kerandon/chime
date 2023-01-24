@@ -2,7 +2,7 @@ import 'package:chime/configs/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../database_manager.dart';
+import '../../state/database_manager.dart';
 import '../../enums/color_themes.dart';
 import '../../enums/prefs.dart';
 import '../../state/app_state.dart';
@@ -38,7 +38,6 @@ class ColorThemeCheckbox extends ConsumerWidget {
         ),
         value: colorTheme == state.colorTheme,
         onChanged: (value) async {
-          print('insert color in ${Prefs.colorTheme.name} and ${colorTheme.name}');
           await DatabaseManager()
               .insertIntoPrefs(k: Prefs.colorTheme.name, v: colorTheme.name);
           notifier.setColorTheme(colorTheme);

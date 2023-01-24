@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static const tealPrimary = Colors.teal;
+  static const tealPrimary = Color.fromARGB(255, 0, 128, 128);
   static const tealDark = Color.fromARGB(255, 1, 77, 78);
   static const orangePrimary = Colors.deepOrangeAccent;
   static const orangeDark = Colors.deepOrange;
@@ -15,6 +15,6 @@ class AppColors {
   static const lightGrey = Color.fromARGB(255, 211, 211, 211);
   static const grey = Color.fromARGB(255, 110, 110, 110);
   static const darkGrey = Color.fromARGB(255, 50, 50, 50);
-
-  static const almostBlack = Color.fromARGB(255, 15, 15, 15);
+  static const veryDarkGrey = Color.fromARGB(255, 25, 25, 25);
+  static const almostBlack = Color.fromARGB(255, 5, 5, 5);
 }

@@ -1,10 +1,9 @@
-import 'package:chime/components/app/lotus_icon.dart';
-import 'package:chime/components/home/home_contents.dart';
-import 'package:chime/enums/session_state.dart';
-import 'package:chime/pages/settings/settings_page.dart';
+import 'package:chime/pages/setup/guide_page.dart';
+import 'package:chime/pages/setup/setup_page.dart';
+import 'package:chime/pages/setup/stats_page.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../configs/app_colors.dart';
+import 'timer_page.dart';
 import '../state/app_state.dart';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -13,62 +12,58 @@ class HomePage extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<HomePage> createState() => _HomePageState();
+  ConsumerState<HomePage> createState() => _HomePageContentsState();
 }
 
-class _HomePageState extends ConsumerState<HomePage> {
+class _HomePageContentsState extends ConsumerState<HomePage> {
+
+  static const List<Widget> _pageOptions = [
+ TimerPage(),
+    SetupPage(),
+    StatsPage(),
+    GuidePage(),
+
+  ];
+
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     final state = ref.watch(stateProvider);
+    final notifier = ref.read(stateProvider.notifier);
 
-    bool sessionUnderway = false;
-    if (state.sessionState == SessionState.countdown ||
-        state.sessionState == SessionState.inProgress ||
-        state.sessionState == SessionState.paused) {
-      sessionUnderway = true;
-    }
-
-    return SafeArea(
+    return Align(
+      alignment: Alignment.center,
       child: Scaffold(
-          appBar: sessionUnderway
-              ? AppBar(
-                  backgroundColor: AppColors.almostBlack,
-                )
-              : AppBar(
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: size.width * 0.08,
-                      ),
-                      LotusIcon(
-                        width: size.width * 0.05,
-                      ),
-                      const Text('  Zense Meditation Timer'),
-                    ],
-                  ),
-                  actions: [
-                    IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SettingsPage(),
-                          ),
-                        );
-                      },
-                      icon: const Icon(
-                        Icons.settings_outlined,
-                      ),
-                    ),
-                  ],
-                ),
-          resizeToAvoidBottomInset: false,
-          body: HomePageContents()
-          // return const LotusIcon();
-
-          ),
+        resizeToAvoidBottomInset: false,
+        body: _pageOptions.elementAt(state.currentPage),
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.timer_outlined),
+              label: 'Timer',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings_outlined),
+              label: 'Setup',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.bar_chart_outlined),
+              label: 'Stats',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.menu_book_outlined),
+              label: 'Guidance',
+            ),
+          ],
+          currentIndex: state.currentPage,
+          onTap: (index) {
+            notifier.setPage(index);
+          },
+        ),
+      ),
     );
   }
 }
+
+
+

@@ -22,8 +22,8 @@ TextTheme darkThemeTextTheme() {
       fontWeight: FontWeight.w100,
     ),
     displayLarge: darkThemeTextStyle.copyWith(
-      fontSize: 50,
-      fontWeight: FontWeight.w100,
+      fontSize: 80,
+      fontWeight: FontWeight.w300,
     ),
     labelSmall: darkThemeTextStyle,
   );

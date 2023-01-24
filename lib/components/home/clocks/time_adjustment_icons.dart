@@ -2,7 +2,7 @@ import 'package:chime/enums/focus_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../configs/app_colors.dart';
-import '../../../database_manager.dart';
+import '../../../state/database_manager.dart';
 import '../../../enums/prefs.dart';
 import '../../../state/app_state.dart';
 
@@ -20,6 +20,7 @@ class TimeAdjustmentIcons extends ConsumerWidget {
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         IconButton(
           color: AppColors.lightGrey,
@@ -28,15 +29,12 @@ class TimeAdjustmentIcons extends ConsumerWidget {
             notifier.incrementTotalTime();
             if (state.totalTimeMinutes < 9999) {
               DatabaseManager().insertIntoPrefs(k: Prefs.timeTotal.name, v: state.totalTimeMinutes + 1);
-              // await PreferencesMain.setPreferences(
-              //   totalTime: state.totalTimeMinutes + 1,
-              // );
             }
           },
           icon: Icon(
             Icons.add,
             size: 20,
-            color: Theme.of(context).secondaryHeaderColor,
+            color: Theme.of(context).primaryColor,
           ),
         ),
         SizedBox(
@@ -49,16 +47,12 @@ class TimeAdjustmentIcons extends ConsumerWidget {
             notifier.decrementTotalTime();
             if (state.totalTimeMinutes > 0) {
               DatabaseManager().insertIntoPrefs(k: Prefs.timeTotal.name, v: state.totalTimeMinutes - 1);
-              // await PreferencesMain.setPreferences(
-              //
-              //  // totalTime: state.totalTimeMinutes - 1,
-              // );
             }
           },
           icon: Icon(
             Icons.remove,
             size: 20,
-            color: Theme.of(context).secondaryHeaderColor,
+            color: Theme.of(context).primaryColor,
           ),
         ),
       ],

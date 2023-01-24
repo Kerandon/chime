@@ -10,7 +10,7 @@ class StartCircularIndicator extends ConsumerStatefulWidget {
     required this.radius,
     this.cancel = false,
     this.duration = 1000,
-    this.progressWidth = kSessionTimerStrokeWidth,
+    this.progressWidth = kSessionTimerStrokeWidth * 0.5,
     required this.progressColor,
     this.backgroundColor = Colors.transparent,
     this.pause = false,
@@ -68,18 +68,25 @@ class _CustomCircularIndicatorState
     }
 
     return Center(
-      child: SizedBox(
-        width: widget.radius * 2,
-        height: widget.radius * 2,
-        child: FittedBox(
-          fit: BoxFit.contain,
-          child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(widget.progressColor),
-            backgroundColor: widget.backgroundColor,
-            value: percent,
-            strokeWidth: widget.progressWidth,
+      child: Stack(
+        children: [
+
+          Center(
+            child: SizedBox(
+              width: widget.radius * 2,
+              height: widget.radius * 2,
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(widget.progressColor),
+                  backgroundColor: widget.backgroundColor,
+                  value: percent,
+                  strokeWidth: widget.progressWidth,
+                ),
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

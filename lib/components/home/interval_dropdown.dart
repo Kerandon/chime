@@ -1,7 +1,6 @@
-import 'package:chime/pages/settings/meditation_bells_page.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
+import '../../pages/setup/meditation_bells_page.dart';
 import '../../state/app_state.dart';
 import '../../configs/constants.dart';
 
@@ -38,8 +37,8 @@ class IntervalDropdown extends ConsumerWidget {
                 textAlign: TextAlign.center,
                 style: Theme.of(context)
                     .textTheme
-                    .displaySmall!
-                    .copyWith(fontSize: 15),
+                    .bodySmall!
+                    .copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
               ),
             ),
           ),
@@ -70,7 +69,7 @@ class IntervalDropdown extends ConsumerWidget {
                   MaterialPageRoute(builder: (context) => const MeditationBellsPage()));
             },
             child: Padding(
-              padding: EdgeInsets.only(bottom: size.height * 0.02),
+              padding: EdgeInsets.only(bottom: size.height * 0.01),
               child: RichText(
                 text: TextSpan(
                   text: 'Play a',
@@ -100,6 +99,8 @@ class IntervalDropdown extends ConsumerWidget {
           items.isEmpty
               ? const SizedBox.shrink()
               : DropdownButton<int>(
+            style: Theme.of(context).textTheme.displaySmall!.copyWith(color: Theme.of(context).primaryColor
+            ),
                   isDense: true,
                   borderRadius: BorderRadius.circular(kBorderRadius),
                   dropdownColor: Theme.of(context).dialogBackgroundColor,

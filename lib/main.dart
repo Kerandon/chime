@@ -1,22 +1,24 @@
+import 'dart:async';
 import 'package:chime/audio/audio_manager.dart';
 import 'package:chime/configs/themes/dark_blue_theme.dart';
 import 'package:chime/configs/themes/dark_orange_theme.dart';
 import 'package:chime/configs/themes/light_theme.dart';
-import 'package:chime/database_manager.dart';
+import 'package:chime/state/database_manager.dart';
 import 'package:chime/models/prefs_model.dart';
-import 'package:chime/pages/home_page.dart';
 import 'package:chime/state/app_state.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'components/app/lotus_icon.dart';
+import 'pages/home_page.dart';
 import 'configs/themes/dark_red_theme.dart';
 import 'configs/themes/dark_teal_theme.dart';
 import 'enums/color_themes.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   FirebaseOptions? options;
   if (kIsWeb) {
     options = const FirebaseOptions(
@@ -43,7 +45,6 @@ class ChimeApp extends ConsumerStatefulWidget {
 
 class _ChimeAppState extends ConsumerState<ChimeApp> {
   bool _prefsUpdated = false;
-
   late final Future<PrefsModel2> _futurePref;
 
   @override
@@ -88,8 +89,6 @@ class _ChimeAppState extends ConsumerState<ChimeApp> {
           }
           WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
             if (!_prefsUpdated) {
-
-              print('bell ${prefsModel!.bellSelected}');
               notifier.setTotalTime(prefsModel!.totalTime);
               notifier.setTotalCountdownTime(prefsModel.totalCountdown);
               notifier.setBellSelected(prefsModel.bellSelected);
@@ -104,19 +103,15 @@ class _ChimeAppState extends ConsumerState<ChimeApp> {
               _prefsUpdated = true;
             }
           });
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            theme: appTheme,
-            home: const HomePage(),
-          );
+
+          Timer.periodic(const Duration(milliseconds: 100), (timer) {
+            FlutterNativeSplash.remove();
+          });
         }
-        return const MaterialApp(
-          home: Scaffold(
-            backgroundColor: Colors.black,
-            body: Center(
-              child: LotusIcon(),
-            ),
-          ),
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: appTheme,
+          home: const HomePage(),
         );
       },
     );

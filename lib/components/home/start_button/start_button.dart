@@ -23,7 +23,6 @@ class StartButton extends ConsumerStatefulWidget {
 class _StartButtonState extends ConsumerState<StartButton> {
   CountdownTimer? _timer;
 
-  // bool _longTapInProgress = false;
   Widget _buttonImage = const Icon(Icons.play_arrow_outlined);
 
   @override
@@ -31,22 +30,33 @@ class _StartButtonState extends ConsumerState<StartButton> {
     final size = MediaQuery.of(context).size;
     final state = ref.watch(stateProvider);
     final notifier = ref.read(stateProvider.notifier);
+    Color backgroundProgressColor = Theme.of(context).primaryColor;
 
     _setButtonIcon(state);
 
     Color progressBarColor = Theme.of(context).primaryColor;
+    if(state.sessionState == SessionState.notStarted){
+      backgroundProgressColor = Theme.of(context).primaryColor;
+    }
+    if(state.sessionState == SessionState.inProgress){
+      backgroundProgressColor = AppColors.veryDarkGrey;
+    }
     if (state.sessionState == SessionState.countdown) {
       progressBarColor = Colors.transparent;
+      backgroundProgressColor = AppColors.veryDarkGrey;
     }
     if (state.sessionState == SessionState.paused) {
       progressBarColor = Theme.of(context).primaryColor.withOpacity(0.50);
+      backgroundProgressColor = AppColors.veryDarkGrey;
     }
     if (state.longTapInProgress) {
       progressBarColor = AppColors.grey;
+      backgroundProgressColor = AppColors.almostBlack;
     }
     if (state.sessionState == SessionState.inProgress &&
         state.millisecondsRemaining == 0) {
       progressBarColor = Colors.transparent;
+      backgroundProgressColor = AppColors.veryDarkGrey;
     }
 
     return RawGestureDetector(
@@ -88,35 +98,29 @@ class _StartButtonState extends ConsumerState<StartButton> {
                   const Duration(milliseconds: 20));
 
               _timer?.listen((event) {
-                // setState(() {});
+
               }, onDone: () {
                 notifier.setSessionState(
                   SessionState.notStarted,
                 );
                 notifier.resetSession();
-                // setState(() {
+
                 notifier.setLongTapInProgress(false);
-                // });
+
               });
             }
           };
           instance.onLongPressEnd = (details) {
-            // setState(
-            //   () {
-            //     _longTapInProgress = false;
             notifier.setLongTapInProgress(false);
             _timer?.cancel();
-            //   },
-            // );
+
           };
           instance.onLongPressCancel = () {
-            // setState(
-            //   () {
+
             notifier.setLongTapInProgress(false);
-            //_longTapInProgress = false;//
+
             _timer?.cancel();
-            //   },
-            // );
+
           };
         }),
       },
@@ -130,7 +134,7 @@ class _StartButtonState extends ConsumerState<StartButton> {
               duration: state.totalTimeMinutes,
               pause: state.sessionState == SessionState.paused,
               cancel: state.sessionState == SessionState.notStarted,
-              backgroundColor: Theme.of(context).primaryColorLight,
+              backgroundColor: backgroundProgressColor,
             ),
           ),
           FadeInAnimation(
