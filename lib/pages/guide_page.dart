@@ -1,6 +1,6 @@
 import 'package:chime/animation/fade_in_animation.dart';
 import 'package:flutter/material.dart';
-import '../../configs/constants.dart';
+import '../configs/constants.dart';
 
 class GuidePage extends StatelessWidget {
   const GuidePage({Key? key}) : super(key: key);

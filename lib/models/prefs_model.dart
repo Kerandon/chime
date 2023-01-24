@@ -3,26 +3,6 @@ import '../enums/bell.dart';
 import '../enums/color_themes.dart';
 import '../enums/prefs.dart';
 
-class PrefsModel {
-  final int totalTime;
-  final int bellInterval;
-  final Bell bellSelected;
-  final double bellVolume;
-  final Ambience ambienceSelected;
-  final double ambienceVolume;
-  final int countdownTime;
-
-  PrefsModel({
-    required this.totalTime,
-    required this.bellInterval,
-    required this.bellSelected,
-    required this.bellVolume,
-    required this.ambienceSelected,
-    required this.ambienceVolume,
-    required this.countdownTime,
-  });
-}
-
 class PrefsModel2 {
   final ColorTheme colorTheme;
   final int totalTime;
@@ -51,7 +31,7 @@ class PrefsModel2 {
     required this.colorTheme,
   });
 
-  factory PrefsModel2.fromMap(List<Map<String, dynamic>> mapList) {
+  factory PrefsModel2.fromListMap(List<Map<String, dynamic>> listMap) {
     int totalTime = 60;
     int timeCountdown = 5;
     Ambience ambienceSelected = Ambience.none;
@@ -63,52 +43,52 @@ class PrefsModel2 {
     bool hideClock = false;
     ColorTheme colorTheme = ColorTheme.darkTeal;
 
-    for (int i = 0; i < mapList.length; i++) {
-      String prefKey = mapList[i].entries.elementAt(0).value;
+    for (int i = 0; i < listMap.length; i++) {
+      String prefKey = listMap[i].entries.elementAt(0).value;
 
       if (prefKey == Prefs.timeTotal.name) {
-        totalTime = mapList[i].entries.elementAt(1).value;
+        totalTime = listMap[i].entries.elementAt(1).value;
       }
 
       if (prefKey == Prefs.timeCountdown.name) {
-        timeCountdown = mapList[i].entries.elementAt(1).value;
+        timeCountdown = listMap[i].entries.elementAt(1).value;
       }
 
       if (prefKey == Prefs.ambienceSelected.name) {
         ambienceSelected = Ambience.values.firstWhere((element) {
-          return element.name == mapList[i].entries.elementAt(1).value;
+          return element.name == listMap[i].entries.elementAt(1).value;
         }, orElse: () => Ambience.none);
       }
 
       if (prefKey == Prefs.ambienceVolume.name) {
-        ambienceVolume = mapList[i].entries.elementAt(1).value;
+        ambienceVolume = listMap[i].entries.elementAt(1).value;
       }
 
       if (prefKey == Prefs.bellSelected.name) {
         bellSelected = Bell.values.firstWhere((element) {
-          return element.name == mapList[i].entries.elementAt(1).value;
+          return element.name == listMap[i].entries.elementAt(1).value;
         }, orElse: () => Bell.chime);
       }
 
       if (prefKey == Prefs.bellVolume.name) {
-        bellVolume = mapList[i].entries.elementAt(1).value;
+        bellVolume = listMap[i].entries.elementAt(1).value;
       }
 
       if (prefKey == Prefs.bellInterval.name) {
-        bellInterval = mapList[i].entries.elementAt(1).value;
+        bellInterval = listMap[i].entries.elementAt(1).value;
       }
 
       if (prefKey == Prefs.bellOnStart.name) {
-        bellOnStart = mapList[i].entries.elementAt(1).value;
+        bellOnStart = listMap[i].entries.elementAt(1).value;
       }
 
       if (prefKey == Prefs.hideClock.name) {
-        hideClock = mapList[i].entries.elementAt(1).value;
+        hideClock = listMap[i].entries.elementAt(1).value;
       }
 
       if (prefKey == Prefs.colorTheme.name) {
         colorTheme = ColorTheme.values.firstWhere(
-            (element) => element.name == mapList[i].entries.elementAt(1).value,
+            (element) => element.name == listMap[i].entries.elementAt(1).value,
             orElse: () => ColorTheme.darkTeal);
       }
     }

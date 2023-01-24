@@ -216,7 +216,6 @@ class AppNotifier extends StateNotifier<AppState> {
 
   void seMillisecondsRemaining(int milliseconds) {
     state = state.copyWith(millisecondsRemaining: milliseconds);
-    playSessionBells(state);
   }
 
   void setPausedTimeMillisecondsRemaining({bool? reset}) {

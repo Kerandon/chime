@@ -1,14 +1,15 @@
-import 'package:chime/state/app_state.dart';
+String formatMinToHourMin(int mins) {
+  int m = mins % 60;
+  int h = mins ~/ 60;
 
-import '../audio/audio_manager.dart';
-
-void playSessionBells(AppState state) {
-  if ((state.millisecondsRemaining ~/ 1000) % 60 == 0) {
-    int minutesFlat = ((state.millisecondsRemaining ~/ 1000) / 60).round();
-    for (var bell in state.bellTimesToRing) {
-      if (bell == minutesFlat) {
-        AudioManager().playBell(bell: state.bellSelected);
-      }
+  if (h == 0) {
+    return '${m}m';
+  } else {
+    if (m > 1) {
+      return '${h}h\n${m}min';
+    } else if (m == 0) {
+      return '${h}h';
     }
   }
+  return "";
 }

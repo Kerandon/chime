@@ -101,19 +101,22 @@ class _ChimeAppState extends ConsumerState<ChimeApp> {
               notifier.setHideClock(prefsModel.hideClock);
 
               _prefsUpdated = true;
+              Timer.periodic(const Duration(milliseconds: 100), (timer) {
+                FlutterNativeSplash.remove();
+              });
             }
           });
 
-          Timer.periodic(const Duration(milliseconds: 100), (timer) {
-            FlutterNativeSplash.remove();
-          });
+
         }
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: appTheme,
-          home: const HomePage(),
+          home: HomePage(),
         );
       },
     );
   }
 }
+
+

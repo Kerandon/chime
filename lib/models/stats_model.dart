@@ -6,9 +6,10 @@ class StatsModel {
 
   StatsModel({required this.dateTime, required this.totalMeditationTime});
 
-  factory StatsModel.fromMap({required Map<String, dynamic> map}) {
+  factory StatsModel.fromMap(Map<String, dynamic> map) {
     return StatsModel(
-        dateTime: map[DatabaseManager.statsDateTime],
-        totalMeditationTime: map[DatabaseManager.statsTotalMeditationTime]);
+      dateTime: DateTime.parse(map[DatabaseManager.statsDateTime]),
+      totalMeditationTime: map[DatabaseManager.statsTotalMeditationTime],
+    );
   }
 }

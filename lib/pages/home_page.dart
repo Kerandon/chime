@@ -1,6 +1,7 @@
-import 'package:chime/pages/setup/guide_page.dart';
+import 'package:chime/pages/guide_page.dart';
 import 'package:chime/pages/setup/setup_page.dart';
-import 'package:chime/pages/setup/stats_page.dart';
+import 'package:chime/pages/stats_page.dart';
+import 'package:chime/state/database_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'timer_page.dart';
@@ -34,7 +35,30 @@ class _HomePageContentsState extends ConsumerState<HomePage> {
       alignment: Alignment.center,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        body: _pageOptions.elementAt(state.currentPage),
+        body: Stack(
+          children: [
+            _pageOptions.elementAt(state.currentPage),
+            Align(
+              alignment: Alignment(-1,-0.10),
+              child: ElevatedButton(onPressed: (){
+                DateTime now = DateTime.now();
+               DateTime nowRounded = roundToMinute(now);
+               print('now rounded is $nowRounded');
+                DatabaseManager().insertIntoStats(dateTime: DateTime.now().copyWith(day: 17), minutes: 200);
+              }, child: Text('Insert Stat')),
+            ),
+            Align(
+                alignment: Alignment(-1,0.10),
+                child: ElevatedButton(onPressed: (){
+                  DatabaseManager().getStats();
+                }, child: Text('Get Stats'),),),
+            Align(
+                alignment: Alignment(-1,0.20),
+                child: ElevatedButton(onPressed: (){
+                  DatabaseManager().clearAllStats();
+                }, child: Text('delete')))
+          ],
+        ),
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           items: const <BottomNavigationBarItem>[
@@ -67,3 +91,14 @@ class _HomePageContentsState extends ConsumerState<HomePage> {
 
 
 
+
+DateTime roundToMinute(DateTime dateTime) {
+  dateTime = dateTime.add(const Duration(seconds: 30));
+  return (dateTime.isUtc ? DateTime.utc : DateTime.new)(
+    dateTime.year,
+    dateTime.month,
+    dateTime.day,
+    dateTime.hour,
+    dateTime.minute,
+  );
+}
