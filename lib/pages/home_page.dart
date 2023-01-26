@@ -1,6 +1,7 @@
+import 'package:chime/enums/time_period.dart';
 import 'package:chime/pages/guide_page.dart';
 import 'package:chime/pages/setup/setup_page.dart';
-import 'package:chime/pages/stats_page.dart';
+import 'package:chime/pages/stats/stats_page.dart';
 import 'package:chime/state/database_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -39,24 +40,21 @@ class _HomePageContentsState extends ConsumerState<HomePage> {
           children: [
             _pageOptions.elementAt(state.currentPage),
             Align(
-              alignment: Alignment(-1,-0.10),
+              alignment: const Alignment(-1,-0.10),
               child: ElevatedButton(onPressed: (){
-                DateTime now = DateTime.now();
-               DateTime nowRounded = roundToMinute(now);
-               print('now rounded is $nowRounded');
-                DatabaseManager().insertIntoStats(dateTime: DateTime.now().copyWith(day: 17), minutes: 200);
-              }, child: Text('Insert Stat')),
+                DatabaseManager().insertIntoStats(dateTime: DateTime.now().copyWith(year: 2023, month: 01, day: 24), minutes: 300);
+              }, child: const Text('Insert Stat')),
             ),
             Align(
-                alignment: Alignment(-1,0.10),
+                alignment: const Alignment(-1,0.10),
                 child: ElevatedButton(onPressed: (){
-                  DatabaseManager().getStats();
-                }, child: Text('Get Stats'),),),
+                  DatabaseManager().getStats(TimePeriod.week);
+                }, child: const Text('Get Stats'),),),
             Align(
-                alignment: Alignment(-1,0.20),
+                alignment: const Alignment(-1,0.20),
                 child: ElevatedButton(onPressed: (){
                   DatabaseManager().clearAllStats();
-                }, child: Text('delete')))
+                }, child: const Text('delete')))
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(

@@ -7,23 +7,23 @@ TextTheme darkThemeTextTheme() {
   return TextTheme(
     bodySmall: darkThemeTextStyle.copyWith(
       fontSize: 15,
-      fontWeight: FontWeight.w300,
+      fontWeight: FontWeight.w500,
     ),
     bodyMedium: darkThemeTextStyle.copyWith(
       fontSize: 20,
-      fontWeight: FontWeight.w300,
+      fontWeight: FontWeight.w500,
     ),
     displaySmall: darkThemeTextStyle.copyWith(
       fontSize: 15,
-      fontWeight: FontWeight.w300,
+      fontWeight: FontWeight.w500,
     ),
     displayMedium: darkThemeTextStyle.copyWith(
-      fontSize: 25,
-      fontWeight: FontWeight.w100,
+      fontSize: 60,
+      fontWeight: FontWeight.w500,
     ),
     displayLarge: darkThemeTextStyle.copyWith(
       fontSize: 80,
-      fontWeight: FontWeight.w300,
+      fontWeight: FontWeight.w500,
     ),
     labelSmall: darkThemeTextStyle,
   );

@@ -3,6 +3,7 @@ import 'package:chime/audio/audio_manager.dart';
 import 'package:chime/configs/themes/dark_blue_theme.dart';
 import 'package:chime/configs/themes/dark_orange_theme.dart';
 import 'package:chime/configs/themes/light_theme.dart';
+import 'package:chime/pages/home_page.dart';
 import 'package:chime/state/database_manager.dart';
 import 'package:chime/models/prefs_model.dart';
 import 'package:chime/state/app_state.dart';
@@ -11,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'pages/home_page.dart';
 import 'configs/themes/dark_red_theme.dart';
 import 'configs/themes/dark_teal_theme.dart';
 import 'enums/color_themes.dart';
@@ -87,27 +87,30 @@ class _ChimeAppState extends ConsumerState<ChimeApp> {
               appTheme = lightTheme;
               break;
           }
-          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-            if (!_prefsUpdated) {
-              notifier.setTotalTime(prefsModel!.totalTime);
-              notifier.setTotalCountdownTime(prefsModel.totalCountdown);
-              notifier.setBellSelected(prefsModel.bellSelected);
-              notifier.setBellIntervalTime(prefsModel.bellInterval);
-              notifier.setBellVolume(prefsModel.bellVolume);
-              notifier.setBellOnSessionStart(prefsModel.bellOnStart);
-              notifier.setAmbienceSelected(prefsModel.ambienceSelected);
-              notifier.setAmbienceVolume(prefsModel.ambienceVolume);
-              notifier.setColorTheme(prefsModel.colorTheme);
-              notifier.setHideClock(prefsModel.hideClock);
+          WidgetsBinding.instance.addPostFrameCallback(
+            (timeStamp) {
+              if (!_prefsUpdated) {
+                notifier.setTotalTime(prefsModel!.totalTime);
+                notifier.setTotalCountdownTime(prefsModel.totalCountdown);
+                notifier.setBellSelected(prefsModel.bellSelected);
+                notifier.setBellIntervalTime(prefsModel.bellInterval);
+                notifier.setBellVolume(prefsModel.bellVolume);
+                notifier.setBellOnSessionStart(prefsModel.bellOnStart);
+                notifier.setAmbienceSelected(prefsModel.ambienceSelected);
+                notifier.setAmbienceVolume(prefsModel.ambienceVolume);
+                notifier.setColorTheme(prefsModel.colorTheme);
+                notifier.setHideClock(prefsModel.hideClock);
 
-              _prefsUpdated = true;
-              Timer.periodic(const Duration(milliseconds: 100), (timer) {
-                FlutterNativeSplash.remove();
-              });
-            }
-          });
-
-
+                _prefsUpdated = true;
+                Timer.periodic(
+                  const Duration(milliseconds: 100),
+                  (timer) {
+                    FlutterNativeSplash.remove();
+                  },
+                );
+              }
+            },
+          );
         }
         return MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -118,5 +121,3 @@ class _ChimeAppState extends ConsumerState<ChimeApp> {
     );
   }
 }
-
-

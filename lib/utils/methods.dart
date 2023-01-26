@@ -6,7 +6,7 @@ String formatMinToHourMin(int mins) {
     return '${m}m';
   } else {
     if (m > 1) {
-      return '${h}h\n${m}min';
+      return '${h}h\n${m}m';
     } else if (m == 0) {
       return '${h}h';
     }

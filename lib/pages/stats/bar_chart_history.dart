@@ -1,12 +1,14 @@
+import 'package:chime/configs/constants.dart';
+import 'package:chime/enums/time_period.dart';
 import 'package:chime/models/stats_model.dart';
+import 'package:chime/state/app_state.dart';
 import 'package:chime/state/database_manager.dart';
-import 'package:chime/utils/methods.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
-
 import '../../configs/app_colors.dart';
+import 'history_chart_touch_data.dart';
 
 class BarChartHistory extends ConsumerStatefulWidget {
   const BarChartHistory({
@@ -18,89 +20,108 @@ class BarChartHistory extends ConsumerStatefulWidget {
 }
 
 class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
-  late final Future<List<StatsModel>> _statsFuture;
-  List<StatsModel> statsByDay = [];
+  List<StatsModel> stats = [];
+  bool _futureHasRun = false;
+  Future<List<StatsModel>>? _statsFuture;
+
+  bool _animate = false;
+  bool _showLabels = false;
+  List<BarChartGroupData> bars = [];
 
   @override
   void initState() {
     super.initState();
-    _statsFuture = DatabaseManager().getStats();
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final widthPadding = size.width * 0.01;
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-          widthPadding, size.height * 0.08, widthPadding, widthPadding),
-      child: FutureBuilder<List<StatsModel>>(
-          future: _statsFuture,
-          builder: (context, snapshot) {
-            List<BarChartGroupData> bars = [];
-            if (snapshot.hasData) {
-              bars = _getBarData(snapshot.data!);
-            }
+    final widthPadding = size.width * 0.03;
+    final state = ref.watch(stateProvider);
 
-            return BarChart(
-              BarChartData(
-                barTouchData: barTouchData,
-                gridData: FlGridData(show: false),
-                alignment: BarChartAlignment.spaceAround,
-                borderData: borderData,
-                barGroups: bars,
-                titlesData: titlesData,
-              ),
-            );
-          }),
+    if (!_futureHasRun) {
+      _statsFuture = DatabaseManager().getStats(state.barChartTimePeriod);
+      _futureHasRun = true;
+    }
+
+    return Column(
+      children: [
+        SizedBox(
+          height: size.height * 0.40,
+          width: size.width * 1,
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(
+                widthPadding, size.height * 0.08, widthPadding, widthPadding),
+            child: FutureBuilder<List<StatsModel>>(
+                future: _statsFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    bars = _getBarData(snapshot.data!, state.barChartTimePeriod);
+                    if (!_animate) {
+                      _runAnimation();
+                    }
+                    return Column(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: BarChart(
+                            BarChartData(
+                              barTouchData:
+                                  getBarTouchData(showLabels: _showLabels),
+                              gridData: FlGridData(show: false),
+                              alignment: BarChartAlignment.spaceAround,
+                              borderData: borderData,
+                              barGroups: bars,
+                              titlesData: titlesData,
+                            ),
+                            swapAnimationDuration: const Duration(
+                              milliseconds: kChartAnimationDuration,
+                            ),
+                            swapAnimationCurve: Curves.easeOutQuint,
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                  return const SizedBox();
+                }),
+          ),
+        ),
+      ],
     );
   }
 
-  BarTouchData get barTouchData => BarTouchData(
-        enabled: false,
-        touchTooltipData: BarTouchTooltipData(
-          tooltipBgColor: Colors.transparent,
-          tooltipPadding: EdgeInsets.zero,
-          tooltipMargin: 8,
-          getTooltipItem: (
-            BarChartGroupData group,
-            int groupIndex,
-            BarChartRodData rod,
-            int rodIndex,
-          ) {
-            String time = formatMinToHourMin(rod.toY.round());
-            return BarTooltipItem(
-              time,
-              TextStyle(color: AppColors.offWhite, fontSize: 10),
-            );
-          },
-        ),
-      );
-
   Widget getTitles(double value, TitleMeta meta) {
-    print('value $value');
+    DateTime date = stats[value.toInt()].dateTime;
+    final state = ref.watch(stateProvider);
+    String format = 'EE';
+    if (state.barChartTimePeriod == TimePeriod.week) {
+      format = 'EE';
+    } else if (state.barChartTimePeriod == TimePeriod.monthly) {
+      format = 'MMM';
+    }
 
-    DateTime date = statsByDay[value.toInt()].dateTime;
-    final formattedDate = DateFormat('EE').format(date);
-
-    print(statsByDay[2].dateTime);
+    String formattedDate = DateFormat(format).format(date);
 
     return SideTitleWidget(
-        axisSide: meta.axisSide,
-        child: Text(formattedDate,
-            style: Theme.of(context)
-                .textTheme
-                .displaySmall!
-                .copyWith(color: AppColors.offWhite, fontSize: 12)));
+      axisSide: meta.axisSide,
+      child: Text(
+        formattedDate,
+        style: Theme.of(context)
+            .textTheme
+            .displaySmall!
+            .copyWith(color: AppColors.offWhite, fontSize: 10),
+      ),
+    );
   }
 
   get titlesData => FlTitlesData(
         show: true,
         bottomTitles: AxisTitles(
             sideTitles: SideTitles(
-                showTitles: true,
-                reservedSize: 30,
-                getTitlesWidget: getTitles)),
+          showTitles: true,
+          getTitlesWidget: getTitles,
+        )),
         leftTitles: AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
@@ -116,53 +137,68 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
         show: false,
       );
 
-  List<BarChartGroupData> _getBarData(List<StatsModel> statsData) {
-    statsByDay.clear();
-    Set<DateTime> allDaysMeditated = {};
-
+  List<BarChartGroupData> _getBarData(
+      List<StatsModel> statsData, TimePeriod period) {
+    stats.clear();
+    Set<StatsModel> allTimePoints = {};
     DateTime now = DateTime.now();
-
-    for (int i = 0; i < 7; i++) {
-      allDaysMeditated.add(DateTime(now.year, now.month, now.day - i));
-    }
-    for (var e in statsData) {
-      allDaysMeditated
-          .add(DateTime(e.dateTime.year, e.dateTime.month, e.dateTime.day));
+    for (var s in statsData) {
+      stats.add(s);
     }
 
-    for (var e in allDaysMeditated) {
-      final matches = statsData.where((element) =>
-          DateTime(element.dateTime.year, element.dateTime.month,
-              element.dateTime.day) ==
-          DateTime(e.year, e.month, e.day));
-
-      int totalDailyTime = 0;
-      for (var t in matches) {
-        totalDailyTime += t.totalMeditationTime;
+    if (period == TimePeriod.week) {
+      for (int i = 0; i < 7; i++) {
+        allTimePoints.add(StatsModel(
+            dateTime: DateTime(now.year, now.month, now.day - i),
+            totalMeditationTime: 0));
       }
-
-      statsByDay
-          .add(StatsModel(dateTime: e, totalMeditationTime: totalDailyTime));
-
-      statsByDay.sort((a, b) => a.dateTime.compareTo(b.dateTime));
-
-      statsByDay.takeWhile((value) =>
-          (value.dateTime.day > (DateTime.now().day) - 7) &&
-          (value.dateTime.day <= (DateTime.now().day)));
+    } else if (period == TimePeriod.monthly) {
+      for (int i = 0; i < 12; i++) {
+        allTimePoints.add(StatsModel(
+            dateTime: DateTime.now().copyWith(month: DateTime.now().month - i),
+            totalMeditationTime: 0,
+            timePeriod: TimePeriod.monthly));
+      }
     }
 
-    return statsByDay
+    stats.addAll(allTimePoints.toSet().difference(stats.toSet()).toList());
+    stats.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+
+    return stats
         .map(
           (e) => BarChartGroupData(
-            x: statsByDay.indexOf(e),
+            x: stats.indexOf(e),
             barRods: [
               BarChartRodData(
-                toY: e.totalMeditationTime.toDouble(),
-              ),
+                  backDrawRodData: BackgroundBarChartRodData(
+                      show: true,
+                      toY: e.totalMeditationTime.toDouble(),
+                      color: Colors.transparent),
+                  toY: _animate ? e.totalMeditationTime.toDouble() : 0),
             ],
             showingTooltipIndicators: e.totalMeditationTime > 0 ? [0] : null,
           ),
         )
         .toList();
+  }
+
+  _runAnimation() {
+    Future.delayed(const Duration(milliseconds: 200), () {
+      if (mounted) {
+        _animate = true;
+
+        setState(() {});
+      }
+    });
+    Future.delayed(
+        const Duration(
+          milliseconds: kChartAnimationDuration ~/ 1.5,
+        ), () {
+      if (mounted) {
+        _showLabels = true;
+
+        setState(() {});
+      }
+    });
   }
 }

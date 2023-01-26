@@ -17,7 +17,7 @@ class StreakStatsBox extends StatelessWidget {
           children: [
             Text(
               '5',
-              style: Theme.of(context).textTheme.displayLarge,
+              style: Theme.of(context).textTheme.displayMedium,
             ),
             Text(
               'Current Streak',

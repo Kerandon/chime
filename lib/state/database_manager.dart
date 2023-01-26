@@ -1,3 +1,4 @@
+import 'package:chime/enums/time_period.dart';
 import 'package:chime/models/prefs_model.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -54,14 +55,25 @@ class DatabaseManager {
         [dateTime.toString(), minutes]);
   }
 
-  Future<List<StatsModel>> getStats() async {
+  Future<List<StatsModel>> getStats(TimePeriod period) async {
     final db = await initDatabase();
-    final data = await db.rawQuery('SELECT * FROM $_statsTable');
-    for (var d in data) {
-      print(d.values);
+    //final data = await db.rawQuery('SELECT * FROM $_statsTable');
+
+    List<Map<String, dynamic>> data = [];
+
+    if (period == TimePeriod.week) {
+      data = await db.rawQuery('SELECT SUM($statsTotalMeditationTime) as $statsTotalMeditationTime,  strftime(\"%d-%m-%Y\", $statsDateTime) as \'$statsDateTime\' from $_statsTable WHERE $statsDateTime > (SELECT DATETIME(\'now\', \'-7 day\')) group by strftime("%d-%m-%Y", $statsDateTime)');
+    }else if(period == TimePeriod.monthly){
+     data = await db.rawQuery('SELECT SUM($statsTotalMeditationTime) as $statsTotalMeditationTime,  strftime(\"%m-%Y\", $statsDateTime) as \'$statsDateTime\' from $_statsTable WHERE $statsDateTime > (SELECT DATETIME(\'now\', \'-1 year\')) group by strftime("%m-%Y", $statsDateTime)');
     }
 
-    return List.generate(
+    final allData = await db.rawQuery('SELECT * FROM $_statsTable');
+
+    for(var d in allData){
+      print('sqlite data is ${d.entries}');
+    }
+
+     return List.generate(
       data.length,
       (index) => StatsModel.fromMap(
         data.elementAt(index),

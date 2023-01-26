@@ -1,6 +1,5 @@
 const kAppName = 'Zense Meditation Timer';
 const kLongPressDurationMilliseconds = 1500;
-// const kStartingScreenDuration = 5000;
 const kBorderRadius = 12.0;
 const kOnTimeUpOnlyText = 'on time up only';
 const kHomePageLineWidth = 0.70;
@@ -13,3 +12,4 @@ const kSettingsImageHeight = 0.25;
 const kSettingsHorizontalPageIndent = 0.09;
 const kAudioFadeDuration = 3500;
 const kSettingsListWidthIndentation = 0.02;
+const kChartAnimationDuration = 500;

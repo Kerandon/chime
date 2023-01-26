@@ -11,7 +11,7 @@ import '../enums/ambience.dart';
 import '../enums/bell.dart';
 import '../enums/focus_state.dart';
 import '../enums/prefs.dart';
-import '../utils/methods.dart';
+import '../enums/time_period.dart';
 
 class AppState {
   //APP STATE
@@ -50,6 +50,9 @@ class AppState {
   //Layout
   final bool hideClock;
 
+  //Chart
+  final TimePeriod barChartTimePeriod;
+
   AppState({
     required this.sessionState,
     required this.sessionHasStarted,
@@ -74,6 +77,7 @@ class AppState {
     required this.ambienceVolume,
     required this.checkIfStatsUpdated,
     required this.hideClock,
+    required this.barChartTimePeriod,
   });
 
   AppState copyWith({
@@ -100,6 +104,7 @@ class AppState {
     double? ambienceVolume,
     bool? checkIfStatsUpdated,
     bool? hideClock,
+    TimePeriod? barChartTimePeriod,
   }) {
     return AppState(
       sessionState: sessionState ?? this.sessionState,
@@ -129,6 +134,7 @@ class AppState {
       ambienceVolume: ambienceVolume ?? this.ambienceVolume,
       checkIfStatsUpdated: checkIfStatsUpdated ?? this.checkIfStatsUpdated,
       hideClock: hideClock ?? this.hideClock,
+      barChartTimePeriod: barChartTimePeriod ?? this.barChartTimePeriod,
     );
   }
 }
@@ -299,6 +305,10 @@ class AppNotifier extends StateNotifier<AppState> {
   void setHideClock(bool hide){
     state = state.copyWith(hideClock: hide);
   }
+
+  void setBarChartTimePeriod(TimePeriod time){
+    state = state.copyWith(barChartTimePeriod: time);
+  }
 }
 
 final stateProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
@@ -326,5 +336,6 @@ final stateProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
     ambienceVolume: 0.50,
     checkIfStatsUpdated: false,
     hideClock: false,
+    barChartTimePeriod: TimePeriod.week,
   ));
 });
