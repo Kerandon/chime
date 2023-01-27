@@ -1,10 +1,10 @@
+
 import 'package:chime/pages/stats/bar_chart_history.dart';
-import 'package:chime/pages/stats/streak_stats_box.dart';
-import 'package:chime/state/app_state.dart';
-import 'package:chime/state/database_manager.dart';
+import 'package:chime/pages/stats/streak_stats.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../enums/time_period.dart';
+import 'history_period_toggle.dart';
 
 class StatsPage extends ConsumerStatefulWidget {
   const StatsPage({Key? key}) : super(key: key);
@@ -14,72 +14,59 @@ class StatsPage extends ConsumerStatefulWidget {
 }
 
 class _StatsPageState extends ConsumerState<StatsPage> {
-
   bool _toggle = false;
+
+  void _toggleHistoryChart() {
+    setState(() {
+      _toggle = !_toggle;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final notifier = ref.read(stateProvider.notifier);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Meditation Stats'),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              height: size.height * 0.15,
-              color: Colors.red,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: size.width * 0.15,
-                  ),
-                  const StreakStatsBox(),
-                  const StreakStatsBox(),
-                  SizedBox(
-                    width: size.width * 0.15,
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: size.height * 0.40,
-              child:
-              _toggle ?
-              BarChartHistory(key: UniqueKey()) :
-              BarChartHistory(key: UniqueKey())
-
-            ),
-
-            SizedBox(
-            child: Row(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: size.width * 0.03),
+          child: Column(
             children: [
-    ElevatedButton(
-    onPressed: () {
-      _toggle = !_toggle;
-      setState(() {
-
-      });
-    notifier.setBarChartTimePeriod(TimePeriod.monthly);
-    DatabaseManager().getStats(TimePeriod.monthly);
-    },
-    child: Text('Month!!')),
-    ElevatedButton(
-    onPressed: () {
-      _toggle = !_toggle;
-      setState(() {
-
-      });
-    notifier.setBarChartTimePeriod(TimePeriod.week);
-    DatabaseManager().getStats(TimePeriod.week);
-    },
-    child: Text('Week')),
-
-
-          ],),)],
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
+                child: SizedBox(
+                  height: size.height * 0.15,
+                  child: const StreakStats(),
+                ),
+              ),
+              SizedBox(
+                height: size.height * 0.45,
+                child: _toggle
+                    ? BarChartHistory(key: UniqueKey())
+                    : BarChartHistory(key: UniqueKey()),
+              ),
+              SizedBox(
+                child: Row(
+                  children: [
+                    HistoryPeriodToggle(
+                        timePeriod: TimePeriod.week,
+                        toggleCallback: _toggleHistoryChart),
+                    HistoryPeriodToggle(
+                        timePeriod: TimePeriod.fortnight,
+                        toggleCallback: _toggleHistoryChart),
+                    HistoryPeriodToggle(
+                        timePeriod: TimePeriod.year,
+                        toggleCallback: _toggleHistoryChart),
+                    HistoryPeriodToggle(
+                        timePeriod: TimePeriod.allTime,
+                        toggleCallback: _toggleHistoryChart),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

@@ -55,30 +55,47 @@ class DatabaseManager {
         [dateTime.toString(), minutes]);
   }
 
-  Future<List<StatsModel>> getStats(TimePeriod period) async {
+  Future<List<StatsModel>> getStatsByTimePeriod({TimePeriod? period, bool? allTimeGroupedByDay}) async {
     final db = await initDatabase();
-    //final data = await db.rawQuery('SELECT * FROM $_statsTable');
 
     List<Map<String, dynamic>> data = [];
 
     if (period == TimePeriod.week) {
-      data = await db.rawQuery('SELECT SUM($statsTotalMeditationTime) as $statsTotalMeditationTime,  strftime(\"%d-%m-%Y\", $statsDateTime) as \'$statsDateTime\' from $_statsTable WHERE $statsDateTime > (SELECT DATETIME(\'now\', \'-7 day\')) group by strftime("%d-%m-%Y", $statsDateTime)');
-    }else if(period == TimePeriod.monthly){
-     data = await db.rawQuery('SELECT SUM($statsTotalMeditationTime) as $statsTotalMeditationTime,  strftime(\"%m-%Y\", $statsDateTime) as \'$statsDateTime\' from $_statsTable WHERE $statsDateTime > (SELECT DATETIME(\'now\', \'-1 year\')) group by strftime("%m-%Y", $statsDateTime)');
+      data = await db.rawQuery(
+          'SELECT SUM($statsTotalMeditationTime) as $statsTotalMeditationTime,  strftime(\"%d-%m-%Y\", $statsDateTime) as \'$statsDateTime\' from $_statsTable WHERE $statsDateTime > (SELECT DATETIME(\'now\', \'-7 day\')) group by strftime("%d-%m-%Y", $statsDateTime)');
+    } else if (period == TimePeriod.fortnight) {
+      data = await db.rawQuery(
+          'SELECT SUM($statsTotalMeditationTime) as $statsTotalMeditationTime,  strftime(\"%d-%m-%Y\", $statsDateTime) as \'$statsDateTime\' from $_statsTable WHERE $statsDateTime > (SELECT DATETIME(\'now\', \'-14 day\')) group by strftime("%d-%m-%Y", $statsDateTime)');
+    } else if (period == TimePeriod.year) {
+      data = await db.rawQuery(
+          'SELECT SUM($statsTotalMeditationTime) as $statsTotalMeditationTime,  strftime(\"%m-%Y\", $statsDateTime) as \'$statsDateTime\' from $_statsTable WHERE $statsDateTime > (SELECT DATETIME(\'now\', \'-1 year\')) group by strftime("%m-%Y", $statsDateTime)');
+    } else if (period == TimePeriod.allTime) {
+      print('here');
+      data = await db.rawQuery(
+
+          'SELECT SUM($statsTotalMeditationTime) as $statsTotalMeditationTime,  strftime(\"%m-%Y\", $statsDateTime) as \'$statsDateTime\' from $_statsTable GROUP BY strftime("%Y", $statsDateTime)');
+    }else if (allTimeGroupedByDay == true){
+
+      data = await db.rawQuery('SELECT SUM($statsTotalMeditationTime) as $statsTotalMeditationTime,  strftime(\"%d-%m-%Y\", $statsDateTime) as \'$statsDateTime\' from $_statsTable GROUP BY strftime("%d-%m-%Y", $statsDateTime) ORDER BY date($statsDateTime) DESC');
     }
 
-    final allData = await db.rawQuery('SELECT * FROM $_statsTable');
-
-    for(var d in allData){
-      print('sqlite data is ${d.entries}');
+    for(var d in data){
+      print('all time ${d.entries}');
     }
 
-     return List.generate(
+    return List.generate(
       data.length,
       (index) => StatsModel.fromMap(
         data.elementAt(index),
       ),
     ).toList();
+  }
+
+  Future<StatsModel> getLastEntry() async {
+    final db = await initDatabase();
+    final map = await db.rawQuery('SELECT * FROM $_statsTable ORDER BY $statsDateTime DESC LIMIT 1');
+    print(map.first);
+    return StatsModel.fromMap(map.first, formatDate: false);
   }
 
   Future clearAllStats() async {

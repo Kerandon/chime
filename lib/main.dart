@@ -103,7 +103,7 @@ class _ChimeAppState extends ConsumerState<ChimeApp> {
 
                 _prefsUpdated = true;
                 Timer.periodic(
-                  const Duration(milliseconds: 100),
+                  const Duration(milliseconds: 500),
                   (timer) {
                     FlutterNativeSplash.remove();
                   },
@@ -115,7 +115,7 @@ class _ChimeAppState extends ConsumerState<ChimeApp> {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: appTheme,
-          home: HomePage(),
+          home: const HomePage(),
         );
       },
     );

@@ -5,6 +5,7 @@ import '../app_colors.dart';
 import '../constants.dart';
 
 final darkTealTheme = ThemeData(
+  useMaterial3: true,
   primaryColor: AppColors.tealPrimary,
   primaryColorLight: AppColors.offWhite,
   secondaryHeaderColor: AppColors.grey,

@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../configs/app_colors.dart';
-import 'history_chart_touch_data.dart';
+import '../../utils/methods.dart';
 
 class BarChartHistory extends ConsumerStatefulWidget {
   const BarChartHistory({
@@ -40,73 +40,88 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
     final state = ref.watch(stateProvider);
 
     if (!_futureHasRun) {
-      _statsFuture = DatabaseManager().getStats(state.barChartTimePeriod);
+      _statsFuture = DatabaseManager()
+          .getStatsByTimePeriod(period: state.barChartTimePeriod);
       _futureHasRun = true;
     }
 
-    return Column(
-      children: [
-        SizedBox(
-          height: size.height * 0.40,
-          width: size.width * 1,
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(
-                widthPadding, size.height * 0.08, widthPadding, widthPadding),
-            child: FutureBuilder<List<StatsModel>>(
-                future: _statsFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    bars = _getBarData(snapshot.data!, state.barChartTimePeriod);
-                    if (!_animate) {
-                      _runAnimation();
-                    }
-                    return Column(
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: BarChart(
-                            BarChartData(
-                              barTouchData:
-                                  getBarTouchData(showLabels: _showLabels),
-                              gridData: FlGridData(show: false),
-                              alignment: BarChartAlignment.spaceAround,
-                              borderData: borderData,
-                              barGroups: bars,
-                              titlesData: titlesData,
-                            ),
-                            swapAnimationDuration: const Duration(
-                              milliseconds: kChartAnimationDuration,
-                            ),
-                            swapAnimationCurve: Curves.easeOutQuint,
-                          ),
-                        ),
-                      ],
-                    );
-                  }
-                  return const SizedBox();
-                }),
-          ),
-        ),
-      ],
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+          widthPadding, size.height * 0.01, widthPadding, size.height * 0.01),
+      child: FutureBuilder<List<StatsModel>>(
+          future: _statsFuture,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              bars = _getBarData(snapshot.data!, state.barChartTimePeriod);
+              if (!_animate) {
+                _runAnimation();
+              }
+
+              String periodString = "";
+
+              periodString =
+                  calculateTotalMeditationTime(snapshot, state, periodString);
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                      flex: 2,
+                      child: Text(
+                        'You have meditated for $periodString',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall!
+                            .copyWith(fontWeight: FontWeight.w300),
+                      )),
+                  SizedBox(
+                    height: size.height * 0.05,
+                  ),
+                  Expanded(
+                    flex: 10,
+                    child: BarChart(
+                      BarChartData(
+                        barTouchData: getBarTouchData(showLabels: _showLabels),
+                        gridData: FlGridData(show: false),
+                        alignment: BarChartAlignment.spaceAround,
+                        borderData: borderData,
+                        barGroups: bars,
+                        titlesData: titlesData,
+                      ),
+                      swapAnimationDuration: const Duration(
+                        milliseconds: kChartAnimationDuration,
+                      ),
+                      swapAnimationCurve: Curves.easeOutQuint,
+                    ),
+                  ),
+                ],
+              );
+            }
+            return const SizedBox();
+          }),
     );
   }
 
   Widget getTitles(double value, TitleMeta meta) {
     DateTime date = stats[value.toInt()].dateTime;
     final state = ref.watch(stateProvider);
-    String format = 'EE';
+    String formatted = 'EE';
     if (state.barChartTimePeriod == TimePeriod.week) {
-      format = 'EE';
-    } else if (state.barChartTimePeriod == TimePeriod.monthly) {
-      format = 'MMM';
+      formatted = DateFormat('EE').format(date);
+    } else if (state.barChartTimePeriod == TimePeriod.fortnight) {
+      formatted = DateFormat('d').format(date);
+      var suffix = int.parse(formatted).addDateSuffix();
+      formatted = '$formatted$suffix';
+    } else if (state.barChartTimePeriod == TimePeriod.year) {
+      formatted = DateFormat('MMM').format(date);
+    } else if (state.barChartTimePeriod == TimePeriod.allTime) {
+      formatted = DateFormat('y').format(date);
     }
-
-    String formattedDate = DateFormat(format).format(date);
 
     return SideTitleWidget(
       axisSide: meta.axisSide,
       child: Text(
-        formattedDate,
+        formatted,
         style: Theme.of(context)
             .textTheme
             .displaySmall!
@@ -152,34 +167,43 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
             dateTime: DateTime(now.year, now.month, now.day - i),
             totalMeditationTime: 0));
       }
-    } else if (period == TimePeriod.monthly) {
+    } else if (period == TimePeriod.fortnight) {
+      for (int i = 0; i < 14; i++) {
+        allTimePoints.add(StatsModel(
+            dateTime: DateTime(now.year, now.month, now.day - i),
+            totalMeditationTime: 0));
+      }
+    } else if (period == TimePeriod.year) {
       for (int i = 0; i < 12; i++) {
         allTimePoints.add(StatsModel(
             dateTime: DateTime.now().copyWith(month: DateTime.now().month - i),
             totalMeditationTime: 0,
-            timePeriod: TimePeriod.monthly));
+            timePeriod: TimePeriod.year));
       }
     }
 
     stats.addAll(allTimePoints.toSet().difference(stats.toSet()).toList());
     stats.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+    int allTimeIndex = -1;
 
-    return stats
-        .map(
-          (e) => BarChartGroupData(
-            x: stats.indexOf(e),
-            barRods: [
-              BarChartRodData(
-                  backDrawRodData: BackgroundBarChartRodData(
-                      show: true,
-                      toY: e.totalMeditationTime.toDouble(),
-                      color: Colors.transparent),
-                  toY: _animate ? e.totalMeditationTime.toDouble() : 0),
-            ],
-            showingTooltipIndicators: e.totalMeditationTime > 0 ? [0] : null,
-          ),
-        )
-        .toList();
+    return stats.map(
+      (e) {
+        allTimeIndex++;
+
+        return BarChartGroupData(
+          x: period == TimePeriod.allTime ? allTimeIndex : stats.indexOf(e),
+          barRods: [
+            BarChartRodData(
+                backDrawRodData: BackgroundBarChartRodData(
+                    show: true,
+                    toY: e.totalMeditationTime.toDouble(),
+                    color: Colors.transparent),
+                toY: _animate ? e.totalMeditationTime.toDouble() : 0),
+          ],
+          showingTooltipIndicators: e.totalMeditationTime > 0 ? [0] : null,
+        );
+      },
+    ).toList();
   }
 
   _runAnimation() {
@@ -201,4 +225,56 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
       }
     });
   }
+}
+
+BarTouchData getBarTouchData({required bool showLabels}) {
+  return BarTouchData(
+    enabled: false,
+    touchTooltipData: BarTouchTooltipData(
+      tooltipBgColor: Colors.transparent,
+      tooltipPadding: EdgeInsets.zero,
+      tooltipMargin: 8,
+      getTooltipItem: (
+        BarChartGroupData group,
+        int groupIndex,
+        BarChartRodData rod,
+        int rodIndex,
+      ) {
+        String time = "";
+        if (showLabels) {
+          time = formatMinToHourMin(rod.toY.round());
+        }
+        return BarTooltipItem(
+          time,
+          const TextStyle(color: AppColors.offWhite, fontSize: 10),
+        );
+      },
+    ),
+  );
+}
+
+String calculateTotalMeditationTime(AsyncSnapshot<List<StatsModel>> snapshot,
+    AppState state, String periodString) {
+  int totalTime = 0;
+
+  for (var d in snapshot.data!) {
+    totalTime += d.totalMeditationTime;
+  }
+  String totalTimeFormatted = totalTime.formatToHourMin();
+
+  switch (state.barChartTimePeriod) {
+    case TimePeriod.week:
+      periodString = '$totalTimeFormatted over the last week';
+      break;
+    case TimePeriod.fortnight:
+      periodString = '$totalTimeFormatted over the last 2 weeks';
+      break;
+    case TimePeriod.year:
+      periodString = '$totalTimeFormatted over the last year';
+      break;
+    case TimePeriod.allTime:
+      periodString = '$totalTimeFormatted in total';
+      break;
+  }
+  return periodString;
 }

@@ -18,3 +18,4 @@
 // start ambience logos at start
 // make font awesome outline
 // random chime
+// fix code for bar chart history re index to show the years in sequence on x axis (related to equatable on statsmodel)

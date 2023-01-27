@@ -19,7 +19,6 @@ class _TimerPageState extends ConsumerState<TimerPage> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(stateProvider);
-    final notifier = ref.read(stateProvider.notifier);
     bool _sessionIsUnderway = false;
     if (state.sessionState == SessionState.countdown ||
         state.sessionState == SessionState.inProgress ||

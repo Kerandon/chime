@@ -42,13 +42,13 @@ class _HomePageContentsState extends ConsumerState<HomePage> {
             Align(
               alignment: const Alignment(-1,-0.10),
               child: ElevatedButton(onPressed: (){
-                DatabaseManager().insertIntoStats(dateTime: DateTime.now().copyWith(year: 2023, month: 01, day: 24), minutes: 300);
+                DatabaseManager().insertIntoStats(dateTime: DateTime.now().copyWith(year: 2020, month: 01, day: 26), minutes: 108);
               }, child: const Text('Insert Stat')),
             ),
             Align(
                 alignment: const Alignment(-1,0.10),
                 child: ElevatedButton(onPressed: (){
-                  DatabaseManager().getStats(TimePeriod.week);
+                  DatabaseManager().getStatsByTimePeriod(period: TimePeriod.week);
                 }, child: const Text('Get Stats'),),),
             Align(
                 alignment: const Alignment(-1,0.20),

@@ -3,7 +3,8 @@ import 'package:equatable/equatable.dart';
 import '../enums/time_period.dart';
 import '../state/database_manager.dart';
 
-class StatsModel extends Equatable {
+class StatsModel
+   extends Equatable {
   final DateTime dateTime;
   final int totalMeditationTime;
   final TimePeriod timePeriod;
@@ -13,16 +14,22 @@ class StatsModel extends Equatable {
       required this.totalMeditationTime,
       this.timePeriod = TimePeriod.week});
 
-  factory StatsModel.fromMap(Map<String, dynamic> map) {
-    final formattedString = map[DatabaseManager.statsDateTime]
-        .toString()
-        .split('-')
-        .reversed
-        .join()
-        .padRight(7, '01');
+  factory StatsModel.fromMap(Map<String, dynamic> map, {bool formatDate = true}) {
+
+    String dateTime = map[DatabaseManager.statsDateTime];
+
+    if(formatDate) {
+      dateTime = map[DatabaseManager.statsDateTime]
+          .toString()
+          .split('-')
+          .reversed
+          .join()
+          .padRight(7, '01');
+    }
+
 
     return StatsModel(
-      dateTime: DateTime.parse(formattedString),
+      dateTime: DateTime.parse(dateTime),
       totalMeditationTime: map[DatabaseManager.statsTotalMeditationTime],
     );
   }
@@ -32,10 +39,12 @@ class StatsModel extends Equatable {
     switch (timePeriod) {
       case TimePeriod.week:
         return [dateTime.day];
-      case TimePeriod.monthly:
+      case TimePeriod.fortnight:
+        return [dateTime.day];
+      case TimePeriod.year:
         return [dateTime.month];
-      case TimePeriod.yearly:
-        return [dateTime.month];
+      case TimePeriod.allTime:
+        return [dateTime.year];
     }
   }
 }
