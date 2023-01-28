@@ -42,7 +42,7 @@ class _HomePageContentsState extends ConsumerState<HomePage> {
             Align(
               alignment: const Alignment(-1,-0.10),
               child: ElevatedButton(onPressed: () async {
-                await DatabaseManager().insertIntoStats(dateTime: DateTime.now().copyWith(year: 2021, month: 01, day:22), minutes: 108);
+                await DatabaseManager().insertIntoStats(dateTime: DateTime.now().copyWith(year: 1995, month: 01, day:24), minutes: 90);
               }, child: const Text('Insert Stat')),
             ),
             Align(

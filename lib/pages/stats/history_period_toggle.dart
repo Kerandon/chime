@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -18,18 +17,19 @@ class HistoryPeriodToggle extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: OutlinedButton(
-          onPressed: () {
-            toggleCallback.call();
-            notifier.setBarChartTimePeriod(timePeriod);
-          },
-          style: OutlinedButton.styleFrom(
-              side: BorderSide(
-                color: Theme.of(context).primaryColor,
-              )),
-          child: Text(
-            timePeriod.toText(),
-            style: Theme.of(context).textTheme.bodySmall,
-          )),
+        onPressed: () {
+          toggleCallback.call();
+          notifier.setBarChartTimePeriod(timePeriod);
+        },
+        style: OutlinedButton.styleFrom(
+            side: BorderSide(
+          color: Theme.of(context).primaryColor,
+        )),
+        child: Text(
+          timePeriod.toText(),
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+      ),
     );
   }
 }

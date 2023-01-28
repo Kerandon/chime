@@ -163,21 +163,23 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
 
     if (period == TimePeriod.week) {
       for (int i = 0; i < 7; i++) {
-        allTimePoints.add(StatsModel(
+        allTimePoints.add(
+          StatsModel(
             dateTime: DateTime(now.year, now.month, now.day - i),
-            totalMeditationTime: 0));
-      }
-      for (var s in stats) {
-        s.timePeriod = TimePeriod.week;
+            totalMeditationTime: 0,
+            timePeriod: TimePeriod.week,
+          ),
+        );
       }
     } else if (period == TimePeriod.fortnight) {
       for (int i = 0; i < 14; i++) {
-        allTimePoints.add(StatsModel(
+        allTimePoints.add(
+          StatsModel(
             dateTime: DateTime(now.year, now.month, now.day - i),
-            totalMeditationTime: 0));
-      }
-      for (var s in stats) {
-        s.timePeriod = TimePeriod.week;
+            totalMeditationTime: 0,
+            timePeriod: TimePeriod.fortnight,
+          ),
+        );
       }
     } else if (period == TimePeriod.year) {
       for (int i = 0; i < 12; i++) {
@@ -189,13 +191,6 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
             timePeriod: TimePeriod.year,
           ),
         );
-        for (var s in stats) {
-          s.timePeriod = TimePeriod.year;
-        }
-      }
-    } else if (period == TimePeriod.allTime) {
-      for (var s in stats) {
-        s.timePeriod = TimePeriod.year;
       }
     }
 
@@ -203,6 +198,7 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
     stats.addAll(diff);
     stats.sort((a, b) => a.dateTime.compareTo(b.dateTime));
     int allTimeIndex = -1;
+
     return stats.map(
       (e) {
         allTimeIndex++ - 1;
@@ -210,6 +206,7 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
           x: period == TimePeriod.allTime ? allTimeIndex : stats.indexOf(e),
           barRods: [
             BarChartRodData(
+                color: Theme.of(context).primaryColor,
                 backDrawRodData: BackgroundBarChartRodData(
                     show: true,
                     toY: e.totalMeditationTime.toDouble(),
@@ -223,7 +220,7 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
   }
 
   _runAnimation() {
-    Future.delayed(const Duration(milliseconds: 200), () {
+    Future.delayed(const Duration(milliseconds: 100), () {
       if (mounted) {
         _animate = true;
 

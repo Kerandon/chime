@@ -60,6 +60,10 @@ class DatabaseManager {
 
     List<Map<String, dynamic>> data = [];
 
+  if(allTimeGroupedByDay == true){
+   // data = await db.rawQuery('SELECT SUM($statsTotalMeditationTime) as $statsTotalMeditationTime,  strftime("%d-%m-%Y", $statsDateTime) as \'$statsDateTime\' from $_statsTable GROUP BY strftime("%d-%m-%Y", $statsDateTime) ORDER BY date($statsDateTime) DESC');
+      data =  await db.rawQuery('SELECT SUM($statsTotalMeditationTime) as $statsTotalMeditationTime,  strftime("%Y-%m-%d", $statsDateTime) as \'$statsDateTime\' from $_statsTable GROUP BY strftime("%d-%m-%Y", $statsDateTime) ORDER BY date($statsDateTime) DESC');
+    }else {
     if (period == TimePeriod.week) {
       data = await db.rawQuery(
           'SELECT SUM($statsTotalMeditationTime) as $statsTotalMeditationTime,  strftime("%Y-%m-%d", $statsDateTime) as \'$statsDateTime\' from $_statsTable WHERE $statsDateTime > (SELECT DATETIME(\'now\', \'-7 day\')) GROUP BY strftime("%d-%m-%Y", $statsDateTime)');
@@ -71,17 +75,14 @@ class DatabaseManager {
           'SELECT SUM($statsTotalMeditationTime) as $statsTotalMeditationTime,  strftime("%Y-%m-%d", $statsDateTime) as \'$statsDateTime\' from $_statsTable WHERE $statsDateTime > (SELECT DATETIME(\'now\', \'-1 year\')) GROUP BY strftime("%m-%Y", $statsDateTime)');
     } else if (period == TimePeriod.allTime) {
       data = await db.rawQuery(
-
           'SELECT SUM($statsTotalMeditationTime) as $statsTotalMeditationTime,  strftime("%Y-%m-%d", $statsDateTime) as \'$statsDateTime\' from $_statsTable GROUP BY strftime("%Y", $statsDateTime)');
-    }else if (allTimeGroupedByDay == true){
-
-      data = await db.rawQuery('SELECT SUM($statsTotalMeditationTime) as $statsTotalMeditationTime,  strftime("%d-%m-%Y", $statsDateTime) as \'$statsDateTime\' from $_statsTable GROUP BY strftime("%d-%m-%Y", $statsDateTime) ORDER BY date($statsDateTime) DESC');
     }
+  }
 
     return List.generate(
       data.length,
       (index) => StatsModel.fromMap(
-        data.elementAt(index),
+        map: data.elementAt(index),timePeriod: period!,
       ),
     ).toList();
   }
@@ -89,8 +90,7 @@ class DatabaseManager {
   Future<StatsModel> getLastEntry() async {
     final db = await initDatabase();
     final map = await db.rawQuery('SELECT * FROM $_statsTable ORDER BY $statsDateTime DESC LIMIT 1');
-
-    return StatsModel.fromMap(map.first);
+    return StatsModel.fromMap(map: map.first, timePeriod: TimePeriod.allTime);
   }
 
   Future clearAllStats() async {

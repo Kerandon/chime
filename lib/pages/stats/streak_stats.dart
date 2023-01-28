@@ -1,6 +1,6 @@
+import 'package:chime/enums/time_period.dart';
 import 'package:chime/pages/stats/streak_stats_box.dart';
 import 'package:flutter/material.dart';
-
 import '../../models/stats_model.dart';
 import '../../state/database_manager.dart';
 import '../../utils/methods.dart';
@@ -22,39 +22,50 @@ class _StreakStatsState extends State<StreakStats> {
   void initState() {
     _lastEntryFuture = DatabaseManager().getLastEntry();
     _allGroupedFuture =
-        DatabaseManager().getStatsByTimePeriod(allTimeGroupedByDay: true);
+        DatabaseManager().getStatsByTimePeriod(allTimeGroupedByDay: true, period: TimePeriod.allTime);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: Future.wait([_lastEntryFuture, _allGroupedFuture]),
+      future: Future.wait([
+        _lastEntryFuture,
+        _allGroupedFuture
+        ]),
       builder: (context, snapshot) {
+        String lastMeditation = '-';
+        String currentStreakString = '-';
+        String bestStreak = '-';
         if (snapshot.hasData) {
           StatsModel lastEntry = snapshot.data![0] as StatsModel;
-          List<StatsModel> stats = snapshot.data![1] as List<StatsModel>;
-          String currentStreakString = getCurrentStreak(stats);
-          String bestStreak = getBestStreak(stats);
-          return Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              StreakStatsBox(
-                value: lastEntry.totalMeditationTime.formatToHourMin(),
-                text: 'Last meditation',
-              ),
-              StreakStatsBox(
-                value: currentStreakString,
-                text: 'Current streak',
-              ),
-              StreakStatsBox(
-                value: bestStreak,
-                text: 'Best streak',
-              ),
-            ],
-          );
+          lastMeditation = lastEntry.totalMeditationTime.formatToHourMin();
+
+       List<StatsModel> stats = snapshot.data![1] as List<StatsModel>;
+
+
+
+
+         currentStreakString = getCurrentStreak(stats);
+         bestStreak = getBestStreak(stats);
         }
-        return const SizedBox.shrink();
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            StreakStatsBox(
+              value: lastMeditation,
+              text: 'Last meditation',
+            ),
+            StreakStatsBox(
+              value: currentStreakString,
+              text: 'Current streak',
+            ),
+            StreakStatsBox(
+              value: bestStreak,
+              text: 'Best streak',
+            ),
+          ],
+        );
       },
     );
   }

@@ -19,11 +19,11 @@ class _TimerPageState extends ConsumerState<TimerPage> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(stateProvider);
-    bool _sessionIsUnderway = false;
+    bool sessionIsUnderway = false;
     if (state.sessionState == SessionState.countdown ||
         state.sessionState == SessionState.inProgress ||
         state.sessionState == SessionState.paused) {
-      _sessionIsUnderway = true;
+      sessionIsUnderway = true;
     }
 
     return Scaffold(
@@ -43,7 +43,7 @@ class _TimerPageState extends ConsumerState<TimerPage> {
               ),
               Expanded(
                   flex: 30,
-                  child: _sessionIsUnderway
+                  child: sessionIsUnderway
                       ? const SizedBox.shrink()
                       : const FadeInAnimation(child: IntervalDropdown())),
             ],

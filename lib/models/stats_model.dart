@@ -6,30 +6,32 @@ import '../state/database_manager.dart';
 class StatsModel extends Equatable {
   final DateTime dateTime;
   final int totalMeditationTime;
-  TimePeriod timePeriod;
+  final TimePeriod? timePeriod;
 
-  StatsModel({
+  const StatsModel({
     required this.dateTime,
     required this.totalMeditationTime,
     this.timePeriod = TimePeriod.week,
   });
 
-  factory StatsModel.fromMap(Map<String, dynamic> map) {
+  factory StatsModel.fromMap({required Map<String, dynamic> map, TimePeriod timePeriod = TimePeriod.allTime}) {
+
     String dateTime = map[DatabaseManager.statsDateTime];
 
     return StatsModel(
       dateTime: DateTime.parse(dateTime),
       totalMeditationTime: map[DatabaseManager.statsTotalMeditationTime],
+      timePeriod: timePeriod,
     );
   }
 
   @override
   List<Object?> get props {
-    switch (timePeriod) {
+    switch (timePeriod!) {
       case TimePeriod.week:
         return [dateTime.weekday];
       case TimePeriod.fortnight:
-        return [dateTime.weekday];
+        return [dateTime.day];
       case TimePeriod.year:
         return [dateTime.month];
       case TimePeriod.allTime:
