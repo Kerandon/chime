@@ -167,29 +167,45 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
             dateTime: DateTime(now.year, now.month, now.day - i),
             totalMeditationTime: 0));
       }
+      for (var s in stats) {
+        s.timePeriod = TimePeriod.week;
+      }
     } else if (period == TimePeriod.fortnight) {
       for (int i = 0; i < 14; i++) {
         allTimePoints.add(StatsModel(
             dateTime: DateTime(now.year, now.month, now.day - i),
             totalMeditationTime: 0));
       }
+      for (var s in stats) {
+        s.timePeriod = TimePeriod.week;
+      }
     } else if (period == TimePeriod.year) {
       for (int i = 0; i < 12; i++) {
-        allTimePoints.add(StatsModel(
-            dateTime: DateTime.now().copyWith(month: DateTime.now().month - i),
+        allTimePoints.add(
+          StatsModel(
+            dateTime: DateTime.now()
+                .copyWith(month: DateTime.now().month - i, day: 01),
             totalMeditationTime: 0,
-            timePeriod: TimePeriod.year));
+            timePeriod: TimePeriod.year,
+          ),
+        );
+        for (var s in stats) {
+          s.timePeriod = TimePeriod.year;
+        }
+      }
+    } else if (period == TimePeriod.allTime) {
+      for (var s in stats) {
+        s.timePeriod = TimePeriod.year;
       }
     }
 
-    stats.addAll(allTimePoints.toSet().difference(stats.toSet()).toList());
+    final diff = allTimePoints.toSet().difference(stats.toSet()).toList();
+    stats.addAll(diff);
     stats.sort((a, b) => a.dateTime.compareTo(b.dateTime));
     int allTimeIndex = -1;
-
     return stats.map(
       (e) {
-        allTimeIndex++;
-
+        allTimeIndex++ - 1;
         return BarChartGroupData(
           x: period == TimePeriod.allTime ? allTimeIndex : stats.indexOf(e),
           barRods: [

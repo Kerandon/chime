@@ -3,30 +3,19 @@ import 'package:equatable/equatable.dart';
 import '../enums/time_period.dart';
 import '../state/database_manager.dart';
 
-class StatsModel
-   extends Equatable {
+class StatsModel extends Equatable {
   final DateTime dateTime;
   final int totalMeditationTime;
-  final TimePeriod timePeriod;
+  TimePeriod timePeriod;
 
-  const StatsModel(
-      {required this.dateTime,
-      required this.totalMeditationTime,
-      this.timePeriod = TimePeriod.week});
+  StatsModel({
+    required this.dateTime,
+    required this.totalMeditationTime,
+    this.timePeriod = TimePeriod.week,
+  });
 
-  factory StatsModel.fromMap(Map<String, dynamic> map, {bool formatDate = true}) {
-
+  factory StatsModel.fromMap(Map<String, dynamic> map) {
     String dateTime = map[DatabaseManager.statsDateTime];
-
-    if(formatDate) {
-      dateTime = map[DatabaseManager.statsDateTime]
-          .toString()
-          .split('-')
-          .reversed
-          .join()
-          .padRight(7, '01');
-    }
-
 
     return StatsModel(
       dateTime: DateTime.parse(dateTime),
@@ -38,9 +27,9 @@ class StatsModel
   List<Object?> get props {
     switch (timePeriod) {
       case TimePeriod.week:
-        return [dateTime.day];
+        return [dateTime.weekday];
       case TimePeriod.fortnight:
-        return [dateTime.day];
+        return [dateTime.weekday];
       case TimePeriod.year:
         return [dateTime.month];
       case TimePeriod.allTime:

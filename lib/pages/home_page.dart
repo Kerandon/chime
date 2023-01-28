@@ -41,8 +41,8 @@ class _HomePageContentsState extends ConsumerState<HomePage> {
             _pageOptions.elementAt(state.currentPage),
             Align(
               alignment: const Alignment(-1,-0.10),
-              child: ElevatedButton(onPressed: (){
-                DatabaseManager().insertIntoStats(dateTime: DateTime.now().copyWith(year: 2020, month: 01, day: 26), minutes: 108);
+              child: ElevatedButton(onPressed: () async {
+                await DatabaseManager().insertIntoStats(dateTime: DateTime.now().copyWith(year: 2021, month: 01, day:22), minutes: 108);
               }, child: const Text('Insert Stat')),
             ),
             Align(
