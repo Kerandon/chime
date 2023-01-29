@@ -19,7 +19,7 @@ class ColorThemePage extends ConsumerWidget {
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: size.width * kSettingsListWidthIndentation,
+            horizontal: size.width *kPageIndentation,
           ),
           child: ListView.builder(
             shrinkWrap: true,

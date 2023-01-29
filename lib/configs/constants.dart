@@ -11,5 +11,5 @@ const kSessionTimerStrokeWidth = 1.5;
 const kSettingsImageHeight = 0.25;
 const kSettingsHorizontalPageIndent = 0.09;
 const kAudioFadeDuration = 3500;
-const kSettingsListWidthIndentation = 0.02;
 const kChartAnimationDuration = 500;
+const kPageIndentation = 0.03;

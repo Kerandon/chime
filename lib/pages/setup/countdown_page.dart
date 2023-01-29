@@ -18,7 +18,7 @@ class CountdownPage extends ConsumerWidget {
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(
-            horizontal: size.width * kSettingsListWidthIndentation),
+            horizontal: size.width * kPageIndentation),
         child: SingleChildScrollView(
           child: ListView.builder(
             itemCount: countdownTimes.length,

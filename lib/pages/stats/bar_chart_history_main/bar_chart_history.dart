@@ -7,8 +7,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
-import '../../configs/app_colors.dart';
-import '../../utils/methods.dart';
+import '../../../configs/app_colors.dart';
+import '../../../utils/methods.dart';
 
 class BarChartHistory extends ConsumerStatefulWidget {
   const BarChartHistory({
@@ -36,7 +36,7 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final widthPadding = size.width * 0.03;
+    final widthPadding = size.width * kPageIndentation;
     final state = ref.watch(stateProvider);
 
     if (!_futureHasRun) {
@@ -49,56 +49,94 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
       padding: EdgeInsets.fromLTRB(
           widthPadding, size.height * 0.01, widthPadding, size.height * 0.01),
       child: FutureBuilder<List<StatsModel>>(
-          future: _statsFuture,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
+        future: _statsFuture,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+
+            if (!_animate) {
+              _runAnimation();
+            }
+
+            String totalText = calculateTotalMeditationTime(snapshot, state);
+            String periodText = " in total";
+            if(snapshot.hasData && snapshot.data!.isNotEmpty) {
               bars = _getBarData(snapshot.data!, state.barChartTimePeriod);
-              if (!_animate) {
-                _runAnimation();
+              TimePeriod? period = snapshot.data?.first.timePeriod;
+              switch (period!) {
+                case TimePeriod.week:
+                  periodText = ' over the last week';
+                  break;
+                case TimePeriod.fortnight:
+                  periodText = ' over the last fortnight';
+                  break;
+                case TimePeriod.year:
+                  periodText = ' over the last year';
+                  break;
+                case TimePeriod.allTime:
+                  ' in total';
+                  break;
               }
+            }
 
-              String periodString = "";
-
-              periodString =
-                  calculateTotalMeditationTime(snapshot, state, periodString);
-
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                      flex: 2,
-                      child: Text(
-                        'You have meditated for $periodString',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall!
-                            .copyWith(fontWeight: FontWeight.w300),
-                      )),
-                  SizedBox(
-                    height: size.height * 0.05,
-                  ),
-                  Expanded(
-                    flex: 10,
-                    child: BarChart(
-                      BarChartData(
-                        barTouchData: getBarTouchData(showLabels: _showLabels),
-                        gridData: FlGridData(show: false),
-                        alignment: BarChartAlignment.spaceAround,
-                        borderData: borderData,
-                        barGroups: bars,
-                        titlesData: titlesData,
-                      ),
-                      swapAnimationDuration: const Duration(
-                        milliseconds: kChartAnimationDuration,
-                      ),
-                      swapAnimationCurve: Curves.easeOutQuint,
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: RichText(
+                    text: TextSpan(
+                      text: 'You have meditated for ',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall!
+                          .copyWith(fontWeight: FontWeight.w300),
+                      children: [
+                        TextSpan(
+                          text: totalText,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall!
+                              .copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: Theme.of(context).primaryColor),
+                        ),
+                        TextSpan(
+                          text: periodText,
+                          style:
+                              Theme.of(context).textTheme.bodySmall!.copyWith(
+                                    fontWeight: FontWeight.w300,
+                                  ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              );
-            }
-            return const SizedBox();
-          }),
+                ),
+                SizedBox(
+                  height: size.height * 0.05,
+                ),
+                Expanded(
+                  flex: 10,
+                  child: BarChart(
+                    BarChartData(
+                      barTouchData: getBarTouchData(showLabels: _showLabels),
+                      gridData: FlGridData(show: false),
+                      alignment: BarChartAlignment.spaceAround,
+                      borderData: borderData,
+                      barGroups: bars,
+                      titlesData: titlesData,
+                    ),
+                    swapAnimationDuration: const Duration(
+                      milliseconds: kChartAnimationDuration,
+                    ),
+                    swapAnimationCurve: Curves.easeOutQuint,
+                  ),
+                ),
+              ],
+            );
+          }
+          return const SizedBox();
+        },
+      ),
     );
   }
 
@@ -255,7 +293,7 @@ BarTouchData getBarTouchData({required bool showLabels}) {
       ) {
         String time = "";
         if (showLabels) {
-          time = formatMinToHourMin(rod.toY.round());
+          time = rod.toY.round().formatToHourMin();
         }
         return BarTooltipItem(
           time,
@@ -264,30 +302,4 @@ BarTouchData getBarTouchData({required bool showLabels}) {
       },
     ),
   );
-}
-
-String calculateTotalMeditationTime(AsyncSnapshot<List<StatsModel>> snapshot,
-    AppState state, String periodString) {
-  int totalTime = 0;
-
-  for (var d in snapshot.data!) {
-    totalTime += d.totalMeditationTime;
-  }
-  String totalTimeFormatted = totalTime.formatToHourMin();
-
-  switch (state.barChartTimePeriod) {
-    case TimePeriod.week:
-      periodString = '$totalTimeFormatted over the last week';
-      break;
-    case TimePeriod.fortnight:
-      periodString = '$totalTimeFormatted over the last 2 weeks';
-      break;
-    case TimePeriod.year:
-      periodString = '$totalTimeFormatted over the last year';
-      break;
-    case TimePeriod.allTime:
-      periodString = '$totalTimeFormatted in total';
-      break;
-  }
-  return periodString;
 }

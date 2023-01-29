@@ -21,11 +21,11 @@ class MeditationBellsPage extends ConsumerWidget {
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.all(size.height * kSettingsListWidthIndentation),
+              padding: EdgeInsets.all(size.height * kPageIndentation),
               child: const BellVolumeSlider(),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: size.width * kSettingsListWidthIndentation ),
+              padding: EdgeInsets.symmetric(horizontal: size.width * kPageIndentation ),
               child: ListView.builder(
                 itemCount: Bell.values.length,
                 shrinkWrap: true,

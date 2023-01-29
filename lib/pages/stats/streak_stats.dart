@@ -21,18 +21,15 @@ class _StreakStatsState extends State<StreakStats> {
   @override
   void initState() {
     _lastEntryFuture = DatabaseManager().getLastEntry();
-    _allGroupedFuture =
-        DatabaseManager().getStatsByTimePeriod(allTimeGroupedByDay: true, period: TimePeriod.allTime);
+    _allGroupedFuture = DatabaseManager().getStatsByTimePeriod(
+        allTimeGroupedByDay: true, period: TimePeriod.allTime);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: Future.wait([
-        _lastEntryFuture,
-        _allGroupedFuture
-        ]),
+      future: Future.wait([_lastEntryFuture, _allGroupedFuture]),
       builder: (context, snapshot) {
         String lastMeditation = '-';
         String currentStreakString = '-';
@@ -41,13 +38,9 @@ class _StreakStatsState extends State<StreakStats> {
           StatsModel lastEntry = snapshot.data![0] as StatsModel;
           lastMeditation = lastEntry.totalMeditationTime.formatToHourMin();
 
-       List<StatsModel> stats = snapshot.data![1] as List<StatsModel>;
-
-
-
-
-         currentStreakString = getCurrentStreak(stats);
-         bestStreak = getBestStreak(stats);
+          List<StatsModel> stats = snapshot.data![1] as List<StatsModel>;
+          currentStreakString = getCurrentStreak(stats);
+          bestStreak = getBestStreak(stats);
         }
         return Row(
           crossAxisAlignment: CrossAxisAlignment.center,

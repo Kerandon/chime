@@ -1,22 +1,34 @@
+import 'package:flutter/material.dart';
+
+import '../enums/time_period.dart';
 import '../models/stats_model.dart';
+import '../state/app_state.dart';
 
-String formatMinToHourMin(int mins) {
-  int m = mins % 60;
-  int h = mins ~/ 60;
+// String formatMinToHourMin(int mins) {
+//   int m = mins % 60;
+//   int h = mins ~/ 60;
+//
+//   if (h == 0) {
+//     return '${m}m';
+//   } else {
+//     if (m > 1) {
+//       return '${h}h\n${m}m';
+//     } else if (m == 0) {
+//       return '${h}h';
+//     }
+//   }
+//   return "";
+// }
 
-  if (h == 0) {
-    return '${m}m';
-  } else {
-    if (m > 1) {
-      return '${h}h\n${m}m';
-    } else if (m == 0) {
-      return '${h}h';
+extension Format on int {
+  String formatToHour() {
+    var result = this ~/ 60;
+    if(result == 0){
+      return "";
+    }else {
+      return '${result}h';
     }
   }
-  return "";
-}
-
-extension FormatMin on int {
   String formatToHourMin() {
     int m = this % 60;
     int h = this ~/ 60;
@@ -113,4 +125,32 @@ String getBestStreak(List<StatsModel> stats) {
   }
 
   return streakString;
+}
+
+
+String calculateTotalMeditationTime(
+    AsyncSnapshot<List<StatsModel>> snapshot, AppState state) {
+  int totalTime = 0;
+
+  for (var d in snapshot.data!) {
+    totalTime += d.totalMeditationTime;
+  }
+  String totalTimeFormatted = totalTime.formatToHourMin();
+  String timeString;
+
+  switch (state.barChartTimePeriod) {
+    case TimePeriod.week:
+      timeString = totalTimeFormatted;
+      break;
+    case TimePeriod.fortnight:
+      timeString = totalTimeFormatted;
+      break;
+    case TimePeriod.year:
+      timeString = totalTimeFormatted;
+      break;
+    case TimePeriod.allTime:
+      timeString = totalTimeFormatted;
+      break;
+  }
+  return timeString;
 }

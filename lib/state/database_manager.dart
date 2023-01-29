@@ -61,8 +61,7 @@ class DatabaseManager {
     List<Map<String, dynamic>> data = [];
 
   if(allTimeGroupedByDay == true){
-   // data = await db.rawQuery('SELECT SUM($statsTotalMeditationTime) as $statsTotalMeditationTime,  strftime("%d-%m-%Y", $statsDateTime) as \'$statsDateTime\' from $_statsTable GROUP BY strftime("%d-%m-%Y", $statsDateTime) ORDER BY date($statsDateTime) DESC');
-      data =  await db.rawQuery('SELECT SUM($statsTotalMeditationTime) as $statsTotalMeditationTime,  strftime("%Y-%m-%d", $statsDateTime) as \'$statsDateTime\' from $_statsTable GROUP BY strftime("%d-%m-%Y", $statsDateTime) ORDER BY date($statsDateTime) DESC');
+       data =  await db.rawQuery('SELECT SUM($statsTotalMeditationTime) as $statsTotalMeditationTime,  strftime("%Y-%m-%d", $statsDateTime) as \'$statsDateTime\' from $_statsTable GROUP BY strftime("%d-%m-%Y", $statsDateTime) ORDER BY date($statsDateTime) DESC');
     }else {
     if (period == TimePeriod.week) {
       data = await db.rawQuery(
