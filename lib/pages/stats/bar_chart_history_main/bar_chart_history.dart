@@ -52,14 +52,13 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
         future: _statsFuture,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-
             if (!_animate) {
               _runAnimation();
             }
 
             String totalText = calculateTotalMeditationTime(snapshot, state);
             String periodText = " in total";
-            if(snapshot.hasData && snapshot.data!.isNotEmpty) {
+            if (snapshot.hasData && snapshot.data!.isNotEmpty) {
               bars = _getBarData(snapshot.data!, state.barChartTimePeriod);
               TimePeriod? period = snapshot.data?.first.timePeriod;
               switch (period!) {
@@ -248,7 +247,7 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
                 backDrawRodData: BackgroundBarChartRodData(
                     show: true,
                     toY: e.totalMeditationTime.toDouble(),
-                    color: Colors.transparent),
+                    color: Colors.transparent,),
                 toY: _animate ? e.totalMeditationTime.toDouble() : 0),
           ],
           showingTooltipIndicators: e.totalMeditationTime > 0 ? [0] : null,
@@ -266,15 +265,17 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
       }
     });
     Future.delayed(
-        const Duration(
-          milliseconds: kChartAnimationDuration ~/ 1.5,
-        ), () {
-      if (mounted) {
-        _showLabels = true;
+      const Duration(
+        milliseconds: kChartAnimationDuration ~/ 1.5,
+      ),
+      () {
+        if (mounted) {
+          _showLabels = true;
 
-        setState(() {});
-      }
-    });
+          setState(() {});
+        }
+      },
+    );
   }
 }
 

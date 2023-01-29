@@ -1,4 +1,3 @@
-import 'package:chime/pages/stats/bar_chart_history_main/bar_chart_history.dart';
 import 'package:chime/pages/stats/streak_stats.dart';
 import 'package:chime/pages/stats/line_chart_total/line_chart_total_main.dart';
 import 'package:flutter/material.dart';
@@ -41,12 +40,12 @@ class _StatsPageState extends ConsumerState<StatsPage> {
                   child: const StreakStats(),
                 ),
               ),
-              SizedBox(
-                height: size.height * 0.50,
-                child: _toggle
-                    ? BarChartHistory(key: UniqueKey())
-                    : BarChartHistory(key: UniqueKey()),
-              ),
+              // SizedBox(
+              //   height: size.height * 0.50,
+              //   child: _toggle
+              //       ? BarChartHistory(key: UniqueKey())
+              //       : BarChartHistory(key: UniqueKey()),
+              // ),
               SizedBox(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -70,7 +69,7 @@ class _StatsPageState extends ConsumerState<StatsPage> {
                   ],
                 ),
               ),
-              TotalTimeChart()
+              const TotalTimeChart()
             ],
           ),
         ),

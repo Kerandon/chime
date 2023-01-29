@@ -1,10 +1,12 @@
+import 'dart:async';
+
 import 'package:chime/enums/time_period.dart';
 import 'package:chime/state/database_manager.dart';
 import 'package:chime/utils/methods.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../../../configs/app_colors.dart';
+import 'package:intl/intl.dart';
 import '../../../configs/constants.dart';
 import '../../../models/stats_model.dart';
 
@@ -40,58 +42,51 @@ class _TotalTimeChartState extends ConsumerState<TotalTimeChart> {
       child: FutureBuilder<List<StatsModel>>(
         future: _statsFuture,
         builder: (context, snapshot) {
-          double totalTime = 0;
+          double totalMeditationTime = 0;
+          double intervalX = 150;
+          double intervalY = 60;
           List<StatsModel> data = [];
-          List<StatsModel> testData = [];
           List<LineChartAxis> axisData = [];
           if (snapshot.hasData) {
-            data = snapshot.data!;
+            data = snapshot.data!.toList();
+            List<StatsModel> test = [];
+            _addTodaysDate(data);
 
-            testData = [
-              StatsModel(
-                  dateTime: DateTime(2022, 11, 01), totalMeditationTime: 50),
-              StatsModel(
-                  dateTime: DateTime(2022, 03, 01), totalMeditationTime: 30),
-              StatsModel(
-                  dateTime: DateTime(2022, 01, 01), totalMeditationTime: 50),
-              StatsModel(
-                  dateTime: DateTime(2023, 01, 01), totalMeditationTime: 15),
-              StatsModel(
-                  dateTime: DateTime(2022, 12, 19), totalMeditationTime: 120),
-              StatsModel(
-                  dateTime: DateTime(2022, 12, 19), totalMeditationTime: 0),
-            ];
+            data.sort((a, b) => a.dateTime.compareTo(b.dateTime));
 
-            _addTodayDate(testData);
-
-            testData.sort((a, b) => a.dateTime.compareTo(b.dateTime));
-
-            for (int i = 0; i < testData.length; i++) {
-              double difference3 = testData[i]
+            for (int i = 0; i < data.length; i++) {
+              double difference3 = data[i]
                   .dateTime
-                  .difference(testData.first.dateTime)
+                  .difference(data.first.dateTime)
                   .inDays
                   .toDouble();
-              totalTime += testData[i].totalMeditationTime.toDouble();
+              totalMeditationTime += data[i].totalMeditationTime.toDouble();
               axisData.add(
-                LineChartAxis(difference3, totalTime),
+                LineChartAxis(difference3, totalMeditationTime),
               );
             }
-          }
 
-          double interval = 120;
-          if (totalTime <= 600) {
-            interval = 60;
-          } else if (totalTime > 600) {
-            int divided = (totalTime ~/ 5);
-            var i = (divided / 60).roundToDouble() * 60;
+            int totalDuration =
+                data.last.dateTime.difference(data.first.dateTime).inDays;
 
-            interval = i;
+            if (totalDuration <= 365) {
+              intervalX = 150;
+            } else if (totalDuration > 365) {
+              intervalX = totalDuration / 5;
+            }
+
+            if (totalMeditationTime <= 600) {
+              intervalY = 60;
+            } else if (totalMeditationTime > 600) {
+              int divided = (totalMeditationTime ~/ 5);
+              intervalY = (divided / 60).roundToDouble() * 60;
+            }
           }
 
           return SizedBox(
             height: size.height * 0.50,
             child: LineChart(
+              swapAnimationDuration: Duration.zero,
               LineChartData(
                 borderData: borderData,
                 gridData: FlGridData(
@@ -99,18 +94,22 @@ class _TotalTimeChartState extends ConsumerState<TotalTimeChart> {
                 ),
                 titlesData: FlTitlesData(
                   leftTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                    interval: interval,
-                    reservedSize: 30,
-                    showTitles: true,
-                    getTitlesWidget: (value, meta) {
-                      String formatted = value.toInt().formatToHour();
-                      if (value == meta.max) {
-                        formatted = "";
-                      }
-                      return Text(formatted, style: Theme.of(context).textTheme.bodySmall,);
-                    },
-                  )),
+                    sideTitles: SideTitles(
+                      interval: intervalY,
+                      reservedSize: 30,
+                      showTitles: true,
+                      getTitlesWidget: (value, meta) {
+                        String formatted = value.toInt().formatToHour();
+                        if (value == meta.max) {
+                          formatted = "";
+                        }
+                        return Text(
+                          formatted,
+                          style: Theme.of(context).textTheme.bodySmall,
+                        );
+                      },
+                    ),
+                  ),
                   rightTitles: AxisTitles(
                     sideTitles: SideTitles(showTitles: false),
                   ),
@@ -118,19 +117,40 @@ class _TotalTimeChartState extends ConsumerState<TotalTimeChart> {
                     sideTitles: SideTitles(showTitles: false),
                   ),
                   bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(showTitles: true),
+                    sideTitles: SideTitles(
+                        reservedSize: 50,
+                        interval: intervalX,
+                        showTitles: true,
+                        getTitlesWidget: (value, meta) {
+                          String formattedDate = "";
+                          double invertedValue = meta.max - value;
+                          DateTime dateX = DateTime.now();
+                          if (meta.max != value) {
+                            dateX = dateX.copyWith(day: -invertedValue.toInt());
+                            final formatter = DateFormat.yM();
+                            formattedDate = formatter.format(dateX);
+                          }
+
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              formattedDate,
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          );
+                        }),
                   ),
                 ),
                 lineBarsData: [
                   LineChartBarData(
                       isStrokeCapRound: true,
-                      curveSmoothness: 0.20,
                       dotData: FlDotData(show: false),
-                      barWidth: 8,
-                      isCurved: true,
-                      spots: axisData.map((e) {
-                        return FlSpot(e.x, e.y);
-                      }).toList()),
+                      barWidth: 2,
+                      spots: axisData.map(
+                        (e) {
+                          return FlSpot(e.x, e.y);
+                        },
+                      ).toList())
                 ],
               ),
             ),
@@ -140,7 +160,7 @@ class _TotalTimeChartState extends ConsumerState<TotalTimeChart> {
     );
   }
 
-  void _addTodayDate(List<StatsModel> testData) {
+  void _addTodaysDate(List<StatsModel> testData) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final hasTodayDate = testData.any((element) => element.dateTime == today);
