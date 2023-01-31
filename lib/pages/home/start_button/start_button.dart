@@ -125,16 +125,13 @@ class _StartButtonState extends ConsumerState<StartButton> {
       child: Stack(
         children: [
           FlipAnimation(
-            child: Padding(
-              padding: EdgeInsets.all(size.width * 0.02),
-              child: StartCircularIndicator(
-                progressColor: progressBarColor,
-                radius: size.width * kStartButtonRadius,
-                duration: state.totalTimeMinutes,
-                pause: state.sessionState == SessionState.paused,
-                cancel: state.sessionState == SessionState.notStarted,
-                backgroundColor: backgroundProgressColor,
-              ),
+            child: StartCircularIndicator(
+              progressColor: progressBarColor,
+              radius: size.width * kStartButtonRadius,
+              duration: state.totalTimeMinutes,
+              pause: state.sessionState == SessionState.paused,
+              cancel: state.sessionState == SessionState.notStarted,
+              backgroundColor: backgroundProgressColor,
             ),
           ),
           FadeInAnimation(
@@ -142,26 +139,23 @@ class _StartButtonState extends ConsumerState<StartButton> {
             beginOpacity: 0,
             beginScale: 0,
             child: Center(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(size.width),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    child: SizedBox(
-                      width: size.width * kStartButtonRadius * 2,
-                      height: size.width * kStartButtonRadius * 2,
-                      child: Padding(
-                        padding: EdgeInsets.all(size.width * 0.05),
-                        child: BounceAnimation(
-                          animate:
-                              state.sessionState == SessionState.inProgress,
-                          stop: state.sessionState != SessionState.inProgress,
-                          child: AnimatedSwitcher(
-                            duration: const Duration(
-                              milliseconds: 800,
-                            ),
-                            child: _buttonImage,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  child: SizedBox(
+                    width: size.width * kStartButtonRadius * 2,
+                    height: size.width * kStartButtonRadius * 2,
+                    child: Padding(
+                      padding: EdgeInsets.all(size.width * 0.05),
+                      child: BounceAnimation(
+                        animate:
+                            state.sessionState == SessionState.inProgress,
+                        stop: state.sessionState != SessionState.inProgress,
+                        child: AnimatedSwitcher(
+                          duration: const Duration(
+                            milliseconds: 800,
                           ),
+                          child: _buttonImage,
                         ),
                       ),
                     ),
@@ -180,7 +174,7 @@ class _StartButtonState extends ConsumerState<StartButton> {
       _buttonImage = Icon(
         Icons.play_arrow_outlined,
         size: kStartButtonIconSize,
-        color: Theme.of(context).primaryColor,
+        color: Theme.of(context).primaryColorLight,
       );
     }
     if (state.sessionState == SessionState.inProgress) {
@@ -190,14 +184,14 @@ class _StartButtonState extends ConsumerState<StartButton> {
       _buttonImage = Icon(
         Icons.pause,
         size: kStartButtonIconSize,
-        color: Theme.of(context).primaryColor,
+        color:    Theme.of(context).primaryColorLight,
       );
     }
     if (state.longTapInProgress) {
       _buttonImage = Icon(
         Icons.stop,
         size: kStartButtonIconSize,
-        color: Theme.of(context).primaryColor,
+        color:  Theme.of(context).primaryColorLight,
       );
     }
   }

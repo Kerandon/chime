@@ -90,7 +90,8 @@ class _ChimeAppState extends ConsumerState<ChimeApp> {
           WidgetsBinding.instance.addPostFrameCallback(
             (timeStamp) {
               if (!_prefsUpdated) {
-                notifier.setTotalTime(prefsModel!.totalTime);
+                // notifier.setTotalTime(minutes: prefsModel!.totalTime);
+                notifier.setTotalTime(minutes: prefsModel!.totalTime);
                 notifier.setTotalCountdownTime(prefsModel.totalCountdown);
                 notifier.setBellSelected(prefsModel.bellSelected);
                 notifier.setBellIntervalTime(prefsModel.bellInterval);

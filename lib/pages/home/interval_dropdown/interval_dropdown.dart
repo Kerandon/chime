@@ -57,61 +57,64 @@ class IntervalDropdown extends ConsumerWidget {
       showOnTimeUpTitleText = true;
     }
 
-    return SizedBox(
-      height: size.height * 0.05,
-      width: size.width * 0.60,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          InkWell(
-            onTap: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const MeditationBellsPage()));
-            },
-            child: Padding(
-              padding: EdgeInsets.only(bottom: size.height * 0.01),
-              child: RichText(
-                text: TextSpan(
-                  text: 'Play a',
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                        color: Theme.of(context).secondaryHeaderColor,
+    return Padding(
+      padding: EdgeInsets.only(top: size.height * 0.05),
+      child: SizedBox(
+        height: size.height * 0.10,
+        width: size.width * 0.60,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            InkWell(
+              onTap: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const MeditationBellsPage()));
+              },
+              child: Padding(
+                padding: EdgeInsets.only(bottom: size.height * 0.01),
+                child: RichText(
+                  text: TextSpan(
+                    text: 'Play a',
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                          color: Theme.of(context).secondaryHeaderColor,
+                        ),
+                    children: [
+                      TextSpan(
+                        text: ' ${state.bellSelected.name}',
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            color: Theme.of(context).primaryColor,
+                            fontWeight: FontWeight.bold),
                       ),
-                  children: [
-                    TextSpan(
-                      text: ' ${state.bellSelected.name}',
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: Theme.of(context).primaryColor,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    TextSpan(
-                      text: showOnTimeUpTitleText ? '' : ' every',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall!
-                          .copyWith(color:Theme.of(context).secondaryHeaderColor,
+                      TextSpan(
+                        text: showOnTimeUpTitleText ? '' : ' every',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall!
+                            .copyWith(color:Theme.of(context).secondaryHeaderColor,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          items.isEmpty
-              ? const SizedBox.shrink()
-              : DropdownButton<int>(
-            style: Theme.of(context).textTheme.displaySmall!.copyWith(color: Theme.of(context).primaryColor
-            ),
-                  isDense: true,
-                  borderRadius: BorderRadius.circular(kBorderRadius),
-                  dropdownColor: Theme.of(context).dialogBackgroundColor,
-                  value: selectedValue,
-                  iconSize: 0,
-                  items: items.toList(),
-                  onChanged: (Object? value) {
-                    notifier.setBellIntervalTime(value as int);
-                  },
-                ),
-        ],
+            items.isEmpty
+                ? const SizedBox.shrink()
+                : DropdownButton<int>(
+              style: Theme.of(context).textTheme.displaySmall!.copyWith(color: Theme.of(context).primaryColor
+              ),
+                    isDense: true,
+                    borderRadius: BorderRadius.circular(kBorderRadius),
+                    dropdownColor: Theme.of(context).dialogBackgroundColor,
+                    value: selectedValue,
+                    iconSize: 0,
+                    items: items.toList(),
+                    onChanged: (Object? value) {
+                      notifier.setBellIntervalTime(value as int);
+                    },
+                  ),
+          ],
+        ),
       ),
     );
   }

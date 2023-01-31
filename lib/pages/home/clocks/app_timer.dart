@@ -22,8 +22,6 @@ class AppTimer extends ConsumerStatefulWidget {
 
 class _CustomNumberFieldState extends ConsumerState<AppTimer> {
   CountdownTimer? _timer;
-  final _textEditingController = TextEditingController();
-  final _focusNode = FocusNode();
   int _millisecondsRemaining = 0;
   bool _mainTimerIsSet = false;
   bool _sessionIsCompleted = false;
@@ -47,7 +45,6 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
   Widget build(BuildContext context) {
     final state = ref.watch(stateProvider);
     final notifier = ref.read(stateProvider.notifier);
-    _setFocus(state);
 
     if (state.sessionState == SessionState.notStarted) {
       _millisecondsRemaining = 0;
@@ -62,14 +59,15 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
       if (!_mainTimerIsSet) {
         int totalSeconds = state.totalTimeMinutes * 60;
 
-        CountdownTimer(Duration(milliseconds: (state.totalCountdownTime * 1000)),
+        CountdownTimer(
+                Duration(milliseconds: (state.totalCountdownTime * 1000)),
                 const Duration(milliseconds: 100))
             .listen((event) {
           notifier.setCurrentCountdownTime(event.remaining.inSeconds);
         }, onDone: () async {
-              if(state.vibrateOnCompletion) {
-                await vibrateDevice();
-              }
+          if (state.vibrateOnCompletion) {
+            await vibrateDevice();
+          }
           _setTimer(duration: Duration(seconds: totalSeconds + 1));
           WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
             notifier.setSessionState(SessionState.inProgress);
@@ -113,63 +111,51 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
     final size = MediaQuery.of(context).size;
     if (state.openSession) {
       return Text(
-            'Open session',
-            style: Theme.of(context).textTheme.displayMedium,
-            textAlign: TextAlign.center,
-          );
+        'Open session',
+        style: Theme.of(context).textTheme.displayMedium,
+        textAlign: TextAlign.center,
+      );
     } else {
       return Stack(
-            children: [
-              SizedBox(
-                width: size.width * 0.90,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    if (state.sessionState == SessionState.notStarted ||
-                        state.sessionState == SessionState.ended) ...[
-                      Expanded(
-                        flex: 2,
-                        child: TimeField(
-                          focusNode: _focusNode,
-                          textEditingController: _textEditingController,
-                        ),
-                      ),
-                      const Expanded(child: TimeAdjustmentIcons())
-                    ],
-                    if (state.sessionState == SessionState.countdown) ...[
-                      SizedBox(
-                        height: size.height * 0.02,
-                      ),
-                      const CountdownText(),
-                    ],
-                    if (state.sessionState == SessionState.inProgress ||
-                        state.sessionState == SessionState.paused) ...[
-                      SizedBox(
-                        height: size.height * 0.02,
-                      ),
-                      const SessionTimer()
-                    ],
-                  ],
-                ),
-              ),
-            ],
-          );
+        children: [
+          SizedBox(
+            width: size.width * 0.90,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                if (state.sessionState == SessionState.notStarted ||
+                    state.sessionState == SessionState.ended) ...[
+                  Expanded(
+                    flex: 2,
+                    child: TimeField(
+                    ),
+                  ),
+                  // const Expanded(child: TimeAdjustmentIcons())
+                ],
+                if (state.sessionState == SessionState.countdown) ...[
+                  SizedBox(
+                    height: size.height * 0.02,
+                  ),
+                  const CountdownText(),
+                ],
+                if (state.sessionState == SessionState.inProgress ||
+                    state.sessionState == SessionState.paused) ...[
+                  SizedBox(
+                    height: size.height * 0.02,
+                  ),
+                  const SessionTimer()
+                ],
+              ],
+            ),
+          ),
+        ],
+      );
     }
   }
 
   _cancelTimer() {
     _timer?.cancel();
     setState(() {});
-  }
-
-  void _setFocus(AppState state) {
-    if (!_focusNode.hasFocus) {
-      _textEditingController.text = state.totalTimeMinutes.toString();
-    }
-
-    if (state.focusState == FocusState.unFocus) {
-      _focusNode.unfocus();
-    }
   }
 }

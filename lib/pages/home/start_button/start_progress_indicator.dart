@@ -78,37 +78,26 @@ class _CustomCircularIndicatorState
       child: Stack(
         children: [
           Center(
-            child: SizedBox(
-              width: widget.radius * 2,
-              height: widget.radius * 2,
-              child: Stack(
-                children: [
-                  Center(
-                    child: SizedBox(
-                      height: size.height * 0.20,
-                      width: size.height * 0.20,
+            child: Stack(
+              children: [
+                Center(
+                  child: SizedBox(
+                    height: size.height * 0.30,
+                    width: size.height * 0.30,
+                    child: Center(
                       child: CustomPaint(
                         painter: CustomClock(
                           percentage: percent,
-                          circleColor: Theme.of(context).primaryColor,
-                          handColor: Theme.of(context).primaryColor,
+                          circleColor: Theme.of(context).primaryColorDark,
                           dashColor: Theme.of(context).primaryColor,
 
                         ),
-
-                        // CustomProgressPainter(
-                        //     percent: percent,
-                        //     progressColor: widget.progressColor,
-                        //     backgroundColor: widget.backgroundColor,
-                        //     strokeWidth: widget.strokeWidth,
-                        //
-                        //   ),
                         child: Container(),
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],

@@ -15,6 +15,6 @@ class LotusIcon extends StatelessWidget {
         width: width ?? size.width * 0.10,
         height: width ?? size.width * 0.10,
         child: Image.asset('assets/images/logo.png',
-            color: Theme.of(context).primaryColor));
+            color: Theme.of(context).primaryColorLight));
   }
 }

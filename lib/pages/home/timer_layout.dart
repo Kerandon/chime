@@ -33,15 +33,15 @@ class _TimerPageState extends ConsumerState<TimerLayout> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Expanded(
-                flex: 50,
+                flex: 70,
                 child: FadeInAnimation(child: AppTimer()),
               ),
               const Expanded(
-                flex: 80,
+                flex: 50,
                 child: StartButton(),
               ),
               Expanded(
-                  flex: 30,
+                  flex: 40,
                   child: sessionIsUnderway
                       ? const SizedBox.shrink()
                       : const FadeInAnimation(child: IntervalDropdown())),

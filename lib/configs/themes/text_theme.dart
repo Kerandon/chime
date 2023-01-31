@@ -16,15 +16,15 @@ TextTheme darkThemeTextTheme() {
       fontWeight: FontWeight.w500,
     ),
     displaySmall: darkThemeTextStyle.copyWith(
-      fontSize: 15,
-      fontWeight: FontWeight.w500,
+      fontSize: 20,
+      fontWeight: FontWeight.w300,
     ),
     displayMedium: darkThemeTextStyle.copyWith(
-      fontSize: 60,
-      fontWeight: FontWeight.w500,
+      fontSize: 50,
+      fontWeight: FontWeight.w600,
     ),
     displayLarge: darkThemeTextStyle.copyWith(
-      fontSize: 80,
+      fontSize: 50,
       fontWeight: FontWeight.w500,
     ),
     labelSmall: darkThemeTextStyle.copyWith(

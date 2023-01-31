@@ -50,6 +50,7 @@ dependencies:
   equatable: ^2.0.5
   vibration: ^1.7.6
   sound_mode: ^2.0.2
+  numberpicker: ^2.1.1
 
 flutter_native_splash:
   color: "#ffffff"

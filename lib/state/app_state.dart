@@ -158,10 +158,32 @@ class AppState {
 class AppNotifier extends StateNotifier<AppState> {
   AppNotifier(state) : super(state);
 
-  void setTotalTime(int time) async {
+  // void setTotalTime(int time) async {
+  //   state = state.copyWith(
+  //       totalTimeMinutes: time,
+  //       bellIntervalMenuSelection: calculateIntervals(time));
+  // }
+
+  void setTotalTime({int? minutes, int? hours}){
+
+    int currentTimeMinutes = state.totalTimeMinutes % 60;
+    int currentTimeHours = state.totalTimeMinutes ~/ 60;
+    int updatedTotalTime = 0;
+    if(minutes != null){
+      updatedTotalTime = (currentTimeHours * 60) + minutes;
+      // state = state.copyWith(totalTimeMinutes:(currentTimeHours * 60) + minutes );
+    }
+    if(hours != null){
+      updatedTotalTime = currentTimeMinutes + (hours * 60);
+    // state = state.copyWith(totalTimeMinutes:(currentTimeMinutes) + (hours * 60) );
+    }
+
     state = state.copyWith(
-        totalTimeMinutes: time,
-        bellIntervalMenuSelection: calculateIntervals(time));
+      totalTimeMinutes: updatedTotalTime,
+        bellIntervalMenuSelection: calculateIntervals(updatedTotalTime));
+
+    print('total time set to ${state.totalTimeMinutes} total min, hour ${state.totalTimeMinutes ~/ 60}, min ${state.totalTimeMinutes % 60} ');
+
   }
 
   void isInitialTimeSet(bool set) {
@@ -202,7 +224,6 @@ class AppNotifier extends StateNotifier<AppState> {
       await AudioManager().pauseAmbience();
     } else if (sessionState == SessionState.ended) {
       //todo add streak
-      // await PreferencesStreak.addToStreak(DateTime.now());
     }
   }
 
