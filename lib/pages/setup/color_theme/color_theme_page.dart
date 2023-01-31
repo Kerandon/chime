@@ -1,9 +1,9 @@
+import 'package:chime/pages/setup/components/settings_title.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../../components/settings/color_theme_checkbox.dart';
-import '../../components/settings/settings_title.dart';
-import '../../configs/constants.dart';
-import '../../enums/color_themes.dart';
+import 'color_theme_checkbox.dart';
+import '../../../configs/constants.dart';
+import '../../../enums/color_themes.dart';
 
 class ColorThemePage extends ConsumerWidget {
   const ColorThemePage({Key? key}) : super(key: key);

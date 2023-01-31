@@ -21,19 +21,19 @@ class HistoryPeriodToggle extends ConsumerWidget {
     return Padding(
       padding: EdgeInsets.all(size.width * 0.01),
       child: OutlinedButton(
-        onPressed: () {
+        onPressed: state.chartsHaveData ? () {
           toggleCallback.call();
           notifier.setBarChartTimePeriod(timePeriod);
-        },
+        } : null,
         style: OutlinedButton.styleFrom(
             side: BorderSide(
-          color: state.barChartTimePeriod == timePeriod ? Theme.of(context).primaryColor
+          color: state.barChartTimePeriod == timePeriod && state.chartsHaveData ? Theme.of(context).primaryColor
               : AppColors.grey,
         )),
         child: Text(
           timePeriod.toText(),
           style: Theme.of(context).textTheme.bodySmall!.copyWith(
-            color: state.barChartTimePeriod == timePeriod ?
+            color: state.barChartTimePeriod == timePeriod && state.chartsHaveData ?
                 Theme.of(context).primaryColor : AppColors.grey,
           )
         ),

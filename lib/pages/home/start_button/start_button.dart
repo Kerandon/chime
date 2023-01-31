@@ -1,15 +1,16 @@
 import 'package:chime/animation/bounce_animation.dart';
 import 'package:chime/animation/fade_in_animation.dart';
-import 'package:chime/components/home/start_button/start_progress_indicator.dart';
+import 'package:chime/animation/flip_animation.dart';
+import 'package:chime/pages/home/start_button/start_progress_indicator.dart';
 import 'package:chime/enums/session_state.dart';
 import 'package:chime/state/app_state.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quiver/async.dart';
+import '../../../app_components/lotus_icon.dart';
 import '../../../configs/app_colors.dart';
 import '../../../configs/constants.dart';
-import '../../app/lotus_icon.dart';
 
 class StartButton extends ConsumerStatefulWidget {
   const StartButton({
@@ -35,10 +36,10 @@ class _StartButtonState extends ConsumerState<StartButton> {
     _setButtonIcon(state);
 
     Color progressBarColor = Theme.of(context).primaryColor;
-    if(state.sessionState == SessionState.notStarted){
+    if (state.sessionState == SessionState.notStarted) {
       backgroundProgressColor = Theme.of(context).primaryColor;
     }
-    if(state.sessionState == SessionState.inProgress){
+    if (state.sessionState == SessionState.inProgress) {
       backgroundProgressColor = AppColors.veryDarkGrey;
     }
     if (state.sessionState == SessionState.countdown) {
@@ -46,7 +47,7 @@ class _StartButtonState extends ConsumerState<StartButton> {
       backgroundProgressColor = AppColors.veryDarkGrey;
     }
     if (state.sessionState == SessionState.paused) {
-      progressBarColor = Theme.of(context).primaryColor.withOpacity(0.50);
+      progressBarColor = Theme.of(context).primaryColor.withRed(100);
       backgroundProgressColor = AppColors.veryDarkGrey;
     }
     if (state.longTapInProgress) {
@@ -83,62 +84,63 @@ class _StartButtonState extends ConsumerState<StartButton> {
         }),
         LongPressGestureRecognizer:
             GestureRecognizerFactoryWithHandlers<LongPressGestureRecognizer>(
-                () {
-          return LongPressGestureRecognizer(
-            debugOwner: this,
-            duration: const Duration(milliseconds: 500),
-          );
-        }, (LongPressGestureRecognizer instance) {
-          instance.onLongPress = () {
-            if (state.sessionHasStarted) {
-              notifier.setLongTapInProgress(true);
+          () {
+            return LongPressGestureRecognizer(
+              debugOwner: this,
+              duration: const Duration(milliseconds: 500),
+            );
+          },
+          (LongPressGestureRecognizer instance) {
+            instance.onLongPress = () {
+              if (state.sessionHasStarted) {
+                notifier.setLongTapInProgress(true);
 
-              _timer = CountdownTimer(
-                  const Duration(milliseconds: kLongPressDurationMilliseconds),
-                  const Duration(milliseconds: 20));
+                _timer = CountdownTimer(
+                    const Duration(
+                        milliseconds: kLongPressDurationMilliseconds),
+                    const Duration(milliseconds: 20));
 
-              _timer?.listen((event) {
+                _timer?.listen((event) {}, onDone: () {
+                  notifier.setSessionState(
+                    SessionState.notStarted,
+                  );
+                  notifier.resetSession();
 
-              }, onDone: () {
-                notifier.setSessionState(
-                  SessionState.notStarted,
-                );
-                notifier.resetSession();
+                  notifier.setLongTapInProgress(false);
+                });
+              }
+            };
+            instance.onLongPressEnd = (details) {
+              notifier.setLongTapInProgress(false);
+              _timer?.cancel();
+            };
+            instance.onLongPressCancel = () {
+              notifier.setLongTapInProgress(false);
 
-                notifier.setLongTapInProgress(false);
-
-              });
-            }
-          };
-          instance.onLongPressEnd = (details) {
-            notifier.setLongTapInProgress(false);
-            _timer?.cancel();
-
-          };
-          instance.onLongPressCancel = () {
-
-            notifier.setLongTapInProgress(false);
-
-            _timer?.cancel();
-
-          };
-        }),
+              _timer?.cancel();
+            };
+          },
+        ),
       },
       child: Stack(
         children: [
-          Padding(
-            padding: EdgeInsets.all(size.width * 0.02),
-            child: StartCircularIndicator(
-              progressColor: progressBarColor,
-              radius: size.width * kStartButtonRadius,
-              duration: state.totalTimeMinutes,
-              pause: state.sessionState == SessionState.paused,
-              cancel: state.sessionState == SessionState.notStarted,
-              backgroundColor: backgroundProgressColor,
+          FlipAnimation(
+            child: Padding(
+              padding: EdgeInsets.all(size.width * 0.02),
+              child: StartCircularIndicator(
+                progressColor: progressBarColor,
+                radius: size.width * kStartButtonRadius,
+                duration: state.totalTimeMinutes,
+                pause: state.sessionState == SessionState.paused,
+                cancel: state.sessionState == SessionState.notStarted,
+                backgroundColor: backgroundProgressColor,
+              ),
             ),
           ),
           FadeInAnimation(
-            delayMilliseconds: 800,
+            durationMilliseconds: 1000,
+            beginOpacity: 0,
+            beginScale: 0,
             child: Center(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(size.width),
@@ -156,7 +158,7 @@ class _StartButtonState extends ConsumerState<StartButton> {
                           stop: state.sessionState != SessionState.inProgress,
                           child: AnimatedSwitcher(
                             duration: const Duration(
-                              milliseconds: 500,
+                              milliseconds: 800,
                             ),
                             child: _buttonImage,
                           ),

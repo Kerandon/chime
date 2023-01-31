@@ -2,7 +2,7 @@ import 'package:chime/audio/audio_manager.dart';
 import 'package:chime/enums/session_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../components/app/lotus_icon.dart';
+import '../app_components/lotus_icon.dart';
 import '../data/meditation_quotes.dart';
 import '../state/app_state.dart';
 

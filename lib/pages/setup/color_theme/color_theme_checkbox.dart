@@ -2,10 +2,10 @@ import 'package:chime/configs/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../state/database_manager.dart';
-import '../../enums/color_themes.dart';
-import '../../enums/prefs.dart';
-import '../../state/app_state.dart';
+import '../../../state/database_manager.dart';
+import '../../../enums/color_themes.dart';
+import '../../../enums/prefs.dart';
+import '../../../state/app_state.dart';
 
 class ColorThemeCheckbox extends ConsumerWidget {
   const ColorThemeCheckbox({

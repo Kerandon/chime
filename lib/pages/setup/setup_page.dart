@@ -1,17 +1,19 @@
 import 'package:chime/enums/ambience.dart';
 import 'package:chime/enums/bell.dart';
+import 'package:chime/pages/setup/mute_device/mute_device_page.dart';
+import 'package:chime/pages/setup/vibrate/vibrate_page.dart';
 import 'package:chime/state/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../../components/settings/bell_on_start_tile.dart';
-import '../../components/settings/open_session_tile.dart';
-import '../../components/settings/settings_divider.dart';
-import '../../components/settings/settings_tile.dart';
-import 'ambience_page.dart';
-import 'color_theme_page.dart';
-import 'countdown_page.dart';
-import 'meditation_bells_page.dart';
+import 'bell_on_start/bell_on_start_tile.dart';
+import 'open_session/open_session_tile.dart';
+import 'components/settings_divider.dart';
+import 'components/settings_tile.dart';
+import 'ambience/ambience_page.dart';
+import 'color_theme/color_theme_page.dart';
+import 'countdown/countdown_page.dart';
+import 'meditation_bells/meditation_bells_page.dart';
 
 class SetupPage extends ConsumerWidget {
   const SetupPage({Key? key}) : super(key: key);
@@ -65,7 +67,9 @@ class SetupPage extends ConsumerWidget {
                     builder: (context) => const CountdownPage()));
               },
             ),
-                                 const SettingsTitleDivider(
+            const Vibrate(),
+            const MuteDevicePage(),
+            const SettingsTitleDivider(
               title: 'Appearance',
             ),
             SettingsTile(
@@ -74,8 +78,11 @@ class SetupPage extends ConsumerWidget {
                 ),
                 title: 'Color theme',
                 onPressed: () {
-
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ColorThemePage(),),);
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const ColorThemePage(),
+                    ),
+                  );
                 }),
             SettingsTile(
                 icon: const Icon(

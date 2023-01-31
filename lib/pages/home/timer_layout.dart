@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../animation/fade_in_animation.dart';
-import '../animation/flip_animation.dart';
-import '../components/home/clocks/app_timer.dart';
-import '../components/home/interval_dropdown.dart';
-import '../components/home/start_button/start_button.dart';
-import '../enums/session_state.dart';
-import '../state/app_state.dart';
+import '../../animation/fade_in_animation.dart';
+import 'clocks/app_timer.dart';
+import 'interval_dropdown/interval_dropdown.dart';
+import 'start_button/start_button.dart';
+import '../../enums/session_state.dart';
+import '../../state/app_state.dart';
 
-class TimerPage extends ConsumerStatefulWidget {
-  const TimerPage({Key? key}) : super(key: key);
+class TimerLayout extends ConsumerStatefulWidget {
+  const TimerLayout({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<TimerPage> createState() => _TimerPageState();
+  ConsumerState<TimerLayout> createState() => _TimerPageState();
 }
 
-class _TimerPageState extends ConsumerState<TimerPage> {
+class _TimerPageState extends ConsumerState<TimerLayout> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(stateProvider);
@@ -39,7 +38,7 @@ class _TimerPageState extends ConsumerState<TimerPage> {
               ),
               const Expanded(
                 flex: 80,
-                child: FlipAnimation(child: StartButton()),
+                child: StartButton(),
               ),
               Expanded(
                   flex: 30,

@@ -9,6 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../../configs/app_colors.dart';
 import '../../../utils/methods.dart';
+import 'bar_touch_data.dart';
 
 class BarChartHistory extends ConsumerStatefulWidget {
   const BarChartHistory({
@@ -56,9 +57,9 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
               _runAnimation();
             }
 
-            String totalText = calculateTotalMeditationTime(snapshot, state);
+            String totalText = calculateTotalMeditationTime(snapshot.data!, state);
             String periodText = " in total";
-            if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+            if (snapshot.data!.isNotEmpty) {
               bars = _getBarData(snapshot.data!, state.barChartTimePeriod);
               TimePeriod? period = snapshot.data?.first.timePeriod;
               switch (period!) {
@@ -77,63 +78,68 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
               }
             }
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+            return Stack(
               children: [
-                Expanded(
-                  flex: 2,
-                  child: RichText(
-                    text: TextSpan(
-                      text: 'You have meditated for ',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall!
-                          .copyWith(fontWeight: FontWeight.w300),
-                      children: [
-                        TextSpan(
-                          text: totalText,
+
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: RichText(
+                        text: TextSpan(
+                          text: 'You have meditated for ',
                           style: Theme.of(context)
                               .textTheme
                               .bodySmall!
-                              .copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  color: Theme.of(context).primaryColor),
+                              .copyWith(fontWeight: FontWeight.w300),
+                          children: [
+                            TextSpan(
+                              text: totalText,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall!
+                                  .copyWith(
+                                      fontWeight: FontWeight.w600,
+                                      color: Theme.of(context).primaryColor),
+                            ),
+                            TextSpan(
+                              text: periodText,
+                              style:
+                                  Theme.of(context).textTheme.bodySmall!.copyWith(
+                                        fontWeight: FontWeight.w300,
+                                      ),
+                            ),
+                          ],
                         ),
-                        TextSpan(
-                          text: periodText,
-                          style:
-                              Theme.of(context).textTheme.bodySmall!.copyWith(
-                                    fontWeight: FontWeight.w300,
-                                  ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: size.height * 0.05,
+                    ),
+                    Expanded(
+                      flex: 10,
+                      child: BarChart(
+                        BarChartData(
+                          barTouchData: getBarTouchData(showLabels: _showLabels),
+                          gridData: FlGridData(show: false),
+                          alignment: BarChartAlignment.spaceAround,
+                          borderData: borderData,
+                          barGroups: bars,
+                          titlesData: titlesData,
                         ),
-                      ],
+                        swapAnimationDuration: const Duration(
+                          milliseconds: kChartAnimationDuration,
+                        ),
+                        swapAnimationCurve: Curves.easeOutQuint,
+                      ),
                     ),
-                  ),
-                ),
-                SizedBox(
-                  height: size.height * 0.05,
-                ),
-                Expanded(
-                  flex: 10,
-                  child: BarChart(
-                    BarChartData(
-                      barTouchData: getBarTouchData(showLabels: _showLabels),
-                      gridData: FlGridData(show: false),
-                      alignment: BarChartAlignment.spaceAround,
-                      borderData: borderData,
-                      barGroups: bars,
-                      titlesData: titlesData,
-                    ),
-                    swapAnimationDuration: const Duration(
-                      milliseconds: kChartAnimationDuration,
-                    ),
-                    swapAnimationCurve: Curves.easeOutQuint,
-                  ),
+                  ],
                 ),
               ],
             );
           }
-          return const SizedBox();
+          return const SizedBox.shrink();
         },
       ),
     );
@@ -197,7 +203,6 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
     for (var s in statsData) {
       stats.add(s);
     }
-
     if (period == TimePeriod.week) {
       for (int i = 0; i < 7; i++) {
         allTimePoints.add(
@@ -245,9 +250,10 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
             BarChartRodData(
                 color: Theme.of(context).primaryColor,
                 backDrawRodData: BackgroundBarChartRodData(
-                    show: true,
-                    toY: e.totalMeditationTime.toDouble(),
-                    color: Colors.transparent,),
+                  show: true,
+                  toY: e.totalMeditationTime.toDouble(),
+                  color: Colors.transparent,
+                ),
                 toY: _animate ? e.totalMeditationTime.toDouble() : 0),
           ],
           showingTooltipIndicators: e.totalMeditationTime > 0 ? [0] : null,
@@ -279,28 +285,4 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
   }
 }
 
-BarTouchData getBarTouchData({required bool showLabels}) {
-  return BarTouchData(
-    enabled: false,
-    touchTooltipData: BarTouchTooltipData(
-      tooltipBgColor: Colors.transparent,
-      tooltipPadding: EdgeInsets.zero,
-      tooltipMargin: 8,
-      getTooltipItem: (
-        BarChartGroupData group,
-        int groupIndex,
-        BarChartRodData rod,
-        int rodIndex,
-      ) {
-        String time = "";
-        if (showLabels) {
-          time = rod.toY.round().formatToHourMin();
-        }
-        return BarTooltipItem(
-          time,
-          const TextStyle(color: AppColors.offWhite, fontSize: 10),
-        );
-      },
-    ),
-  );
-}
+

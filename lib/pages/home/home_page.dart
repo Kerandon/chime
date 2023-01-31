@@ -1,12 +1,10 @@
-import 'package:chime/enums/time_period.dart';
 import 'package:chime/pages/guide_page.dart';
 import 'package:chime/pages/setup/setup_page.dart';
 import 'package:chime/pages/stats/stats_page.dart';
-import 'package:chime/state/database_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'timer_page.dart';
-import '../state/app_state.dart';
+import 'timer_layout.dart';
+import '../../state/app_state.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({
@@ -18,13 +16,11 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageContentsState extends ConsumerState<HomePage> {
-
   static const List<Widget> _pageOptions = [
- TimerPage(),
+    TimerLayout(),
     SetupPage(),
     StatsPage(),
     GuidePage(),
-
   ];
 
   @override
@@ -39,22 +35,22 @@ class _HomePageContentsState extends ConsumerState<HomePage> {
         body: Stack(
           children: [
             _pageOptions.elementAt(state.currentPage),
-            Align(
-              alignment: const Alignment(-1,-0.10),
-              child: ElevatedButton(onPressed: () async {
-                await DatabaseManager().insertIntoStats(dateTime: DateTime.now().copyWith(year: 2021, month: 09, day:18), minutes: 80);
-              }, child: const Text('Insert Stat')),
-            ),
-            Align(
-                alignment: const Alignment(-1,0.10),
-                child: ElevatedButton(onPressed: (){
-                  DatabaseManager().getStatsByTimePeriod(period: TimePeriod.week);
-                }, child: const Text('Get Stats'),),),
-            Align(
-                alignment: const Alignment(-1,0.20),
-                child: ElevatedButton(onPressed: (){
-                  DatabaseManager().clearAllStats();
-                }, child: const Text('delete')))
+            // Align(
+            //   alignment: const Alignment(-1,-0.10),
+            //   child: ElevatedButton(onPressed: () async {
+            //     await DatabaseManager().insertIntoStats(dateTime: DateTime.now().copyWith(year: 2022, month: 01, day:20), minutes: 60);
+            //   }, child: const Text('Insert Stat')),
+            // ),
+            // Align(
+            //     alignment: const Alignment(-1,0.10),
+            //     child: ElevatedButton(onPressed: (){
+            //       DatabaseManager().getStatsByTimePeriod(period: TimePeriod.week);
+            //     }, child: const Text('Get Stats'),),),
+            // Align(
+            //     alignment: const Alignment(-1,0.20),
+            //     child: ElevatedButton(onPressed: (){
+            //       DatabaseManager().clearAllStats();
+            //     }, child: const Text('delete')))
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
@@ -86,9 +82,6 @@ class _HomePageContentsState extends ConsumerState<HomePage> {
     );
   }
 }
-
-
-
 
 DateTime roundToMinute(DateTime dateTime) {
   dateTime = dateTime.add(const Duration(seconds: 30));

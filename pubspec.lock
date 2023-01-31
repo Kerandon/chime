@@ -493,6 +493,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  sound_mode:
+    dependency: "direct main"
+    description:
+      name: sound_mode
+      sha256: ec25dc16feea1876e9c767b615ee1e430331da6c0d0f7122c04cbc2233b175cb
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.0.2"
   source_span:
     dependency: transitive
     description:
@@ -605,6 +613,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.4"
+  vibration:
+    dependency: "direct main"
+    description:
+      name: vibration
+      sha256: "1dc9d1a0d62b12f1276eb7146b21585db5fe01771b8ca0234fefdf74ba51f963"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.7.6"
   win32:
     dependency: transitive
     description:

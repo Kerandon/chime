@@ -18,15 +18,16 @@ class StreakStatsBox extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            value,
+            value, textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.displaySmall!.copyWith(
                   color: Theme.of(context).primaryColor,
-                fontSize: 25
+                fontSize: 25,
 
                 ),
           ),
           Text(
-            text,
+
+            text,              textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.displaySmall!.copyWith(
                   color: AppColors.offWhite,
                 ),

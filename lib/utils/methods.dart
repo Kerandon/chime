@@ -1,24 +1,7 @@
-import 'package:flutter/material.dart';
 
 import '../enums/time_period.dart';
 import '../models/stats_model.dart';
 import '../state/app_state.dart';
-
-// String formatMinToHourMin(int mins) {
-//   int m = mins % 60;
-//   int h = mins ~/ 60;
-//
-//   if (h == 0) {
-//     return '${m}m';
-//   } else {
-//     if (m > 1) {
-//       return '${h}h\n${m}m';
-//     } else if (m == 0) {
-//       return '${h}h';
-//     }
-//   }
-//   return "";
-// }
 
 extension Format on int {
   String formatToHour() {
@@ -129,10 +112,10 @@ String getBestStreak(List<StatsModel> stats) {
 
 
 String calculateTotalMeditationTime(
-    AsyncSnapshot<List<StatsModel>> snapshot, AppState state) {
+    List<StatsModel> data, AppState state) {
   int totalTime = 0;
 
-  for (var d in snapshot.data!) {
+  for (var d in data) {
     totalTime += d.totalMeditationTime;
   }
   String totalTimeFormatted = totalTime.formatToHourMin();

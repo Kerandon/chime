@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../app_colors.dart';
+
 const darkThemeTextStyle = TextStyle(color: Colors.white);
 const lightThemeTextStyle = TextStyle(color: Colors.black);
 
@@ -25,7 +27,10 @@ TextTheme darkThemeTextTheme() {
       fontSize: 80,
       fontWeight: FontWeight.w500,
     ),
-    labelSmall: darkThemeTextStyle,
+    labelSmall: darkThemeTextStyle.copyWith(
+      fontSize: 10,
+      color: AppColors.offWhite
+    ),
   );
 }
 

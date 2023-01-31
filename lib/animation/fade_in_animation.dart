@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 
 class FadeInAnimation extends StatefulWidget {
-  const FadeInAnimation(
-      {Key? key,
-      required this.child,
-      this.durationMilliseconds = 800,
-      this.delayMilliseconds = 0})
-      : super(key: key);
+  const FadeInAnimation({
+    Key? key,
+    required this.child,
+    this.durationMilliseconds = 800,
+    this.delayMilliseconds = 0,
+    this.beginScale = 0.90,
+    this.beginOpacity = 0.50,
+  }) : super(key: key);
 
   final Widget child;
   final int durationMilliseconds;
   final int delayMilliseconds;
+  final double beginScale;
+  final double beginOpacity;
 
   @override
   State<FadeInAnimation> createState() => _FadeInAnimationState();
@@ -28,10 +32,10 @@ class _FadeInAnimationState extends State<FadeInAnimation>
         duration: Duration(milliseconds: widget.durationMilliseconds),
         vsync: this);
 
-    _scale = Tween<double>(begin: 0.95, end: 1.0)
+    _scale = Tween<double>(begin: widget.beginScale, end: 1.0)
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
-    _opacity = Tween<double>(begin: 0.50, end: 1.0)
+    _opacity = Tween<double>(begin: widget.beginScale, end: 1.0)
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     Future.delayed(Duration(milliseconds: widget.delayMilliseconds), () {

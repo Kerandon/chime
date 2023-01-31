@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   static const tealPrimary = Color.fromARGB(255, 0, 128, 128);
+  static const tealLight= Color.fromARGB(255, 178, 216, 216);
   static const tealDark = Color.fromARGB(255, 1, 77, 78);
   static const orangePrimary = Colors.deepOrangeAccent;
   static const orangeDark = Colors.deepOrange;

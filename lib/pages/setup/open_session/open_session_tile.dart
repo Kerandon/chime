@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../../configs/app_colors.dart';
-import '../../state/app_state.dart';
+import '../../../state/app_state.dart';
 
 class OpenSessionTile extends ConsumerWidget {
   const OpenSessionTile({
@@ -15,8 +14,8 @@ class OpenSessionTile extends ConsumerWidget {
     final state = ref.watch(stateProvider);
     final notifier = ref.read(stateProvider.notifier);
     return SwitchListTile(
-      inactiveTrackColor: AppColors.lightGrey,
-      inactiveThumbColor: AppColors.grey,
+      inactiveTrackColor: Theme.of(context).disabledColor,
+      inactiveThumbColor: Theme.of(context).disabledColor,
       title: Row(
         children: [
           const FaIcon(FontAwesomeIcons.infinity),

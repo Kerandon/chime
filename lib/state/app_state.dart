@@ -44,6 +44,12 @@ class AppState {
   final Ambience ambienceSelected;
   final double ambienceVolume;
 
+  //VIBRATE
+  final bool vibrateOnCompletion;
+
+  //MUTE
+  final bool deviceIsMuted;
+
   //STATS
   final bool checkIfStatsUpdated;
 
@@ -52,6 +58,7 @@ class AppState {
 
   //Chart
   final TimePeriod barChartTimePeriod;
+  final bool chartsHaveData;
 
   AppState({
     required this.sessionState,
@@ -75,9 +82,12 @@ class AppState {
     required this.bellOnSessionStart,
     required this.ambienceSelected,
     required this.ambienceVolume,
+    required this.vibrateOnCompletion,
+    required this.deviceIsMuted,
     required this.checkIfStatsUpdated,
     required this.hideClock,
     required this.barChartTimePeriod,
+    required this.chartsHaveData,
   });
 
   AppState copyWith({
@@ -102,9 +112,12 @@ class AppState {
     bool? bellOnSessionStart,
     Ambience? ambienceSelected,
     double? ambienceVolume,
+    bool? vibrateOnCompletion,
+    bool? deviceIsMuted,
     bool? checkIfStatsUpdated,
     bool? hideClock,
     TimePeriod? barChartTimePeriod,
+    bool? chartsHaveData,
   }) {
     return AppState(
       sessionState: sessionState ?? this.sessionState,
@@ -132,9 +145,12 @@ class AppState {
       bellOnSessionStart: bellOnSessionStart ?? this.bellOnSessionStart,
       ambienceSelected: ambienceSelected ?? this.ambienceSelected,
       ambienceVolume: ambienceVolume ?? this.ambienceVolume,
+      vibrateOnCompletion: vibrateOnCompletion ?? this.vibrateOnCompletion,
+      deviceIsMuted: deviceIsMuted ?? this.deviceIsMuted,
       checkIfStatsUpdated: checkIfStatsUpdated ?? this.checkIfStatsUpdated,
       hideClock: hideClock ?? this.hideClock,
       barChartTimePeriod: barChartTimePeriod ?? this.barChartTimePeriod,
+      chartsHaveData: chartsHaveData ?? this.chartsHaveData,
     );
   }
 }
@@ -235,10 +251,12 @@ class AppNotifier extends StateNotifier<AppState> {
   }
 
   void setTotalCountdownTime(int time) {
+
     state = state.copyWith(totalCountdownTime: time);
   }
 
   void setCurrentCountdownTime(int time) {
+
     state = state.copyWith(currentCountdownTime: time);
   }
 
@@ -309,6 +327,18 @@ class AppNotifier extends StateNotifier<AppState> {
   void setBarChartTimePeriod(TimePeriod time){
     state = state.copyWith(barChartTimePeriod: time);
   }
+
+  void setChartsHaveData(bool haveData){
+    state = state.copyWith(chartsHaveData: haveData);
+  }
+
+  void setVibrateOnCompletion(bool vibrate){
+    state = state.copyWith(vibrateOnCompletion: vibrate);
+  }
+
+  void setDeviceIsMuted(bool muted){
+    state = state.copyWith(deviceIsMuted: muted);
+  }
 }
 
 final stateProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
@@ -337,5 +367,8 @@ final stateProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
     checkIfStatsUpdated: false,
     hideClock: false,
     barChartTimePeriod: TimePeriod.week,
+    chartsHaveData: false,
+    vibrateOnCompletion: true,
+    deviceIsMuted: true,
   ));
 });

@@ -3,6 +3,7 @@ import 'package:chime/pages/stats/line_chart_total/line_chart_total_main.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../enums/time_period.dart';
+import 'bar_chart_history_main/bar_chart_history.dart';
 import 'history_period_toggle.dart';
 
 class StatsPage extends ConsumerStatefulWidget {
@@ -40,12 +41,12 @@ class _StatsPageState extends ConsumerState<StatsPage> {
                   child: const StreakStats(),
                 ),
               ),
-              // SizedBox(
-              //   height: size.height * 0.50,
-              //   child: _toggle
-              //       ? BarChartHistory(key: UniqueKey())
-              //       : BarChartHistory(key: UniqueKey()),
-              // ),
+              SizedBox(
+                height: size.height * 0.50,
+                child: _toggle
+                    ? BarChartHistory(key: UniqueKey())
+                    : BarChartHistory(key: UniqueKey()),
+              ),
               SizedBox(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

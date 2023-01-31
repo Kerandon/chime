@@ -1,12 +1,13 @@
 import 'package:chime/audio/audio_manager.dart';
-import 'package:chime/components/home/clocks/time_adjustment_icons.dart';
-import 'package:chime/components/home/clocks/time_field.dart';
+import 'package:chime/pages/home/clocks/time_adjustment_icons.dart';
+import 'package:chime/pages/home/clocks/time_field.dart';
 import 'package:chime/enums/session_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quiver/async.dart';
 import '../../../enums/focus_state.dart';
 import '../../../state/app_state.dart';
+import '../../../utils/vibration_method.dart';
 import 'session_timer.dart';
 import 'countdown_text.dart';
 
@@ -61,11 +62,14 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
       if (!_mainTimerIsSet) {
         int totalSeconds = state.totalTimeMinutes * 60;
 
-        CountdownTimer(Duration(seconds: state.totalCountdownTime + 1),
+        CountdownTimer(Duration(milliseconds: (state.totalCountdownTime * 1000)),
                 const Duration(milliseconds: 100))
             .listen((event) {
           notifier.setCurrentCountdownTime(event.remaining.inSeconds);
-        }, onDone: () {
+        }, onDone: () async {
+              if(state.vibrateOnCompletion) {
+                await vibrateDevice();
+              }
           _setTimer(duration: Duration(seconds: totalSeconds + 1));
           WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
             notifier.setSessionState(SessionState.inProgress);

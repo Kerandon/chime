@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../../pages/setup/meditation_bells_page.dart';
-import '../../state/app_state.dart';
-import '../../configs/constants.dart';
+import '../../setup/meditation_bells/meditation_bells_page.dart';
+import '../../../state/app_state.dart';
+import '../../../configs/constants.dart';
 
 class IntervalDropdown extends ConsumerWidget {
   const IntervalDropdown({

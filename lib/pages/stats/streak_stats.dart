@@ -1,20 +1,23 @@
 import 'package:chime/enums/time_period.dart';
 import 'package:chime/pages/stats/streak_stats_box.dart';
+import 'package:chime/state/app_state.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
 import '../../models/stats_model.dart';
 import '../../state/database_manager.dart';
 import '../../utils/methods.dart';
 
-class StreakStats extends StatefulWidget {
+class StreakStats extends ConsumerStatefulWidget {
   const StreakStats({
     super.key,
   });
 
   @override
-  State<StreakStats> createState() => _StreakStatsState();
+  ConsumerState<StreakStats> createState() => _StreakStatsState();
 }
 
-class _StreakStatsState extends State<StreakStats> {
+class _StreakStatsState extends ConsumerState<StreakStats> {
   late final Future<StatsModel> _lastEntryFuture;
   late final Future<List<StatsModel>> _allGroupedFuture;
 
@@ -28,34 +31,45 @@ class _StreakStatsState extends State<StreakStats> {
 
   @override
   Widget build(BuildContext context) {
+    final notifier = ref.read(stateProvider.notifier);
     return FutureBuilder(
       future: Future.wait([_lastEntryFuture, _allGroupedFuture]),
       builder: (context, snapshot) {
         String lastMeditation = '-';
+        String lastMeditationDate = "";
         String currentStreakString = '-';
         String bestStreak = '-';
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          notifier.setChartsHaveData(snapshot.hasData);
+        });
         if (snapshot.hasData) {
-          StatsModel lastEntry = snapshot.data![0] as StatsModel;
-          lastMeditation = lastEntry.totalMeditationTime.formatToHourMin();
+          if (snapshot.data!.isNotEmpty) {
+            StatsModel lastEntry = snapshot.data![0] as StatsModel;
+            lastMeditation = lastEntry.totalMeditationTime.formatToHourMin();
+            final date = lastEntry.dateTime;
+            final DateFormat formatter = DateFormat.yMMMd();
+            lastMeditationDate = formatter.format(date);
+            lastMeditationDate = ' on $lastMeditationDate';
 
-          List<StatsModel> stats = snapshot.data![1] as List<StatsModel>;
-          currentStreakString = getCurrentStreak(stats);
-          bestStreak = getBestStreak(stats);
+            List<StatsModel> stats = snapshot.data![1] as List<StatsModel>;
+            currentStreakString = getCurrentStreak(stats);
+            bestStreak = getBestStreak(stats);
+          }
         }
         return Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             StreakStatsBox(
               value: lastMeditation,
-              text: 'Last meditation',
+              text: 'Last meditation\n$lastMeditationDate',
             ),
             StreakStatsBox(
               value: currentStreakString,
-              text: 'Current streak',
+              text: 'Current streak\n',
             ),
             StreakStatsBox(
               value: bestStreak,
-              text: 'Best streak',
+              text: 'Best streak\n',
             ),
           ],
         );
