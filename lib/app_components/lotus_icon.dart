@@ -12,9 +12,12 @@ class LotusIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return SizedBox(
-        width: width ?? size.width * 0.10,
-        height: width ?? size.width * 0.10,
-        child: Image.asset('assets/images/logo.png',
-            color: Theme.of(context).primaryColorLight));
+      width: width ?? size.width * 0.10,
+      height: width ?? size.width * 0.10,
+      child: Image.asset(
+        'assets/images/logo.png',
+        color: Theme.of(context).primaryColor,
+      ),
+    );
   }
 }

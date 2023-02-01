@@ -243,8 +243,8 @@ class AppNotifier extends StateNotifier<AppState> {
     state = state.copyWith(currentCountdownTime: time);
   }
 
-  void setOpenSession(bool open) {
-    state = state.copyWith(openSession: open);
+  void setOpenSession() {
+    state = state.copyWith(openSession: !state.openSession);
   }
 
   void setBellMenuSelection(Set<int> times) {

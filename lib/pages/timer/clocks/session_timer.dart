@@ -43,10 +43,6 @@ class _SessionClockState extends ConsumerState<SessionTimer> {
       _sessionHasStarted = false;
     }
 
-    if(state.sessionHasStarted){
-      print('session started');
-    }
-
 
     return Center(
       child: SizedBox(

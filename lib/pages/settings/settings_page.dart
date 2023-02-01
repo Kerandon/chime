@@ -1,12 +1,12 @@
 import 'package:chime/enums/ambience.dart';
 import 'package:chime/enums/bell.dart';
-import 'package:chime/pages/setup/mute_device/mute_device_page.dart';
-import 'package:chime/pages/setup/vibrate/vibrate_page.dart';
+import 'package:chime/pages/settings/vibrate/vibrate_page.dart';
 import 'package:chime/state/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'bell_on_start/bell_on_start_tile.dart';
+import 'mute_device/mute_device_page.dart';
 import 'open_session/open_session_tile.dart';
 import 'components/settings_divider.dart';
 import 'components/settings_tile.dart';

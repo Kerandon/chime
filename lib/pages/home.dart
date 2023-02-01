@@ -1,11 +1,10 @@
 import 'package:chime/pages/guide_page.dart';
-import 'package:chime/pages/setup/settings_page.dart';
+import 'package:chime/pages/settings/settings_page.dart';
 import 'package:chime/pages/stats/stats_page.dart';
+import 'package:chime/pages/timer/clocks/timer_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../state/app_state.dart';
-import 'Timer/timer_layout.dart';
 
 class Home extends ConsumerStatefulWidget {
   const Home({

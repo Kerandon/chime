@@ -1,5 +1,3 @@
-import 'package:chime/animation/bounce_animation.dart';
-import 'package:chime/animation/fade_in_animation.dart';
 import 'package:chime/animation/flip_animation.dart';
 import 'package:chime/pages/Timer/start_button/start_circle_main.dart';
 import 'package:chime/enums/session_state.dart';
@@ -8,9 +6,11 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quiver/async.dart';
+import '../../../animation/bounce_animation.dart';
 import '../../../app_components/lotus_icon.dart';
 import '../../../configs/app_colors.dart';
 import '../../../configs/constants.dart';
+import 'countdown_animation/count_down_animation.dart';
 
 class StartButton extends ConsumerStatefulWidget {
   const StartButton({
@@ -134,35 +134,23 @@ class _StartButtonState extends ConsumerState<StartButton> {
               backgroundColor: backgroundProgressColor,
             ),
           ),
-          FadeInAnimation(
-            durationMilliseconds: 1000,
-            beginOpacity: 0,
-            beginScale: 0,
-            child: Center(
+            Center(
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  child: SizedBox(
-                    width: size.width * kStartButtonRadius * 2,
-                    height: size.width * kStartButtonRadius * 2,
-                    child: Padding(
-                      padding: EdgeInsets.all(size.width * 0.05),
-                      child: BounceAnimation(
-                        animate:
-                            state.sessionState == SessionState.inProgress,
-                        stop: state.sessionState != SessionState.inProgress,
-                        child: AnimatedSwitcher(
-                          duration: const Duration(
-                            milliseconds: 800,
-                          ),
-                          child: _buttonImage,
-                        ),
+                  child: BounceAnimation(
+                    animate: state.sessionState == SessionState.inProgress,
+                    stop: state.sessionState != SessionState.inProgress,
+                    child: AnimatedSwitcher(
+                      duration: const Duration(
+                        milliseconds: 800,
                       ),
+                      child: _buttonImage,
                     ),
                   ),
                 ),
               ),
-            ),
+
           ),
         ],
       ),
@@ -174,8 +162,11 @@ class _StartButtonState extends ConsumerState<StartButton> {
       _buttonImage = Icon(
         Icons.play_arrow_outlined,
         size: kStartButtonIconSize,
-        color: Theme.of(context).primaryColorLight,
+        color: Theme.of(context).primaryColor,
       );
+    }
+    if(state.sessionState == SessionState.countdown){
+      _buttonImage = CountdownAnimation(animate: true);
     }
     if (state.sessionState == SessionState.inProgress) {
       _buttonImage = const LotusIcon();
@@ -184,14 +175,14 @@ class _StartButtonState extends ConsumerState<StartButton> {
       _buttonImage = Icon(
         Icons.pause,
         size: kStartButtonIconSize,
-        color:    Theme.of(context).primaryColorLight,
+        color: Theme.of(context).primaryColor,
       );
     }
     if (state.longTapInProgress) {
       _buttonImage = Icon(
         Icons.stop,
         size: kStartButtonIconSize,
-        color:  Theme.of(context).primaryColorLight,
+        color: Theme.of(context).primaryColor,
       );
     }
   }

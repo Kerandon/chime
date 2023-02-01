@@ -18,7 +18,11 @@ class OpenSessionTile extends ConsumerWidget {
       inactiveThumbColor: Theme.of(context).disabledColor,
       title: Row(
         children: [
-          const FaIcon(FontAwesomeIcons.infinity),
+           FaIcon(
+
+              state.openSession ? FontAwesomeIcons.infinity : Icons.timer_outlined
+
+          ),
           Padding(
             padding: EdgeInsets.only(left: size.width * 0.06),
             child: Text('Open session (no timer)',
@@ -28,7 +32,7 @@ class OpenSessionTile extends ConsumerWidget {
       ),
       value: state.openSession,
       onChanged: (value) {
-        notifier.setOpenSession(value);
+        notifier.setOpenSession();
       },
     );
   }

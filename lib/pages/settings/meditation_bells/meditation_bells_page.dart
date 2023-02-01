@@ -1,8 +1,8 @@
-import 'package:chime/pages/setup/components/settings_title.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../configs/constants.dart';
 import '../../../enums/bell.dart';
+import '../components/settings_title.dart';
 import '../interval_bells/bell_volume_slider.dart';
 import '../interval_bells/bells_checkbox_tile.dart';
 

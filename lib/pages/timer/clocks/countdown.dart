@@ -13,7 +13,6 @@ class Countdown extends ConsumerWidget {
 
     final size = MediaQuery.of(context).size;
     final state = ref.watch(stateProvider);
-    print('countdown time is ${state.currentCountdownTime}');
     int seconds = state.currentCountdownTime;
     return SizedBox(
       height: size.height * kClocksHeight,
@@ -34,8 +33,8 @@ class Countdown extends ConsumerWidget {
             )
           ),
           Align(
-              alignment: Alignment(0, 0.80),
-              child: Text('Session will begin shortly...')
+              alignment: const Alignment(0, 0.80),
+              child: const Text('Session will begin shortly...')
                   .animate()
                   .fadeIn()
                   .fadeOut(delay: (state.totalCountdownTime).seconds)

@@ -1,11 +1,11 @@
 import 'package:chime/configs/constants.dart';
 import 'package:chime/enums/audio_type.dart';
-import 'package:chime/pages/setup/components/settings_title.dart';
 import 'package:chime/state/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../audio/audio_manager.dart';
 import '../../../data/ambience_data.dart';
+import '../components/settings_title.dart';
 import 'ambience_checkbox_tile.dart';
 import 'ambience_volume_slider.dart';
 

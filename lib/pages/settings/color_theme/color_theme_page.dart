@@ -1,6 +1,6 @@
-import 'package:chime/pages/setup/components/settings_title.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../components/settings_title.dart';
 import 'color_theme_checkbox.dart';
 import '../../../configs/constants.dart';
 import '../../../enums/color_themes.dart';

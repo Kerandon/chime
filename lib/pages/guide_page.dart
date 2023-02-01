@@ -1,5 +1,5 @@
-import 'package:chime/animation/fade_in_animation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../configs/constants.dart';
 
 class GuidePage extends StatelessWidget {
@@ -24,9 +24,7 @@ class GuidePage extends StatelessWidget {
           ),
           child: Column(
             children: [
-              FadeInAnimation(
-                durationMilliseconds: 1000,
-                child: Container(
+               Container(
                   height: size.height * 0.35,
                   width: size.width * 0.90,
                   decoration: BoxDecoration(
@@ -35,9 +33,8 @@ class GuidePage extends StatelessWidget {
                       fit: BoxFit.fitHeight,
                       image: AssetImage('assets/images/meditation.jpg'),
                     ),
-                  ),
                 ),
-              ),
+              ).animate().fadeIn(),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: size.width * 0.02),
                 child: Text.rich(

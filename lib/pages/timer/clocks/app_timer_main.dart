@@ -27,16 +27,11 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
   bool _firstBellHasRung = false;
 
   void _setTimer({required Duration duration}) {
-    print('set timer');
     _millisecondsRemaining = duration.inMilliseconds;
-    // setState(() {
-    //
-    // });
-    Timer(Duration(milliseconds: 2000), () {
-
+    Timer(const Duration(milliseconds: 2000), () {
       _timer = CountdownTimer(duration, const Duration(milliseconds: 100))
         ..listen(
-              (event) {
+          (event) {
             _millisecondsRemaining = event.remaining.inMilliseconds;
             setState(() {});
           },
@@ -46,7 +41,6 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
           },
         );
     });
-
   }
 
   @override
@@ -68,7 +62,8 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
         int totalSeconds = state.totalTimeMinutes * 60;
 
         CountdownTimer(
-                Duration(milliseconds: ((state.totalCountdownTime * 1000) + 990)),
+                Duration(
+                    milliseconds: ((state.totalCountdownTime * 1000) + 990)),
                 const Duration(milliseconds: 50))
             .listen((event) {
           notifier.setCurrentCountdownTime(event.remaining.inSeconds);
@@ -112,37 +107,39 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
         }
       }
     });
-
-    final size = MediaQuery.of(context).size;
     if (state.openSession) {
-      return Text(
-        'Open session',
-        style: Theme.of(context).textTheme.displayMedium,
-        textAlign: TextAlign.center,
+      return Center(
+        child: Text(
+          'Open session',
+          style: Theme.of(context).textTheme.displaySmall!
+          .copyWith(
+            color: Theme.of(context).primaryColor,
+            fontSize: 30,
+            fontWeight: FontWeight.bold
+          ),
+          textAlign: TextAlign.center,
+        ),
       );
     } else {
       return Stack(
         children: [
-          SizedBox(
-            width: size.width * 0.90,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                if (state.sessionState == SessionState.notStarted ||
-                    state.sessionState == SessionState.ended) ...[
-                  SetTimeFieldLayout(),
-                  //Countdown(),
-                ],
-                if (state.sessionState == SessionState.countdown) ...[
-                  const Countdown()
-                ],
-                if (state.sessionState == SessionState.inProgress ||
-                    state.sessionState == SessionState.paused) ...[
-                  const SessionTimer()
-                ],
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (state.sessionState == SessionState.notStarted ||
+                  state.sessionState == SessionState.ended) ...[
+                const SetTimeFieldLayout(),
+                //Countdown(),
               ],
-            ),
+              if (state.sessionState == SessionState.countdown) ...[
+                const Countdown()
+              ],
+              if (state.sessionState == SessionState.inProgress ||
+                  state.sessionState == SessionState.paused) ...[
+                const SessionTimer()
+              ],
+            ],
           ),
         ],
       );

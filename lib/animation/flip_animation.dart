@@ -24,7 +24,7 @@ class _FlipAnimationState extends State<FlipAnimation>
     super.initState();
     _controller = AnimationController(
         duration: const Duration(milliseconds: 1000), vsync: this);
-    _rotation = Tween<double>(begin: 0.20, end: 0)
+    _rotation = Tween<double>(begin: 0.10, end: 0)
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
     if(widget.animateOnStart){
       _controller.forward();

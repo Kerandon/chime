@@ -13,7 +13,7 @@ class CustomProgressCircle extends CustomPainter {
       {required this.percentage,
       required this.circleColor,
       required this.dashColor,
-      this.strokeWidthDash = kSessionTimerStrokeWidth * 0.30,
+      this.strokeWidthDash = kSessionTimerStrokeWidth * 0.50,
       });
 
   @override

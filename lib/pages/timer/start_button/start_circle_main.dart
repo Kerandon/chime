@@ -90,7 +90,6 @@ class _CustomCircularIndicatorState
                           percentage: percent,
                           circleColor: Theme.of(context).primaryColorDark,
                           dashColor: Theme.of(context).primaryColor,
-
                         ),
                         child: Container(),
                       ),
