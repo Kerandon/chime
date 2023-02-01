@@ -4,7 +4,6 @@ import 'package:chime/enums/audio_type.dart';
 import 'package:chime/enums/color_themes.dart';
 import 'package:chime/enums/session_state.dart';
 import 'package:chime/utils/calculate_intervals.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../audio/audio_manager.dart';
 import '../enums/ambience.dart';
@@ -12,6 +11,7 @@ import '../enums/bell.dart';
 import '../enums/focus_state.dart';
 import '../enums/prefs.dart';
 import '../enums/time_period.dart';
+import '../utils/vibration_method.dart';
 
 class AppState {
   //APP STATE
@@ -21,7 +21,6 @@ class AppState {
   final bool longTapInProgress;
   final ColorTheme colorTheme;
   final int currentPage;
-
 
   //TIME
   final int totalTimeMinutes;
@@ -158,58 +157,27 @@ class AppState {
 class AppNotifier extends StateNotifier<AppState> {
   AppNotifier(state) : super(state);
 
-  // void setTotalTime(int time) async {
-  //   state = state.copyWith(
-  //       totalTimeMinutes: time,
-  //       bellIntervalMenuSelection: calculateIntervals(time));
-  // }
-
-  void setTotalTime({int? minutes, int? hours}){
-
+  void setTotalTime({int? minutes, int? hours}) {
     int currentTimeMinutes = state.totalTimeMinutes % 60;
     int currentTimeHours = state.totalTimeMinutes ~/ 60;
     int updatedTotalTime = 0;
-    if(minutes != null){
+    if (minutes != null) {
       updatedTotalTime = (currentTimeHours * 60) + minutes;
-      // state = state.copyWith(totalTimeMinutes:(currentTimeHours * 60) + minutes );
     }
-    if(hours != null){
+    if (hours != null) {
       updatedTotalTime = currentTimeMinutes + (hours * 60);
-    // state = state.copyWith(totalTimeMinutes:(currentTimeMinutes) + (hours * 60) );
     }
 
     state = state.copyWith(
-      totalTimeMinutes: updatedTotalTime,
+        totalTimeMinutes: updatedTotalTime,
         bellIntervalMenuSelection: calculateIntervals(updatedTotalTime));
-
-    print('total time set to ${state.totalTimeMinutes} total min, hour ${state.totalTimeMinutes ~/ 60}, min ${state.totalTimeMinutes % 60} ');
-
   }
 
   void isInitialTimeSet(bool set) {
     state = state.copyWith(initialTimeIsSet: set);
   }
 
-  void incrementTotalTime() {
-    if (state.totalTimeMinutes < 9999) {
-      state = state.copyWith(totalTimeMinutes: state.totalTimeMinutes + 1);
-      state = state.copyWith(
-          bellIntervalMenuSelection:
-              calculateIntervals(state.totalTimeMinutes));
-    }
-  }
-
-  void decrementTotalTime() {
-    if (state.totalTimeMinutes > 1) {
-      state = state.copyWith(totalTimeMinutes: state.totalTimeMinutes - 1);
-      state = state.copyWith(
-          bellIntervalMenuSelection:
-              calculateIntervals(state.totalTimeMinutes));
-    }
-  }
-
   void setSessionState(SessionState sessionState) async {
-
     state = state.copyWith(sessionState: sessionState);
 
     if (sessionState == SessionState.notStarted) {
@@ -223,6 +191,9 @@ class AppNotifier extends StateNotifier<AppState> {
     } else if (sessionState == SessionState.paused) {
       await AudioManager().pauseAmbience();
     } else if (sessionState == SessionState.ended) {
+      if (state.vibrateOnCompletion) {
+        await vibrateDevice();
+      }
       //todo add streak
     }
   }
@@ -242,18 +213,11 @@ class AppNotifier extends StateNotifier<AppState> {
     state = state.copyWith(longTapInProgress: inProgress);
   }
 
-  void setTimerFocusState(FocusState focus) {
-    state = state.copyWith(focusState: focus);
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      state = state.copyWith(focusState: FocusState.none);
-    });
-  }
-
   void setColorTheme(ColorTheme colorTheme) {
     state = state.copyWith(colorTheme: colorTheme);
   }
 
-  void setPage(int index){
+  void setPage(int index) {
     state = state.copyWith(currentPage: index);
   }
 
@@ -272,12 +236,10 @@ class AppNotifier extends StateNotifier<AppState> {
   }
 
   void setTotalCountdownTime(int time) {
-
     state = state.copyWith(totalCountdownTime: time);
   }
 
   void setCurrentCountdownTime(int time) {
-
     state = state.copyWith(currentCountdownTime: time);
   }
 
@@ -290,7 +252,8 @@ class AppNotifier extends StateNotifier<AppState> {
   }
 
   void setBellIntervalTime(int time) async {
-    await DatabaseManager().insertIntoPrefs(k: Prefs.bellInterval.name, v: time);
+    await DatabaseManager()
+        .insertIntoPrefs(k: Prefs.bellInterval.name, v: time);
     state = state.copyWith(bellIntervalTimeSelected: time);
     _calculateBellIntervalsAndTimes();
   }
@@ -341,23 +304,23 @@ class AppNotifier extends StateNotifier<AppState> {
     state = state.copyWith(checkIfStatsUpdated: check);
   }
 
-  void setHideClock(bool hide){
+  void setHideClock(bool hide) {
     state = state.copyWith(hideClock: hide);
   }
 
-  void setBarChartTimePeriod(TimePeriod time){
+  void setBarChartTimePeriod(TimePeriod time) {
     state = state.copyWith(barChartTimePeriod: time);
   }
 
-  void setChartsHaveData(bool haveData){
+  void setChartsHaveData(bool haveData) {
     state = state.copyWith(chartsHaveData: haveData);
   }
 
-  void setVibrateOnCompletion(bool vibrate){
+  void setVibrateOnCompletion(bool vibrate) {
     state = state.copyWith(vibrateOnCompletion: vibrate);
   }
 
-  void setDeviceIsMuted(bool muted){
+  void setDeviceIsMuted(bool muted) {
     state = state.copyWith(deviceIsMuted: muted);
   }
 }

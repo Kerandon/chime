@@ -1,7 +1,7 @@
 import 'package:chime/animation/bounce_animation.dart';
 import 'package:chime/animation/fade_in_animation.dart';
 import 'package:chime/animation/flip_animation.dart';
-import 'package:chime/pages/home/start_button/start_progress_indicator.dart';
+import 'package:chime/pages/Timer/start_button/start_circle_main.dart';
 import 'package:chime/enums/session_state.dart';
 import 'package:chime/state/app_state.dart';
 import 'package:flutter/gestures.dart';
@@ -125,7 +125,7 @@ class _StartButtonState extends ConsumerState<StartButton> {
       child: Stack(
         children: [
           FlipAnimation(
-            child: StartCircularIndicator(
+            child: StartCircleMain(
               progressColor: progressBarColor,
               radius: size.width * kStartButtonRadius,
               duration: state.totalTimeMinutes,

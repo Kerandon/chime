@@ -26,7 +26,7 @@ class IntervalDropdown extends ConsumerWidget {
         DropdownMenuItem<int>(
           value: e,
           child: SizedBox(
-            width: size.width * kHomePageLineWidth / 2,
+            width: size.width * kHomePageLineWidth / 1.2,
             child: Center(
               child: Text(
                 e == totalTime
@@ -35,10 +35,14 @@ class IntervalDropdown extends ConsumerWidget {
                         ? '$e minute'
                         : '$e minutes',
                 textAlign: TextAlign.center,
+
                 style: Theme.of(context)
                     .textTheme
-                    .bodySmall!
-                    .copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
+                    .bodyMedium!
+                    .copyWith(
+                    color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold,
+
+                ),
               ),
             ),
           ),
@@ -75,23 +79,20 @@ class IntervalDropdown extends ConsumerWidget {
                 child: RichText(
                   text: TextSpan(
                     text: 'Play a',
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: Theme.of(context).secondaryHeaderColor,
-                        ),
+                    style: Theme.of(context).textTheme.bodySmall,
                     children: [
                       TextSpan(
                         text: ' ${state.bellSelected.name}',
-                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                             color: Theme.of(context).primaryColor,
-                            fontWeight: FontWeight.bold),
+                            fontWeight: FontWeight.bold
+                        ),
                       ),
                       TextSpan(
                         text: showOnTimeUpTitleText ? '' : ' every',
                         style: Theme.of(context)
                             .textTheme
-                            .bodySmall!
-                            .copyWith(color:Theme.of(context).secondaryHeaderColor,
-                        ),
+                            .bodySmall,
                       ),
                     ],
                   ),

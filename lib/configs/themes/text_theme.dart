@@ -9,23 +9,23 @@ TextTheme darkThemeTextTheme() {
   return TextTheme(
     bodySmall: darkThemeTextStyle.copyWith(
       fontSize: 15,
-      fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.w200,
     ),
     bodyMedium: darkThemeTextStyle.copyWith(
-      fontSize: 20,
-      fontWeight: FontWeight.w500,
+      fontSize: 22,
+      fontWeight: FontWeight.w200,
     ),
     displaySmall: darkThemeTextStyle.copyWith(
       fontSize: 20,
-      fontWeight: FontWeight.w300,
+      fontWeight: FontWeight.w200,
     ),
     displayMedium: darkThemeTextStyle.copyWith(
       fontSize: 50,
-      fontWeight: FontWeight.w600,
+      fontWeight: FontWeight.w200,
     ),
     displayLarge: darkThemeTextStyle.copyWith(
-      fontSize: 50,
-      fontWeight: FontWeight.w500,
+      fontSize: 60,
+      fontWeight: FontWeight.w200,
     ),
     labelSmall: darkThemeTextStyle.copyWith(
       fontSize: 10,

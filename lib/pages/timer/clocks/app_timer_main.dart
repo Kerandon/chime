@@ -1,26 +1,25 @@
+import 'dart:async';
+
 import 'package:chime/audio/audio_manager.dart';
-import 'package:chime/pages/home/clocks/time_adjustment_icons.dart';
-import 'package:chime/pages/home/clocks/time_field.dart';
 import 'package:chime/enums/session_state.dart';
+import 'package:chime/pages/timer/clocks/set_time_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quiver/async.dart';
-import '../../../enums/focus_state.dart';
 import '../../../state/app_state.dart';
-import '../../../utils/vibration_method.dart';
+import 'countdown.dart';
 import 'session_timer.dart';
-import 'countdown_text.dart';
 
-class AppTimer extends ConsumerStatefulWidget {
-  const AppTimer({
+class AppTimerMain extends ConsumerStatefulWidget {
+  const AppTimerMain({
     super.key,
   });
 
   @override
-  ConsumerState<AppTimer> createState() => _CustomNumberFieldState();
+  ConsumerState<AppTimerMain> createState() => _CustomNumberFieldState();
 }
 
-class _CustomNumberFieldState extends ConsumerState<AppTimer> {
+class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
   CountdownTimer? _timer;
   int _millisecondsRemaining = 0;
   bool _mainTimerIsSet = false;
@@ -28,17 +27,26 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
   bool _firstBellHasRung = false;
 
   void _setTimer({required Duration duration}) {
-    _timer = CountdownTimer(duration, const Duration(milliseconds: 100))
-      ..listen(
-        (event) {
-          _millisecondsRemaining = event.remaining.inMilliseconds;
-          setState(() {});
-        },
-        onDone: () {
-          _sessionIsCompleted = true;
-          setState(() {});
-        },
-      );
+    print('set timer');
+    _millisecondsRemaining = duration.inMilliseconds;
+    // setState(() {
+    //
+    // });
+    Timer(Duration(milliseconds: 2000), () {
+
+      _timer = CountdownTimer(duration, const Duration(milliseconds: 100))
+        ..listen(
+              (event) {
+            _millisecondsRemaining = event.remaining.inMilliseconds;
+            setState(() {});
+          },
+          onDone: () {
+            _sessionIsCompleted = true;
+            setState(() {});
+          },
+        );
+    });
+
   }
 
   @override
@@ -60,15 +68,12 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
         int totalSeconds = state.totalTimeMinutes * 60;
 
         CountdownTimer(
-                Duration(milliseconds: (state.totalCountdownTime * 1000)),
-                const Duration(milliseconds: 100))
+                Duration(milliseconds: ((state.totalCountdownTime * 1000) + 990)),
+                const Duration(milliseconds: 50))
             .listen((event) {
           notifier.setCurrentCountdownTime(event.remaining.inSeconds);
         }, onDone: () async {
-          if (state.vibrateOnCompletion) {
-            await vibrateDevice();
-          }
-          _setTimer(duration: Duration(seconds: totalSeconds + 1));
+          _setTimer(duration: Duration(seconds: totalSeconds));
           WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
             notifier.setSessionState(SessionState.inProgress);
             notifier.setSessionHasStarted(true);
@@ -121,29 +126,19 @@ class _CustomNumberFieldState extends ConsumerState<AppTimer> {
           SizedBox(
             width: size.width * 0.90,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 if (state.sessionState == SessionState.notStarted ||
                     state.sessionState == SessionState.ended) ...[
-                  Expanded(
-                    flex: 2,
-                    child: TimeField(
-                    ),
-                  ),
-                  // const Expanded(child: TimeAdjustmentIcons())
+                  SetTimeFieldLayout(),
+                  //Countdown(),
                 ],
                 if (state.sessionState == SessionState.countdown) ...[
-                  SizedBox(
-                    height: size.height * 0.02,
-                  ),
-                  const CountdownText(),
+                  const Countdown()
                 ],
                 if (state.sessionState == SessionState.inProgress ||
                     state.sessionState == SessionState.paused) ...[
-                  SizedBox(
-                    height: size.height * 0.02,
-                  ),
                   const SessionTimer()
                 ],
               ],

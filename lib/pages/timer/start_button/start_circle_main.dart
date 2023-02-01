@@ -1,12 +1,12 @@
-import 'package:chime/pages/home/custom_clock.dart';
 import 'package:chime/state/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../configs/constants.dart';
+import 'custom_progress_circle.dart';
 
-class StartCircularIndicator extends ConsumerStatefulWidget {
-  const StartCircularIndicator({
+class StartCircleMain extends ConsumerStatefulWidget {
+  const StartCircleMain({
     Key? key,
     required this.radius,
     this.cancel = false,
@@ -26,12 +26,12 @@ class StartCircularIndicator extends ConsumerStatefulWidget {
   final bool pause;
 
   @override
-  ConsumerState<StartCircularIndicator> createState() =>
+  ConsumerState<StartCircleMain> createState() =>
       _CustomCircularIndicatorState();
 }
 
 class _CustomCircularIndicatorState
-    extends ConsumerState<StartCircularIndicator>
+    extends ConsumerState<StartCircleMain>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
@@ -86,7 +86,7 @@ class _CustomCircularIndicatorState
                     width: size.height * 0.30,
                     child: Center(
                       child: CustomPaint(
-                        painter: CustomClock(
+                        painter: CustomProgressCircle(
                           percentage: percent,
                           circleColor: Theme.of(context).primaryColorDark,
                           dashColor: Theme.of(context).primaryColor,

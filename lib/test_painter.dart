@@ -10,63 +10,66 @@ class LinePainterAnimation extends StatefulWidget {
 class _LinePainterAnimationState extends State<LinePainterAnimation>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
-  late final Animation<Offset> _animation;
 
   final List<Offset> _offsets = [
-    const Offset(100, 100),
-    const Offset(200, 200),
+    const Offset(50, 300),
+    const Offset(150, 100),
     const Offset(300, 300),
+    const Offset(200, 300),
   ];
 
-  Offset _startOffset = const Offset(0,0);
-  Offset _endOffset = const Offset(0, 0);
   int _index = 0;
-  double _eachTweenPercentage = 0.0;
+  Offset _begin = const Offset(0, 0);
+  Offset _end = const Offset(0, 0);
 
   @override
   void initState() {
-    _eachTweenPercentage = 1.0 / _offsets.length;
-    List<TweenSequenceItem<Offset>> tweenPoints = [];
-    Offset startPos = _offsets.first;
-    for (int i = 0; i < _offsets.length - 1; i++) {
-      Offset endPos = _offsets[i + 1];
-      tweenPoints.add(TweenSequenceItem<Offset>(
-          tween: Tween<Offset>(begin: startPos, end: endPos), weight: 1));
-      startPos = endPos;
-    }
+    _begin = _offsets[0];
+    _end = _offsets[1];
 
-
-    _startOffset = _offsets[0];
-    _controller =
-        AnimationController(duration: const Duration(seconds: 10), vsync: this)
-          ..addListener(() {
-            if (_controller.value > _eachTweenPercentage) {
-              _index++;
-              _startOffset = _offsets[_index];
-              _eachTweenPercentage += _eachTweenPercentage;
-            }
-            _endOffset = _animation.value;
+    _controller = AnimationController(
+        duration: const Duration(seconds: 1), vsync: this)
+      ..addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          _index++;
+          if (_index < _offsets.length - 1) {
+            _begin = _offsets[_index];
+            _end = _offsets[_index + 1];
+            _controller.reset();
+            _controller.forward();
             setState(() {});
-          });
-
-    _animation = TweenSequence<Offset>(tweenPoints).animate(_controller);
+          }
+        }
+      });
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    Animation<Offset> animation =
+        Tween<Offset>(begin: _begin, end: _end).animate(_controller);
+
     return Scaffold(
-      body: CustomPaint(
-        painter: LinePainter(
-          startOffset: _startOffset,
-            endOffset: _endOffset, offsets: _offsets, index: _index),
-        child: Container(),
+      body: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, child) => CustomPaint(
+          painter: LinePainter(
+            startOffset: _begin,
+            endOffset: animation.value,
+            offsets: _offsets,
+            index: _index,
+          ),
+          child: Container(),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _controller.reset();
           _controller.forward();
+          _begin = _offsets[0];
+          _end = _offsets[1];
+          _index = 0;
           setState(() {});
         },
         child: const Text('Play'),
@@ -81,32 +84,33 @@ class LinePainter extends CustomPainter {
   final List<Offset> offsets;
   final int index;
 
-  LinePainter(
-      {required this.startOffset, required this.endOffset, required this.offsets, required this.index});
+  LinePainter({
+    required this.startOffset,
+    required this.endOffset,
+    required this.offsets,
+    required this.index,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
     var paint = Paint()
       ..color = Colors.red
       ..strokeWidth = 20
+      ..strokeCap = StrokeCap.butt
       ..style = PaintingStyle.stroke;
 
-    var pathNew = Path();
-    // var pathExisting = Path();
-    //
-    //
-    // for (int i = 0; i < offsets.length; i++) {
-    //   pathExisting.lineTo(offsets[i].dx, offsets[i].dy);
-    // }
+    var pathExisting = Path();
 
-    for(int i = 0; i < offsets.length; i++){
-      pathNew.moveTo(startOffset.dx, startOffset.dy);
-      pathNew.lineTo(endOffset.dx, endOffset.dy);
+    pathExisting.moveTo(offsets[0].dx, offsets[0].dy);
+    for (int i = 0; i < index + 1; i++) {
+      pathExisting.lineTo(offsets[i].dx, offsets[i].dy);
     }
 
-    canvas.drawPath(pathNew, paint);
-  //  canvas.drawPath(pathExisting, paint);
+    var pathNew = Path();
+    pathNew.moveTo(startOffset.dx, startOffset.dy);
+    pathNew.lineTo(endOffset.dx, endOffset.dy);
 
+    canvas.drawPath(pathExisting, paint);
   }
 
   @override

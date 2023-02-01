@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../animation/fade_in_animation.dart';
-import 'clocks/app_timer.dart';
+import 'clocks/app_timer_main.dart';
 import 'interval_dropdown/interval_dropdown.dart';
 import 'start_button/start_button.dart';
 import '../../enums/session_state.dart';
@@ -34,14 +34,14 @@ class _TimerPageState extends ConsumerState<TimerLayout> {
             children: [
               const Expanded(
                 flex: 70,
-                child: FadeInAnimation(child: AppTimer()),
+                child: FadeInAnimation(child: AppTimerMain()),
               ),
               const Expanded(
                 flex: 50,
                 child: StartButton(),
               ),
               Expanded(
-                  flex: 40,
+                  flex: 50,
                   child: sessionIsUnderway
                       ? const SizedBox.shrink()
                       : const FadeInAnimation(child: IntervalDropdown())),

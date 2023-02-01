@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../../configs/app_colors.dart';
+import '../../../configs/constants.dart';
 import 'custom_number_picker.dart';
 
-class TimeField extends StatelessWidget {
-  const TimeField({
+class SetTimeFieldLayout extends StatelessWidget {
+  const SetTimeFieldLayout({
     super.key,
   });
 
@@ -11,22 +11,20 @@ class TimeField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Center(
+    return Align(
+      alignment: const Alignment(0,-0.20),
       child: SizedBox(
         width: size.width * 0.80,
-        height: size.height * 0.25,
+        height: size.height * kClocksHeight,
         child: Center(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               const CustomNumberPicker(alignment: MainAxisAlignment.end, text: 'H',),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: size.width * 0.03),
-                child: VerticalDivider(
-                  indent: size.height * 0.05,
-                endIndent: size.height * 0.05,
-                  color: AppColors.darkGrey,
-                ),
+              VerticalDivider(
+                indent: size.height * 0.05,
+              endIndent: size.height * 0.05,
+                color: Theme.of(context).secondaryHeaderColor,
               ),
               const CustomNumberPicker(alignment: MainAxisAlignment.start, text: 'M',)
 

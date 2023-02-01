@@ -1,15 +1,15 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import '../../configs/app_colors.dart';
-import '../../configs/constants.dart';
+import '../../../configs/app_colors.dart';
+import '../../../configs/constants.dart';
 
-class CustomClock extends CustomPainter {
+class CustomProgressCircle extends CustomPainter {
   final double percentage;
   final Color dashColor;
   final Color circleColor;
   final double strokeWidthDash;
 
-  CustomClock(
+  CustomProgressCircle(
       {required this.percentage,
       required this.circleColor,
       required this.dashColor,

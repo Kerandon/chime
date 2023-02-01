@@ -15,15 +15,15 @@ import 'color_theme/color_theme_page.dart';
 import 'countdown/countdown_page.dart';
 import 'meditation_bells/meditation_bells_page.dart';
 
-class SetupPage extends ConsumerWidget {
-  const SetupPage({Key? key}) : super(key: key);
+class SettingsPage extends ConsumerWidget {
+  const SettingsPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(stateProvider);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Setup'),
+        title: const Text('Settings'),
       ),
       body: SingleChildScrollView(
         child: Column(

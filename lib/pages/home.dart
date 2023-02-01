@@ -1,24 +1,25 @@
 import 'package:chime/pages/guide_page.dart';
-import 'package:chime/pages/setup/setup_page.dart';
+import 'package:chime/pages/setup/settings_page.dart';
 import 'package:chime/pages/stats/stats_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'timer_layout.dart';
-import '../../state/app_state.dart';
+import '../state/app_state.dart';
+import 'Timer/timer_layout.dart';
 
-class HomePage extends ConsumerStatefulWidget {
-  const HomePage({
+class Home extends ConsumerStatefulWidget {
+  const Home({
     super.key,
   });
 
   @override
-  ConsumerState<HomePage> createState() => _HomePageContentsState();
+  ConsumerState<Home> createState() => _HomePageContentsState();
 }
 
-class _HomePageContentsState extends ConsumerState<HomePage> {
+class _HomePageContentsState extends ConsumerState<Home> {
   static const List<Widget> _pageOptions = [
     TimerLayout(),
-    SetupPage(),
+    SettingsPage(),
     StatsPage(),
     GuidePage(),
   ];
@@ -62,7 +63,7 @@ class _HomePageContentsState extends ConsumerState<HomePage> {
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.settings_outlined),
-              label: 'Setup',
+              label: 'Settings',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.bar_chart_outlined),
@@ -77,7 +78,7 @@ class _HomePageContentsState extends ConsumerState<HomePage> {
           onTap: (index) {
             notifier.setPage(index);
           },
-        ),
+        )
       ),
     );
   }
