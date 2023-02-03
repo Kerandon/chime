@@ -3,10 +3,10 @@ import 'package:chime/audio/audio_manager.dart';
 import 'package:chime/configs/themes/dark_blue_theme.dart';
 import 'package:chime/configs/themes/dark_orange_theme.dart';
 import 'package:chime/configs/themes/light_theme.dart';
-import 'package:chime/pages/home.dart';
 import 'package:chime/state/database_manager.dart';
 import 'package:chime/models/prefs_model.dart';
 import 'package:chime/state/app_state.dart';
+import 'package:chime/chart_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -116,7 +116,7 @@ class _ChimeAppState extends ConsumerState<ChimeApp> {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: appTheme,
-          home: const Home(),
+          home: const ChartPage(),
         );
       },
     );
