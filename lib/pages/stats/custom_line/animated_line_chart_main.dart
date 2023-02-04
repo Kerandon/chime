@@ -9,6 +9,7 @@ import '../../../models/data_point.dart';
 import '../../../models/stats_model.dart';
 import '../../../state/database_manager.dart';
 import 'animated_line_chart.dart';
+import 'last_medition_time_title.dart';
 
 class AnimatedLineChartMain extends ConsumerStatefulWidget {
   const AnimatedLineChartMain({
@@ -16,7 +17,8 @@ class AnimatedLineChartMain extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<AnimatedLineChartMain> createState() => _AnimatedLineChartMainState();
+  ConsumerState<AnimatedLineChartMain> createState() =>
+      _AnimatedLineChartMainState();
 }
 
 class _AnimatedLineChartMainState extends ConsumerState<AnimatedLineChartMain> {
@@ -39,7 +41,6 @@ class _AnimatedLineChartMainState extends ConsumerState<AnimatedLineChartMain> {
           List<StatsModel> stats = [];
           if (snapshot.hasData && snapshot.data!.isNotEmpty) {
             stats = snapshot.data!;
-
 
             stats.sort((a, b) => a.dateTime.compareTo(b.dateTime));
             DateTime oldestDateX = stats.first.dateTime;
@@ -65,12 +66,18 @@ class _AnimatedLineChartMainState extends ConsumerState<AnimatedLineChartMain> {
             WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
               notifier.setTotalMeditationTime(runningTotalY);
             });
-
-
           }
 
-          return AnimatedLineChart(
-            seriesData: seriesData,
+          return Column(
+            children: [
+              Expanded(child: LastMeditationTimeTitle()),
+              Expanded(
+                flex: 5,
+                child: AnimatedLineChart(
+                  seriesData: seriesData,
+                ),
+              ),
+            ],
           );
         });
   }

@@ -1,3 +1,4 @@
+import 'package:chime/configs/constants.dart';
 import 'package:chime/models/data_point.dart';
 import 'package:flutter/material.dart';
 import 'custom_line_painter.dart';
@@ -36,8 +37,6 @@ class _AnimatedLineChartState extends State<AnimatedLineChart>
   @override
   Widget build(BuildContext context) {
     List<SeriesPoint> dataPoints = setChartPoints(widget.seriesData).toList();
-
-    final size = MediaQuery.of(context).size;
     return Scaffold(
       body: AnimatedBuilder(
         animation: _controller,
@@ -46,6 +45,11 @@ class _AnimatedLineChartState extends State<AnimatedLineChart>
             painter: LinePainter(
               seriesData: dataPoints,
               percent: _controller.value,
+              lineColor: Theme.of(context).primaryColor,
+              axisColor: Theme.of(context).secondaryHeaderColor,
+              textStyle: Theme.of(context).textTheme.bodySmall!.copyWith(
+                fontSize: kChartAxisFontSize,
+              )
             ),
             child: Container(),
           ),

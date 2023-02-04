@@ -1,4 +1,6 @@
+import 'package:chime/configs/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../configs/app_colors.dart';
 
 class StreakStatsBox extends StatelessWidget {
@@ -31,12 +33,12 @@ class StreakStatsBox extends StatelessWidget {
 
             text,              textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                  color: Colors.white,
-              fontSize: 10
+                  color: Theme.of(context).secondaryHeaderColor,
+              fontSize: kChartAxisFontSize
                 ),
           ),
         ],
       ),
-    );
+    ).animate().fadeIn();
   }
 }

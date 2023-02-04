@@ -15,3 +15,5 @@ const kChartAnimationDuration = 500;
 const kPageIndentation = 0.03;
 const kChartAxisFontSize = 10.0;
 const kClocksHeight = 0.25;
+const kChartBarLineWidth = 5.0;
+const kChartLabelsFontSize = 9.0;

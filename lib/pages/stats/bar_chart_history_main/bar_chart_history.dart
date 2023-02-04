@@ -1,13 +1,13 @@
 import 'package:chime/configs/constants.dart';
 import 'package:chime/enums/time_period.dart';
 import 'package:chime/models/stats_model.dart';
+import 'package:chime/pages/stats/bar_chart_history_main/total_medition_time_title.dart';
 import 'package:chime/state/chart_state.dart';
 import 'package:chime/state/database_manager.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
-import '../../../configs/app_colors.dart';
 import '../../../utils/methods.dart';
 import 'bar_touch_data.dart';
 
@@ -56,64 +56,17 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
             if (!_animate) {
               _runAnimation();
             }
-            String totalText =
-                calculateTotalMeditationTime(snapshot.data!, state);
-            String periodText = " in total";
             if (snapshot.data!.isNotEmpty) {
               bars = _getBarData(snapshot.data!, state.barChartTimePeriod);
-              TimePeriod? period = snapshot.data?.first.timePeriod;
-              switch (period!) {
-                case TimePeriod.week:
-                  periodText = ' in the last week';
-                  break;
-                case TimePeriod.fortnight:
-                  periodText = ' in the last fortnight';
-                  break;
-                case TimePeriod.year:
-                  periodText = ' in the last year';
-                  break;
-                case TimePeriod.allTime:
-                  ' in total';
-                  break;
-              }
             }
 
             return Column(
               children: [
                 Expanded(
                   flex: 2,
-                  child: RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      text: 'You have meditated for ',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall!
-                          .copyWith(fontWeight: FontWeight.w300),
-                      children: [
-                        TextSpan(
-                          text: totalText,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  color: Theme.of(context).primaryColor),
-                        ),
-                        TextSpan(
-                          text: periodText,
-                          style:
-                              Theme.of(context).textTheme.bodySmall!.copyWith(
-                                    fontWeight: FontWeight.w300,
-                                  ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  child: TotalMeditationTimeTitle(statsData: snapshot.data!),
                 ),
-                Expanded(
-                    flex: 1,
-                    child: SizedBox()),
+                const Expanded(flex: 1, child: SizedBox()),
                 Expanded(
                   flex: 10,
                   child: Column(
@@ -172,7 +125,7 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
         style: Theme.of(context)
             .textTheme
             .displaySmall!
-            .copyWith(color: AppColors.offWhite, fontSize: 10),
+            .copyWith(fontSize: kChartLabelsFontSize),
       ),
     );
   }
@@ -196,8 +149,10 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
       );
 
   FlBorderData get borderData => FlBorderData(
-        show: false,
-      );
+      show: true,
+      border: Border(
+          bottom: BorderSide(
+              color: Theme.of(context).secondaryHeaderColor, width: 0.50)));
 
   List<BarChartGroupData> _getBarData(
       List<StatsModel> statsData, TimePeriod period) {
@@ -252,6 +207,7 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
           x: period == TimePeriod.allTime ? allTimeIndex : stats.indexOf(e),
           barRods: [
             BarChartRodData(
+                width: kChartBarLineWidth,
                 color: Theme.of(context).primaryColor,
                 backDrawRodData: BackgroundBarChartRodData(
                   show: true,

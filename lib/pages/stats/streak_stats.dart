@@ -19,12 +19,12 @@ class StreakStats extends ConsumerStatefulWidget {
 }
 
 class _StreakStatsState extends ConsumerState<StreakStats> {
-  late final Future<StatsModel> _lastEntryFuture;
+  // late final Future<StatsModel> _lastEntryFuture;
   late final Future<List<StatsModel>> _allGroupedFuture;
 
   @override
   void initState() {
-    _lastEntryFuture = DatabaseManager().getLastEntry();
+    // _lastEntryFuture = DatabaseManager().getLastEntry();
     _allGroupedFuture = DatabaseManager().getStatsByTimePeriod(
         allTimeGroupedByDay: true, period: TimePeriod.allTime);
     super.initState();
@@ -34,25 +34,27 @@ class _StreakStatsState extends ConsumerState<StreakStats> {
   Widget build(BuildContext context) {
     final notifier = ref.read(chartStateProvider.notifier);
     return FutureBuilder(
-      future: Future.wait([_lastEntryFuture, _allGroupedFuture]),
+      future: _allGroupedFuture,
+      // Future.wait([_lastEntryFuture,
+      //   _allGroupedFuture]),
       builder: (context, snapshot) {
-        String lastMeditation = '-';
-        String lastMeditationDate = "";
-        String currentStreakString = '-';
-        String bestStreak = '-';
+        // String lastMeditation = '';
+        // String lastMeditationDate = '';
+        String currentStreakString = '';
+        String bestStreak = '';
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
           notifier.setChartsHaveData(snapshot.hasData);
         });
         if (snapshot.hasData) {
           if (snapshot.data!.isNotEmpty) {
-            StatsModel lastEntry = snapshot.data![0] as StatsModel;
-            lastMeditation = lastEntry.totalMeditationTime.formatToHourMin();
-            final date = lastEntry.dateTime;
-            final DateFormat formatter = DateFormat.yMMMd();
-            lastMeditationDate = formatter.format(date);
-            lastMeditationDate = ' on $lastMeditationDate';
+            // StatsModel lastEntry = snapshot.data! as StatsModel;
+            // lastMeditation = lastEntry.totalMeditationTime.formatToHourMin();
+            // final date = lastEntry.dateTime;
+            // final DateFormat formatter = DateFormat.yMMMd();
+            // lastMeditationDate = formatter.format(date);
+            // lastMeditationDate = ' on $lastMeditationDate';
 
-            List<StatsModel> stats = snapshot.data![1] as List<StatsModel>;
+            List<StatsModel> stats = snapshot.data! as List<StatsModel>;
             currentStreakString = getCurrentStreak(stats);
             bestStreak = getBestStreak(stats);
           }
@@ -73,10 +75,10 @@ class _StreakStatsState extends ConsumerState<StreakStats> {
                   value: bestStreak,
                   text: 'Best streak\n',
                 ),
-                StreakStatsBox(
-                  value: lastMeditation,
-                  text: 'Last meditation\n$lastMeditationDate',
-                ),
+                // StreakStatsBox(
+                //   value: lastMeditation,
+                //   text: 'Last meditation\n$lastMeditationDate',
+                // ),
               ],
             ),
           ],

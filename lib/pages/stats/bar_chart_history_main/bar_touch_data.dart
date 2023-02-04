@@ -23,7 +23,7 @@ BarTouchData getBarTouchData({required bool showLabels}) {
         }
         return BarTooltipItem(
           time,
-          const TextStyle(color: AppColors.offWhite, fontSize: 10),
+          const TextStyle(fontSize: 10),
         );
       },
     ),
