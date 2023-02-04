@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../models/stats_model.dart';
+import '../../state/chart_state.dart';
 import '../../state/database_manager.dart';
 import '../../utils/methods.dart';
 
@@ -31,7 +32,7 @@ class _StreakStatsState extends ConsumerState<StreakStats> {
 
   @override
   Widget build(BuildContext context) {
-    final notifier = ref.read(stateProvider.notifier);
+    final notifier = ref.read(chartStateProvider.notifier);
     return FutureBuilder(
       future: Future.wait([_lastEntryFuture, _allGroupedFuture]),
       builder: (context, snapshot) {
@@ -56,20 +57,27 @@ class _StreakStatsState extends ConsumerState<StreakStats> {
             bestStreak = getBestStreak(stats);
           }
         }
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+        return Column(
           children: [
             StreakStatsBox(
-              value: lastMeditation,
-              text: 'Last meditation\n$lastMeditationDate',
-            ),
-            StreakStatsBox(
               value: currentStreakString,
-              text: 'Current streak\n',
+              text: 'Current streak',
+              fontSize: 80,
             ),
-            StreakStatsBox(
-              value: bestStreak,
-              text: 'Best streak\n',
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+
+
+                StreakStatsBox(
+                  value: bestStreak,
+                  text: 'Best streak\n',
+                ),
+                StreakStatsBox(
+                  value: lastMeditation,
+                  text: 'Last meditation\n$lastMeditationDate',
+                ),
+              ],
             ),
           ],
         );

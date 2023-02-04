@@ -6,10 +6,12 @@ class StreakStatsBox extends StatelessWidget {
     super.key,
     required this.text,
     required this.value,
+    this.fontSize,
   });
 
   final String value;
   final String text;
+  final double? fontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -21,15 +23,16 @@ class StreakStatsBox extends StatelessWidget {
             value, textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.displaySmall!.copyWith(
                   color: Theme.of(context).primaryColor,
-                fontSize: 25,
+              fontSize: fontSize
 
                 ),
           ),
           Text(
 
             text,              textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.displaySmall!.copyWith(
-                  color: AppColors.offWhite,
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  color: Colors.white,
+              fontSize: 10
                 ),
           ),
         ],

@@ -1,6 +1,8 @@
-class DataPoint {
-  final double x;
-  final double y;
+class SeriesPoint {
+  final double dataX;
+  final double dataY;
+  String? xLabel;
+  String? yLabel;
 
-  DataPoint(this.x, this.y);
+  SeriesPoint(this.dataX, this.dataY, [this.xLabel, this.yLabel]);
 }

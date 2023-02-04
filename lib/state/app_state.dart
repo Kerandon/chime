@@ -56,8 +56,8 @@ class AppState {
   final bool hideClock;
 
   //Chart
-  final TimePeriod barChartTimePeriod;
-  final bool chartsHaveData;
+  // final TimePeriod barChartTimePeriod;
+  // final bool chartsHaveData;
 
   AppState({
     required this.sessionState,
@@ -85,8 +85,8 @@ class AppState {
     required this.deviceIsMuted,
     required this.checkIfStatsUpdated,
     required this.hideClock,
-    required this.barChartTimePeriod,
-    required this.chartsHaveData,
+    // required this.barChartTimePeriod,
+    // required this.chartsHaveData,
   });
 
   AppState copyWith({
@@ -115,8 +115,8 @@ class AppState {
     bool? deviceIsMuted,
     bool? checkIfStatsUpdated,
     bool? hideClock,
-    TimePeriod? barChartTimePeriod,
-    bool? chartsHaveData,
+    // TimePeriod? barChartTimePeriod,
+    // bool? chartsHaveData,
   }) {
     return AppState(
       sessionState: sessionState ?? this.sessionState,
@@ -148,8 +148,8 @@ class AppState {
       deviceIsMuted: deviceIsMuted ?? this.deviceIsMuted,
       checkIfStatsUpdated: checkIfStatsUpdated ?? this.checkIfStatsUpdated,
       hideClock: hideClock ?? this.hideClock,
-      barChartTimePeriod: barChartTimePeriod ?? this.barChartTimePeriod,
-      chartsHaveData: chartsHaveData ?? this.chartsHaveData,
+      // barChartTimePeriod: barChartTimePeriod ?? this.barChartTimePeriod,
+      // chartsHaveData: chartsHaveData ?? this.BarChartHasData,
     );
   }
 }
@@ -308,13 +308,7 @@ class AppNotifier extends StateNotifier<AppState> {
     state = state.copyWith(hideClock: hide);
   }
 
-  void setBarChartTimePeriod(TimePeriod time) {
-    state = state.copyWith(barChartTimePeriod: time);
-  }
 
-  void setChartsHaveData(bool haveData) {
-    state = state.copyWith(chartsHaveData: haveData);
-  }
 
   void setVibrateOnCompletion(bool vibrate) {
     state = state.copyWith(vibrateOnCompletion: vibrate);
@@ -350,8 +344,6 @@ final stateProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
     ambienceVolume: 0.50,
     checkIfStatsUpdated: false,
     hideClock: false,
-    barChartTimePeriod: TimePeriod.week,
-    chartsHaveData: false,
     vibrateOnCompletion: true,
     deviceIsMuted: true,
   ));

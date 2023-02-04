@@ -2,6 +2,7 @@
 import '../enums/time_period.dart';
 import '../models/stats_model.dart';
 import '../state/app_state.dart';
+import '../state/chart_state.dart';
 
 extension Format on int {
   String formatToHour() {
@@ -112,7 +113,7 @@ String getBestStreak(List<StatsModel> stats) {
 
 
 String calculateTotalMeditationTime(
-    List<StatsModel> data, AppState state) {
+    List<StatsModel> data, ChartState state) {
   int totalTime = 0;
 
   for (var d in data) {

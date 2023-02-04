@@ -4,97 +4,91 @@ import 'package:flutter/material.dart';
 import '../../../models/data_point.dart';
 
 class LinePainter extends CustomPainter {
-  final List<MapEntry<String, double>> axisX, axisY;
-  final List<DataPoint> dataPoints;
+  final List<SeriesPoint> seriesData;
   final double percent;
+  final Color lineColor;
 
   LinePainter({
-    required this.axisX,
-    required this.axisY,
-    required this.dataPoints,
+    required this.seriesData,
     required this.percent,
+    this.lineColor = Colors.teal,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
     final width = size.width;
     final height = size.height;
-    const double widthIndentation = 0.10;
-    const double heightIndentation = 0.93;
+    double widthIndent = width * 0.06;
+    double heightIndent = height * 0.94;
 
-    var axisPaint = Paint()
-      ..color = Colors.white54
-      ..strokeWidth = 1
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
+    /// CHART LINE
+    if (seriesData.isNotEmpty) {
+      var paintLine = Paint()
+        ..color = Colors.orange
+        ..strokeWidth = 1
+        ..style = PaintingStyle.stroke
+        ..strokeCap = StrokeCap.round;
 
-    ///X & Y AXIS
-    Path axisPath = Path()
-      ..moveTo(width * widthIndentation, (heightIndentation * height))
-      ..lineTo(width * widthIndentation, 0)
-      ..moveTo(width * widthIndentation, (heightIndentation * height))
-      ..lineTo(width, heightIndentation * height);
-    canvas.drawPath(axisPath, axisPaint);
+      Path path = Path();
 
-    /// X AXIS LABEL
-    for (int i = 0; i < axisX.length; i++) {
-      TextSpan span = TextSpan(
-          text: axisX.elementAt(i).key,
-          style: TextStyle(color: Colors.grey[600]));
-      TextPainter textPainter = TextPainter(
-        text: span,
-        textAlign: TextAlign.right,
-        textDirection: ui.TextDirection.ltr,
-      );
-      textPainter.layout(maxWidth: width * 0.20);
-      textPainter.paint(
-          canvas,
-          Offset((axisX.elementAt(i).value * width * 0.75) + width * 0.10,
-              height * (heightIndentation * 1.01) ));
+      path.moveTo(widthIndent, height - (seriesData.first.dataY * height));
+      for (var d in seriesData) {
+        path.lineTo(d.dataX * (width - widthIndent) + widthIndent,
+            height - (d.dataY * height));
+      }
+
+      ui.PathMetrics pathMetrics = path.computeMetrics();
+      ui.PathMetric pathMetric = pathMetrics.elementAt(0);
+      Path extracted = pathMetric.extractPath(0.0, pathMetric.length * percent);
+
+      canvas.drawPath(extracted, paintLine);
+
+      var axisPaint = Paint()
+        ..color = Colors.white54
+        ..strokeWidth = 0.50
+        ..style = PaintingStyle.stroke
+        ..strokeCap = StrokeCap.round;
+
+      ///X & Y AXIS LINES
+      Path axisPath = Path()
+        ..moveTo(widthIndent, heightIndent)
+        ..lineTo(widthIndent, 0)
+        ..moveTo(widthIndent, heightIndent)
+        ..lineTo(width, heightIndent);
+     // canvas.drawPath(axisPath, axisPaint);
+
+      /// X AXIS LABELS
+
+      for (int i = 0; i < seriesData.length; i++) {
+        createPaintedText(
+          seriesData[i].xLabel,
+          canvas: canvas,
+          offset: Offset(
+            (seriesData[i].dataX * (width * 0.82)) + widthIndent,
+            heightIndent * 1.01,
+          ),
+          minWidth: widthIndent *4,
+          maxWidth: widthIndent * 4,
+        );
+
+        /// Y AXIS LABELS
+        createPaintedText(seriesData[i].yLabel,
+            canvas: canvas,
+            offset: Offset(0, (height - (seriesData[i].dataY * height))),
+            minWidth: widthIndent ,
+            maxWidth: widthIndent,
+            textAlign: TextAlign.right);
+      }
+
+      /// ZERO ON Y AXIS
+
+      createPaintedText('0',
+          canvas: canvas,
+          offset: Offset(0, (heightIndent * 0.98)),
+          minWidth: widthIndent ,
+          maxWidth: widthIndent,
+          textAlign: TextAlign.right);
     }
-
-    /// Y AXIS LABEL
-    for (int i = 0; i < axisY.length; i++) {
-      TextSpan span = TextSpan(
-          text: axisY.elementAt(i).key,
-          style: TextStyle(color: Colors.grey[600]));
-      TextPainter textPainter = TextPainter(
-        text: span,
-        textAlign: TextAlign.right,
-        textDirection: ui.TextDirection.ltr,
-      );
-      textPainter.layout(
-          maxWidth: (size.width * widthIndentation) * 0.90,
-          minWidth: (size.width * widthIndentation) * 0.90);
-      textPainter.paint(
-          canvas,
-          Offset(
-              0,
-              ((size.height - ((size.height * 1)* axisY.elementAt(i).value)) *
-                  heightIndentation)));
-    }
-
-    /// Progress Line
-    var paintLine = Paint()
-      ..color = Colors.orange
-      ..strokeWidth = 1
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-
-    Path path = Path();
-    path.moveTo(widthIndentation * width, height - (dataPoints.first.y * height));
-    for (var d in dataPoints) {
-      print('data point to add ${d.x} and ${d.y}');
-      path.lineTo(d.x * ((1.0 - widthIndentation) * width) + (widthIndentation * width), height - (d.y * height));
-    }
-
-    ui.PathMetrics pathMetrics = path.computeMetrics();
-    ui.PathMetric pathMetric = pathMetrics.elementAt(0);
-    Path extracted = pathMetric.extractPath(0.0, pathMetric.length * percent);
-
-    canvas.drawPath(extracted, paintLine);
-
-    //canvas.drawPath(path, paintLine);
   }
 
   @override
@@ -103,3 +97,25 @@ class LinePainter extends CustomPainter {
   }
 }
 
+void createPaintedText(
+  String? text, {
+  required Canvas canvas,
+  required Offset offset,
+  double? minWidth,
+  double? maxWidth,
+  TextAlign textAlign = TextAlign.left,
+}) {
+  TextSpan span =
+      TextSpan(text: text, style: TextStyle(color: Colors.grey[600]));
+  TextPainter textPainter = TextPainter(
+    text: span,
+    textAlign: textAlign,
+    textDirection: ui.TextDirection.ltr,
+  );
+  textPainter.layout(minWidth: minWidth ?? 0.0, maxWidth: maxWidth ?? 0.0);
+
+  textPainter.paint(
+    canvas,
+    offset,
+  );
+}

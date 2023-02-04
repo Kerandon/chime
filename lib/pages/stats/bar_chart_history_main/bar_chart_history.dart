@@ -1,7 +1,7 @@
 import 'package:chime/configs/constants.dart';
 import 'package:chime/enums/time_period.dart';
 import 'package:chime/models/stats_model.dart';
-import 'package:chime/state/app_state.dart';
+import 'package:chime/state/chart_state.dart';
 import 'package:chime/state/database_manager.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +38,7 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final widthPadding = size.width * kPageIndentation;
-    final state = ref.watch(stateProvider);
+    final state = ref.watch(chartStateProvider);
 
     if (!_futureHasRun) {
       _statsFuture = DatabaseManager()
@@ -56,21 +56,21 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
             if (!_animate) {
               _runAnimation();
             }
-
-            String totalText = calculateTotalMeditationTime(snapshot.data!, state);
+            String totalText =
+                calculateTotalMeditationTime(snapshot.data!, state);
             String periodText = " in total";
             if (snapshot.data!.isNotEmpty) {
               bars = _getBarData(snapshot.data!, state.barChartTimePeriod);
               TimePeriod? period = snapshot.data?.first.timePeriod;
               switch (period!) {
                 case TimePeriod.week:
-                  periodText = ' over the last week';
+                  periodText = ' in the last week';
                   break;
                 case TimePeriod.fortnight:
-                  periodText = ' over the last fortnight';
+                  periodText = ' in the last fortnight';
                   break;
                 case TimePeriod.year:
-                  periodText = ' over the last year';
+                  periodText = ' in the last year';
                   break;
                 case TimePeriod.allTime:
                   ' in total';
@@ -78,63 +78,67 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
               }
             }
 
-            return Stack(
+            return Column(
               children: [
-
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: RichText(
-                        text: TextSpan(
-                          text: 'You have meditated for ',
+                Expanded(
+                  flex: 2,
+                  child: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      text: 'You have meditated for ',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall!
+                          .copyWith(fontWeight: FontWeight.w300),
+                      children: [
+                        TextSpan(
+                          text: totalText,
                           style: Theme.of(context)
                               .textTheme
                               .bodySmall!
-                              .copyWith(fontWeight: FontWeight.w300),
-                          children: [
-                            TextSpan(
-                              text: totalText,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(
-                                      fontWeight: FontWeight.w600,
-                                      color: Theme.of(context).primaryColor),
-                            ),
-                            TextSpan(
-                              text: periodText,
-                              style:
-                                  Theme.of(context).textTheme.bodySmall!.copyWith(
-                                        fontWeight: FontWeight.w300,
-                                      ),
-                            ),
-                          ],
+                              .copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: Theme.of(context).primaryColor),
+                        ),
+                        TextSpan(
+                          text: periodText,
+                          style:
+                              Theme.of(context).textTheme.bodySmall!.copyWith(
+                                    fontWeight: FontWeight.w300,
+                                  ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                    flex: 1,
+                    child: SizedBox()),
+                Expanded(
+                  flex: 10,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(
+                        flex: 10,
+                        child: BarChart(
+                          BarChartData(
+                            barTouchData:
+                                getBarTouchData(showLabels: _showLabels),
+                            gridData: FlGridData(show: false),
+                            alignment: BarChartAlignment.spaceAround,
+                            borderData: borderData,
+                            barGroups: bars,
+                            titlesData: titlesData,
+                          ),
+                          swapAnimationDuration: const Duration(
+                            milliseconds: kChartAnimationDuration,
+                          ),
+                          swapAnimationCurve: Curves.easeOutQuint,
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: size.height * 0.05,
-                    ),
-                    Expanded(
-                      flex: 10,
-                      child: BarChart(
-                        BarChartData(
-                          barTouchData: getBarTouchData(showLabels: _showLabels),
-                          gridData: FlGridData(show: false),
-                          alignment: BarChartAlignment.spaceAround,
-                          borderData: borderData,
-                          barGroups: bars,
-                          titlesData: titlesData,
-                        ),
-                        swapAnimationDuration: const Duration(
-                          milliseconds: kChartAnimationDuration,
-                        ),
-                        swapAnimationCurve: Curves.easeOutQuint,
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             );
@@ -147,7 +151,7 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
 
   Widget getTitles(double value, TitleMeta meta) {
     DateTime date = stats[value.toInt()].dateTime;
-    final state = ref.watch(stateProvider);
+    final state = ref.watch(chartStateProvider);
     String formatted = 'EE';
     if (state.barChartTimePeriod == TimePeriod.week) {
       formatted = DateFormat('EE').format(date);
@@ -284,5 +288,3 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
     );
   }
 }
-
-
