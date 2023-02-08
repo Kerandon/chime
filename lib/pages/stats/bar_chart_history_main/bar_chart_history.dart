@@ -1,14 +1,14 @@
 import 'package:chime/configs/constants.dart';
 import 'package:chime/enums/time_period.dart';
 import 'package:chime/models/stats_model.dart';
-import 'package:chime/pages/stats/bar_chart_history_main/total_medition_time_title.dart';
 import 'package:chime/state/chart_state.dart';
 import 'package:chime/state/database_manager.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
-import '../../../utils/methods.dart';
+import '../../../utils/methods/methods.dart';
 import 'bar_touch_data.dart';
 
 class BarChartHistory extends ConsumerStatefulWidget {
@@ -28,17 +28,14 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
   bool _animate = false;
   bool _showLabels = false;
   List<BarChartGroupData> bars = [];
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  bool displayNoData = false;
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final widthPadding = size.width * kPageIndentation;
     final state = ref.watch(chartStateProvider);
+    final notifier = ref.read(chartStateProvider.notifier);
 
     if (!_futureHasRun) {
       _statsFuture = DatabaseManager()
@@ -52,51 +49,51 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
       child: FutureBuilder<List<StatsModel>>(
         future: _statsFuture,
         builder: (context, snapshot) {
+
           if (snapshot.hasData) {
+
             if (!_animate) {
               _runAnimation();
             }
             if (snapshot.data!.isNotEmpty) {
-              bars = _getBarData(snapshot.data!, state.barChartTimePeriod);
-            }
+              bars = _getBarData(snapshot.data!, state.barChartTimePeriod).toList();
+              if(state.barChartStats.isEmpty) {
+                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                  notifier.setBarChartStats(stats);
+                });
+              }
+            } else {
+                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                  displayNoData = true;
+                });
 
-            return Column(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: TotalMeditationTimeTitle(statsData: snapshot.data!),
-                ),
-                const Expanded(flex: 1, child: SizedBox()),
-                Expanded(
-                  flex: 10,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Expanded(
-                        flex: 10,
-                        child: BarChart(
-                          BarChartData(
-                            barTouchData:
-                                getBarTouchData(showLabels: _showLabels),
-                            gridData: FlGridData(show: false),
-                            alignment: BarChartAlignment.spaceAround,
-                            borderData: borderData,
-                            barGroups: bars,
-                            titlesData: titlesData,
-                          ),
-                          swapAnimationDuration: const Duration(
-                            milliseconds: kChartAnimationDuration,
-                          ),
-                          swapAnimationCurve: Curves.easeOutQuint,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            );
+            }
           }
-          return const SizedBox.shrink();
+
+          return Stack(
+            children: [
+              displayNoData ?  Center(
+                child: Text(
+                  kNoChartDataMsg,
+                  style: Theme.of(context).textTheme.bodySmall,
+                )
+              ).animate().fadeIn() : const SizedBox.shrink(),
+              BarChart(
+                BarChartData(
+                  barTouchData: getBarTouchData(showLabels: _showLabels),
+                  gridData: FlGridData(show: false),
+                  alignment: BarChartAlignment.spaceAround,
+                  borderData: borderData,
+                  barGroups: bars,
+                  titlesData: titlesData,
+                ),
+                swapAnimationDuration: const Duration(
+                  milliseconds: kChartAnimationDuration,
+                ),
+                swapAnimationCurve: Curves.easeOutQuint,
+              ),
+            ],
+          );
         },
       ),
     );
@@ -127,7 +124,7 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
             .displaySmall!
             .copyWith(fontSize: kChartLabelsFontSize),
       ),
-    );
+    ).animate().fadeIn();
   }
 
   get titlesData => FlTitlesData(
@@ -149,10 +146,12 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
       );
 
   FlBorderData get borderData => FlBorderData(
-      show: true,
-      border: Border(
+        show: true,
+        border: Border(
           bottom: BorderSide(
-              color: Theme.of(context).secondaryHeaderColor, width: 0.50)));
+              color: Theme.of(context).secondaryHeaderColor, width: 0.50),
+        ),
+      );
 
   List<BarChartGroupData> _getBarData(
       List<StatsModel> statsData, TimePeriod period) {

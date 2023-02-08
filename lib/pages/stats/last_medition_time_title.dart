@@ -1,9 +1,9 @@
-import 'package:chime/utils/methods.dart';
+import 'package:chime/utils/methods/methods.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../models/stats_model.dart';
-import '../../../state/database_manager.dart';
+import '../../models/stats_model.dart';
+import '../../state/database_manager.dart';
 
 class LastMeditationTimeTitle extends StatefulWidget {
   const LastMeditationTimeTitle({
@@ -44,25 +44,25 @@ class _LastMeditationTimeTitleState extends State<LastMeditationTimeTitle> {
           } else if (daysSinceLastMeditation == 1) {
             lastMeditationDays = 'yesterday';
           } else {
-            lastMeditationDays = '${daysSinceLastMeditation} days ago';
+            lastMeditationDays = '$daysSinceLastMeditation days ago';
           }
 
           return RichText(
             text: TextSpan(
-              text: 'You last meditated was ',
+              text: 'You last meditated ',
               style: Theme.of(context).textTheme.bodySmall,
               children: [
                 TextSpan(
-                  text: '$lastMeditationDays',
+                  text: lastMeditationDays,
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(
                       fontWeight: FontWeight.bold,
                       color: Theme.of(context).primaryColor),
                 ),
-                TextSpan(
+                const TextSpan(
                   text: ' for ',
                 ),
                 TextSpan(
-                  text: '$lastMeditation',
+                  text: lastMeditation,
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(
                       fontWeight: FontWeight.bold,
                       color: Theme.of(context).primaryColor),
@@ -71,7 +71,7 @@ class _LastMeditationTimeTitleState extends State<LastMeditationTimeTitle> {
             ),
           ).animate().fadeIn();
         }
-        return SizedBox.shrink();
+        return const SizedBox.shrink();
       },
     );
   }

@@ -4,10 +4,10 @@
 //   const FadeInAnimation({
 //     Key? key,
 //     required this.child,
-//     this.durationMilliseconds = 800,
+//     this.durationMilliseconds = 1800,
 //     this.delayMilliseconds = 0,
 //     this.beginScale = 0.90,
-//     this.beginOpacity = 0.50,
+//     this.beginOpacity = 0.0,
 //   }) : super(key: key);
 //
 //   final Widget child;

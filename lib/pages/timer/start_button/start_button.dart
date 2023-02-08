@@ -166,7 +166,7 @@ class _StartButtonState extends ConsumerState<StartButton> {
       );
     }
     if(state.sessionState == SessionState.countdown){
-      _buttonImage = CountdownAnimation(animate: true);
+      _buttonImage = const CountdownAnimation(animate: true);
     }
     if (state.sessionState == SessionState.inProgress) {
       _buttonImage = const LotusIcon();

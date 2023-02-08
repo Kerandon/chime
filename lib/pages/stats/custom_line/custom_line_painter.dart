@@ -3,9 +3,11 @@ import 'package:chime/configs/constants.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/data_point.dart';
+import '../../../utils/methods/create_painted_text.dart';
 
 class LinePainter extends CustomPainter {
   final List<SeriesPoint> seriesData;
+  final List<String> labelsX, labelsY;
   final double percent;
   final Color lineColor;
   final Color axisColor;
@@ -15,6 +17,8 @@ class LinePainter extends CustomPainter {
   LinePainter(
       {required this.seriesData,
       required this.percent,
+      required this.labelsX,
+      required this.labelsY,
       this.lineColor = Colors.teal,
       this.axisColor = Colors.grey,
       this.lineWidth = kChartBarLineWidth,
@@ -25,21 +29,26 @@ class LinePainter extends CustomPainter {
     final width = size.width;
     final height = size.height;
     double widthIndent = width * 0.06;
+    double adjustedWidth = width - widthIndent;
     double heightIndent = height * 0.94;
+    double adjustedHeight = height - heightIndent;
 
     /// CHART LINE
+    ///
+
     if (seriesData.isNotEmpty) {
       var paintLine = Paint()
         ..color = lineColor
         ..strokeWidth = lineWidth
         ..style = PaintingStyle.stroke
-        ..strokeCap = StrokeCap.round;
+        ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
 
       Path path = Path();
 
       path.moveTo(widthIndent, height - (seriesData.first.dataY * height));
       for (var d in seriesData) {
-        path.lineTo(d.dataX * (width - widthIndent) + widthIndent,
+        path.lineTo(d.dataX * (adjustedWidth) + widthIndent,
             height - (d.dataY * height));
       }
 
@@ -48,55 +57,73 @@ class LinePainter extends CustomPainter {
       Path extracted = pathMetric.extractPath(0.0, pathMetric.length * percent);
 
       canvas.drawPath(extracted, paintLine);
+    }
 
-      var axisPaint = Paint()
-        ..color = axisColor
-        ..strokeWidth = 0.50
-        ..style = PaintingStyle.stroke
-        ..strokeCap = StrokeCap.round;
+    ///X & Y AXIS LINES
 
-      ///X & Y AXIS LINES
-      Path axisPath = Path()
-        // ..moveTo(widthIndent, heightIndent)
-        // ..lineTo(widthIndent, 0)
-        ..moveTo(widthIndent, heightIndent)
-        ..lineTo(width, heightIndent);
-      canvas.drawPath(axisPath, axisPaint);
+    var axisPaint = Paint()
+      ..color = axisColor
+      ..strokeWidth = 0.50
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
 
-      /// X AXIS LABELS
+    Path axisPath = Path()
+      ..moveTo(widthIndent - 5, heightIndent)
+      ..lineTo(widthIndent, 0)
+      ..moveTo(widthIndent - 5, heightIndent)
+      ..lineTo(width, heightIndent);
+    canvas.drawPath(axisPath, axisPaint);
 
-      for (int i = 0; i < seriesData.length; i++) {
-        createPaintedText(
-          seriesData[i].xLabel,
-          canvas: canvas,
-          offset: Offset(
-            (seriesData[i].dataX * (width * 0.82)) + widthIndent,
-            heightIndent * 1.01,
-          ),
-          minWidth: widthIndent * 4,
-          maxWidth: widthIndent * 4,
-          textStyle: textStyle
-        );
+    /// X LABELS MARKERS
 
-        /// Y AXIS LABELS
-        createPaintedText(seriesData[i].yLabel,
+    if (seriesData.isNotEmpty) {
+      double labelSpacingX = adjustedWidth / kNoOfXLabelsOnLineChart;
+      var xLabelPaint = Paint()
+        ..color = Colors.white54
+        ..strokeWidth = 6
+        ..style = PaintingStyle.fill;
+
+      Path xLabelPath = Path();
+      for (int i = 0; i < labelsX.length; i++) {
+        xLabelPath = Path()
+          ..addOval(Rect.fromCircle(
+              center: Offset(
+                  widthIndent + (labelSpacingX * i) + (labelSpacingX),
+                  height - (adjustedHeight)),
+              radius: size.width * 0.003));
+        canvas.drawPath(xLabelPath, xLabelPaint);
+
+
+        /// X LABELS TEXT
+        var textWidth = size.width * 0.10;
+        createPaintedText(labelsX[i],
             canvas: canvas,
-            offset: Offset(seriesData[i].dataX * (width - (widthIndent * 1.5)), (height - (seriesData[i].dataY * height))),
-            minWidth: widthIndent,
-            maxWidth: widthIndent,
-            textAlign: TextAlign.right,
-            textStyle: textStyle
-        );
+            minWidth: textWidth,
+            maxWidth: textWidth,
+            textStyle: textStyle,
+            offset: Offset(
+                (widthIndent +
+                    (labelSpacingX * i) +
+                    (labelSpacingX / 2) -
+                    (textWidth / 2)),
+                height - size.height * 0.05),
+            textAlign: TextAlign.center);
       }
 
-      /// ZERO ON Y AXIS
+      /// Y LABELS
 
-      // createPaintedText('0',
-      //     canvas: canvas,
-      //     offset: Offset(0, (heightIndent * 0.98)),
-      //     minWidth: widthIndent ,
-      //     maxWidth: widthIndent,
-      //     textAlign: TextAlign.right);
+      for (int i = 0; i < labelsY.length; i++) {
+        double spacing = heightIndent / 5;
+
+        createPaintedText(labelsY[i],
+            canvas: canvas,
+            offset: Offset(
+              widthIndent - size.width * 0.07,
+              (spacing * i) - size.width * 0.02,
+            ),
+            maxWidth: adjustedWidth * 0.25,
+            textStyle: textStyle);
+      }
     }
   }
 
@@ -104,27 +131,4 @@ class LinePainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return true;
   }
-}
-
-void createPaintedText(
-  String? text, {
-  required Canvas canvas,
-  required Offset offset,
-  double? minWidth,
-  double? maxWidth,
-  TextAlign textAlign = TextAlign.left,
-  TextStyle? textStyle,
-}) {
-  TextSpan span = TextSpan(text: text, style: textStyle);
-  TextPainter textPainter = TextPainter(
-    text: span,
-    textAlign: textAlign,
-    textDirection: ui.TextDirection.ltr,
-  );
-  textPainter.layout(minWidth: minWidth ?? 0.0, maxWidth: maxWidth ?? 0.0);
-
-  textPainter.paint(
-    canvas,
-    offset,
-  );
 }

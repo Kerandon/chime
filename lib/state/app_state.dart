@@ -10,7 +10,6 @@ import '../enums/ambience.dart';
 import '../enums/bell.dart';
 import '../enums/focus_state.dart';
 import '../enums/prefs.dart';
-import '../enums/time_period.dart';
 import '../utils/vibration_method.dart';
 
 class AppState {

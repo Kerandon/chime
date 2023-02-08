@@ -1,8 +1,7 @@
 
-import '../enums/time_period.dart';
-import '../models/stats_model.dart';
-import '../state/app_state.dart';
-import '../state/chart_state.dart';
+import '../../enums/time_period.dart';
+import '../../models/stats_model.dart';
+import '../../state/chart_state.dart';
 
 extension Format on int {
   String formatToHour() {
@@ -49,7 +48,7 @@ extension DateSuffix on int {
   }
 }
 
-String getCurrentStreak(List<StatsModel> stats) {
+int getCurrentStreak(List<StatsModel> stats) {
   int currentStreak = 0;
 
   DateTime now = DateTime.now();
@@ -66,17 +65,11 @@ String getCurrentStreak(List<StatsModel> stats) {
     }
   }
 
-  String currentStreakString = "0";
-  if (currentStreak == 1) {
-    currentStreakString = '1 day';
-  }
-  if (currentStreak > 1) {
-    currentStreakString = '$currentStreak days';
-  }
-  return currentStreakString;
+
+  return currentStreak;
 }
 
-String getBestStreak(List<StatsModel> stats) {
+int getBestStreak(List<StatsModel> stats) {
   List<DateTime> dates = [];
   for (var s in stats) {
     dates.add(s.dateTime);
@@ -100,15 +93,8 @@ String getBestStreak(List<StatsModel> stats) {
     }
   }
 
-  String streakString = "";
+  return longestStreakLength;
 
-  if (longestStreakLength == 1) {
-    streakString = '$longestStreakLength day';
-  } else {
-    streakString = '$longestStreakLength days';
-  }
-
-  return streakString;
 }
 
 

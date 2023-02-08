@@ -1,12 +1,11 @@
 import 'package:chime/state/chart_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../../configs/app_colors.dart';
-import '../../enums/time_period.dart';
-import '../../state/app_state.dart';
+import '../../../configs/app_colors.dart';
+import '../../../enums/time_period.dart';
 
-class HistoryPeriodToggle extends ConsumerWidget {
-  const HistoryPeriodToggle(
+class BarChartPeriodButton extends ConsumerWidget {
+  const BarChartPeriodButton(
       {Key? key,
       required this.timePeriod})
       : super(key: key);
@@ -22,19 +21,19 @@ class HistoryPeriodToggle extends ConsumerWidget {
       child: Padding(
         padding: EdgeInsets.all(size.width * 0.01),
         child: OutlinedButton(
-          onPressed: state.barChartHasData ? () {
+          onPressed: state.barChartStats.isNotEmpty ? () {
             notifier.setBarChartToggle();
             notifier.setBarChartTimePeriod(timePeriod);
           } : null,
           style: OutlinedButton.styleFrom(
               side: BorderSide(
-            color: state.barChartTimePeriod == timePeriod && state.barChartHasData ? Theme.of(context).primaryColor
+            color: state.barChartTimePeriod == timePeriod && state.barChartStats.isNotEmpty ? Theme.of(context).primaryColor
                 : AppColors.grey,
           )),
           child: Text(
             timePeriod.toText(),
             style: Theme.of(context).textTheme.bodySmall!.copyWith(
-              color: state.barChartTimePeriod == timePeriod && state.barChartHasData ?
+              color: state.barChartTimePeriod == timePeriod && state.barChartStats.isNotEmpty ?
                   Theme.of(context).primaryColor : AppColors.grey,
             )
           ),

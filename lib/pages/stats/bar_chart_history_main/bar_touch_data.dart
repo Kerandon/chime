@@ -1,8 +1,7 @@
-import 'package:chime/utils/methods.dart';
+import 'package:chime/utils/methods/methods.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
-import '../../../configs/app_colors.dart';
 
 BarTouchData getBarTouchData({required bool showLabels}) {
   return BarTouchData(

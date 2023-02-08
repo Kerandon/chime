@@ -16,4 +16,6 @@ const kPageIndentation = 0.03;
 const kChartAxisFontSize = 10.0;
 const kClocksHeight = 0.25;
 const kChartBarLineWidth = 5.0;
-const kChartLabelsFontSize = 9.0;
+const kChartLabelsFontSize = 10.0;
+const kNoChartDataMsg = 'No meditation stats yet...';
+const kNoOfXLabelsOnLineChart = 5;
