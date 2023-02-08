@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -24,7 +23,8 @@ class TotalMeditationTimeTitle extends ConsumerWidget {
       totalText = calculateTotalMeditationTime(statsData, state);
       periodText = " in total";
 
-    period = statsData.first.timePeriod;
+      period = statsData.first.timePeriod;
+
       switch (period!) {
         case TimePeriod.week:
           periodText = ' in the last week';
@@ -39,42 +39,28 @@ class TotalMeditationTimeTitle extends ConsumerWidget {
           ' in total';
           break;
       }
-    }else{
+    } else {
       periodText = ' hours';
     }
 
-      return RichText(
-          textAlign: TextAlign.center,
-          text: TextSpan(
-            text: period == TimePeriod.allTime || totalText == '0' ? 'You have meditated for ' : 'You meditated for ',
-            style: Theme
-                .of(context)
-                .textTheme
-                .bodySmall!
-                .copyWith(fontWeight: FontWeight.w300),
-            children: [
-              TextSpan(
-                text: totalText,
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .bodySmall!
-                    .copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: Theme
-                        .of(context)
-                        .primaryColor),
-              ),
-              TextSpan(
-                  text: periodText,
-                  style:
-                  Theme
-                      .of(context)
-                      .textTheme
-                      .bodySmall
-              ),
-            ],
+    return RichText(
+      textAlign: TextAlign.center,
+      text: TextSpan(
+        text: period == TimePeriod.allTime || totalText == '0'
+            ? 'You have meditated for '
+            : 'You meditated for ',
+        style: Theme.of(context).textTheme.bodySmall,
+        children: [
+          TextSpan(
+            text: totalText,
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).primaryColor),
           ),
-      ).animate().fadeIn();
+          TextSpan(
+              text: periodText, style: Theme.of(context).textTheme.bodySmall!),
+        ],
+      ),
+    ).animate().fadeIn();
   }
 }

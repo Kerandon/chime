@@ -42,7 +42,7 @@ class _HomePageContentsState extends ConsumerState<Home> {
                     onPressed: () async {
                       await DatabaseManager().insertIntoStats(
                           dateTime: DateTime.now()
-                              .copyWith(year: 2020, month: 03, day: 01),
+                              .copyWith(year: 2023, month: 01, day: 25),
                           minutes: 300);
                     },
                     child: const Text('Insert Stat')),

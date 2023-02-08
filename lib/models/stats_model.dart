@@ -14,15 +14,18 @@ class StatsModel extends Equatable {
     this.timePeriod = TimePeriod.week,
   });
 
-  factory StatsModel.fromMap({required Map<String, dynamic> map, TimePeriod timePeriod = TimePeriod.allTime}) {
-
+  factory StatsModel.fromMap(
+      {required Map<String, dynamic> map,
+      TimePeriod timePeriod = TimePeriod.allTime}) {
     String dateTime = map[DatabaseManager.statsDateTime];
 
-    return StatsModel(
+    var statsModel = StatsModel(
       dateTime: DateTime.parse(dateTime),
       totalMeditationTime: map[DatabaseManager.statsTotalMeditationTime],
       timePeriod: timePeriod,
     );
+
+    return statsModel;
   }
 
   @override

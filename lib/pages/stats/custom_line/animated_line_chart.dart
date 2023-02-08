@@ -4,9 +4,10 @@ import 'package:chime/pages/stats/custom_line/text_on_line_end.dart';
 import 'package:chime/utils/methods/methods.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'custom_line_painter.dart';
 
-class AnimatedLineChart extends StatefulWidget {
+class AnimatedLineChart extends ConsumerStatefulWidget {
   const AnimatedLineChart({
     Key? key,
     required this.seriesData,
@@ -24,10 +25,10 @@ class AnimatedLineChart extends StatefulWidget {
   final bool animate, animateOnStart;
 
   @override
-  State<AnimatedLineChart> createState() => _AnimatedLineChartState();
+  ConsumerState<AnimatedLineChart> createState() => _AnimatedLineChartState();
 }
 
-class _AnimatedLineChartState extends State<AnimatedLineChart>
+class _AnimatedLineChartState extends ConsumerState<AnimatedLineChart>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   bool _showEndLineText = false;
@@ -35,20 +36,17 @@ class _AnimatedLineChartState extends State<AnimatedLineChart>
   @override
   void initState() {
     _controller = AnimationController(
-        duration: const Duration(milliseconds: 1200), vsync: this)..addListener(() {
-          if(_controller.value == 1.0){
-            _showEndLineText = true;
-            setState(() {
-
-            });
-          }
-          if(_controller.value != 1.0){
-            _showEndLineText = false;
-            setState(() {
-
-            });
-          }
-    });
+        duration: const Duration(milliseconds: 1200), vsync: this)
+      ..addListener(() {
+        if (_controller.value == 1.0) {
+          _showEndLineText = true;
+          setState(() {});
+        }
+        if (_controller.value != 1.0) {
+          _showEndLineText = false;
+          setState(() {});
+        }
+      });
 
     super.initState();
   }
@@ -74,8 +72,9 @@ class _AnimatedLineChartState extends State<AnimatedLineChart>
   @override
   Widget build(BuildContext context) {
     List<SeriesPoint> dataPoints = [];
-    dataPoints =
-        setChartPoints(seriesData: widget.seriesData, maxRangeY: widget.maxRangeY).toList();
+    dataPoints = setChartPoints(
+            seriesData: widget.seriesData, maxRangeY: widget.maxRangeY)
+        .toList();
 
     return Scaffold(
       body: AnimatedBuilder(
@@ -91,7 +90,7 @@ class _AnimatedLineChartState extends State<AnimatedLineChart>
                 : const SizedBox.shrink(),
             Stack(
               children: [
-              CustomPaint(
+                CustomPaint(
                   painter: LinePainter(
                     seriesData: dataPoints,
                     labelsX: widget.labelsX,
@@ -105,16 +104,22 @@ class _AnimatedLineChartState extends State<AnimatedLineChart>
                   ),
                   child: Container(),
                 ),
-                _showEndLineText ?   CustomPaint(
-                  painter: TextOnLinePainter(seriesData: dataPoints,
-                      text: (widget.maxRangeY * dataPoints.last.dataY).toInt().formatToHourMin(),
-                      textStyle: Theme.of(context).textTheme.bodySmall!.copyWith(
-                        color: Theme.of(context).primaryColor,
-                        fontWeight: FontWeight.w500
-                      )
-                  ),
-                  child: Container(),
-                ).animate().fadeIn() : const SizedBox.shrink()
+                _showEndLineText
+                    ? CustomPaint(
+                        painter: TextOnLinePainter(
+                            seriesData: dataPoints,
+                            text: (widget.maxRangeY * dataPoints.last.dataY)
+                                .toInt()
+                                .formatToHourMin(),
+                            textStyle: Theme.of(context)
+                                .textTheme
+                                .bodySmall!
+                                .copyWith(
+                                    color: Theme.of(context).primaryColor,
+                                    fontWeight: FontWeight.w500)),
+                        child: Container(),
+                      ).animate().fadeIn(duration: 1.seconds).slideY(begin: -0.02)
+                    : const SizedBox.shrink()
               ],
             ),
           ],
@@ -128,7 +133,6 @@ class _AnimatedLineChartState extends State<AnimatedLineChart>
     List<SeriesPoint> data = [];
     if (seriesData.isNotEmpty) {
       double maxRangeX = seriesData.last.dataX;
-
 
       /// DRAW POINTS PROPORTIONALLY IF >= 4;
       double fraction = 1.0;

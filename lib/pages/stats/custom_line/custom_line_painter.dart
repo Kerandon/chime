@@ -34,7 +34,6 @@ class LinePainter extends CustomPainter {
     double adjustedHeight = height - heightIndent;
 
     /// CHART LINE
-    ///
 
     if (seriesData.isNotEmpty) {
       var paintLine = Paint()
@@ -42,7 +41,7 @@ class LinePainter extends CustomPainter {
         ..strokeWidth = lineWidth
         ..style = PaintingStyle.stroke
         ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round;
+        ..strokeJoin = StrokeJoin.round;
 
       Path path = Path();
 
@@ -68,10 +67,10 @@ class LinePainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
 
     Path axisPath = Path()
-      ..moveTo(widthIndent - 5, heightIndent)
-      ..lineTo(widthIndent, 0)
-      ..moveTo(widthIndent - 5, heightIndent)
-      ..lineTo(width, heightIndent);
+      ..moveTo(widthIndent - 5, heightIndent + 5)
+      ..lineTo(widthIndent - 5, 5)
+      ..moveTo(widthIndent - 5, heightIndent + 5)
+      ..lineTo(width - 5, heightIndent + 5);
     canvas.drawPath(axisPath, axisPaint);
 
     /// X LABELS MARKERS
@@ -89,10 +88,9 @@ class LinePainter extends CustomPainter {
           ..addOval(Rect.fromCircle(
               center: Offset(
                   widthIndent + (labelSpacingX * i) + (labelSpacingX),
-                  height - (adjustedHeight)),
+                  height - (adjustedHeight) + 5),
               radius: size.width * 0.003));
         canvas.drawPath(xLabelPath, xLabelPaint);
-
 
         /// X LABELS TEXT
         var textWidth = size.width * 0.10;
@@ -106,7 +104,7 @@ class LinePainter extends CustomPainter {
                     (labelSpacingX * i) +
                     (labelSpacingX / 2) -
                     (textWidth / 2)),
-                height - size.height * 0.05),
+                heightIndent + 8),
             textAlign: TextAlign.center);
       }
 
@@ -117,12 +115,11 @@ class LinePainter extends CustomPainter {
 
         createPaintedText(labelsY[i],
             canvas: canvas,
-            offset: Offset(
-              widthIndent - size.width * 0.07,
-              (spacing * i) - size.width * 0.02,
-            ),
-            maxWidth: adjustedWidth * 0.25,
-            textStyle: textStyle);
+            offset: Offset(widthIndent - size.width * 0.085, (spacing * i)),
+            maxWidth: widthIndent * width,
+            minWidth: widthIndent,
+            textStyle: textStyle,
+            textAlign: TextAlign.right);
       }
     }
   }

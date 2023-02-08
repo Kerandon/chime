@@ -26,7 +26,6 @@ class AnimatedLineChartMain extends ConsumerStatefulWidget {
 class _AnimatedLineChartMainState extends ConsumerState<AnimatedLineChartMain> {
   late final Future<List<StatsModel>> _statsFuture;
 
-
   @override
   void initState() {
     _statsFuture = DatabaseManager().getStatsByTimePeriod(
@@ -38,6 +37,14 @@ class _AnimatedLineChartMainState extends ConsumerState<AnimatedLineChartMain> {
   Widget build(BuildContext context) {
     final state = ref.watch(chartStateProvider);
     final notifier = ref.read(chartStateProvider.notifier);
+
+    bool animate = false;
+    if (state.drawLineChart) {
+      animate = true;
+    } else {
+      animate = false;
+    }
+
     return FutureBuilder(
         future: _statsFuture,
         builder: (context, snapshot) {
@@ -67,7 +74,7 @@ class _AnimatedLineChartMainState extends ConsumerState<AnimatedLineChartMain> {
                 Expanded(
                   flex: 5,
                   child: AnimatedLineChart(
-                    animate: state.drawLineChart,
+                    animate: animate,
                     seriesData: stepChart,
                     labelsX: labelsX,
                     labelsY: labelsY,

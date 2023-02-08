@@ -16,31 +16,23 @@ class StatsPage extends ConsumerStatefulWidget {
 }
 
 class _StatsPageState extends ConsumerState<StatsPage> {
-  late final ScrollController _scrollController;
+  final ScrollController _controller = ScrollController();
 
-  double _scrollOffset = 0;
+  bool _toggle = false;
 
-
-  @override
-  void initState() {
-    _scrollController = ScrollController()
-      ..addListener(() {
-        _scrollOffset = _scrollController.offset;
-      });
-    super.initState();
+  void _toggleHistoryChart() {
+    setState(() {
+      _toggle = !_toggle;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    final state = ref.watch(chartStateProvider);
     final notifier = ref.read(chartStateProvider.notifier);
-
-
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      notifier.setPageScrollOffset(offsetY: _scrollOffset, size: size);
-
+      notifier.setPageScrollOffset(offsetY: 0, size: size);
     });
 
     double pageWidthPadding = size.width * 0.05;
@@ -49,7 +41,12 @@ class _StatsPageState extends ConsumerState<StatsPage> {
         title: const Text('Meditation Stats'),
       ),
       body: SingleChildScrollView(
-        controller: _scrollController,
+        controller: _controller
+          ..addListener(() {
+            ref
+                .read(chartStateProvider.notifier)
+                .setPageScrollOffset(offsetY: _controller.offset, size: size);
+          }),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: pageWidthPadding),
           child: Column(
@@ -61,34 +58,37 @@ class _StatsPageState extends ConsumerState<StatsPage> {
               Padding(
                 padding: EdgeInsets.only(top: size.height * 0.05),
                 child: SizedBox(
-                  height: size.height * 0.45,
-                  width: size.width,
-                  child: state.toggleBarChart
-                      ? BarChartHistory(key: UniqueKey())
-                      : BarChartHistory(key: UniqueKey()),
-                ),
+                    height: size.height * 0.45,
+                    width: size.width,
+                    child: _toggle
+                        ? BarChartHistory(key: UniqueKey())
+                        : BarChartHistory(key: UniqueKey())),
               ),
               SizedBox(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     BarChartPeriodButton(
                       timePeriod: TimePeriod.week,
+                      toggledCallback: _toggleHistoryChart,
                     ),
                     BarChartPeriodButton(
                       timePeriod: TimePeriod.fortnight,
+                      toggledCallback: _toggleHistoryChart,
                     ),
                     BarChartPeriodButton(
                       timePeriod: TimePeriod.year,
+                      toggledCallback: _toggleHistoryChart,
                     ),
                     BarChartPeriodButton(
                       timePeriod: TimePeriod.allTime,
+                      toggledCallback: _toggleHistoryChart,
                     ),
                   ],
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(top: size.height * 0.05),
+                padding: EdgeInsets.only(top: size.height * 0.05, bottom: size.height * 0.05),
                 child: SizedBox(
                     height: size.height * 0.60,
                     child: const AnimatedLineChartMain()),

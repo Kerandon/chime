@@ -8,39 +8,39 @@ class ChartState {
   final int totalMeditationTime;
   final bool toggleBarChart;
   final TimePeriod barChartTimePeriod;
-
-  // final bool barChartHasData;
   final double pageScrollOffset;
   final List<StatsModel> barChartStats;
   final bool drawLineChart;
+  final bool lineChartHasBeenDrawn;
 
   ChartState({
     required this.totalMeditationTime,
     required this.toggleBarChart,
     required this.barChartTimePeriod,
-    // required this.barChartHasData,
     required this.pageScrollOffset,
     required this.barChartStats,
     required this.drawLineChart,
+    required this.lineChartHasBeenDrawn,
   });
 
   ChartState copyWith({
     int? totalMeditationTime,
     bool? toggleBarChart,
     TimePeriod? barChartTimePeriod,
-    // bool? barChartHasData,
     double? pageScrollOffset,
     List<StatsModel>? barChartStats,
     bool? drawLineChart,
+    bool? lineChartHasBeenDrawn,
   }) {
     return ChartState(
       totalMeditationTime: totalMeditationTime ?? this.totalMeditationTime,
       toggleBarChart: toggleBarChart ?? this.toggleBarChart,
       barChartTimePeriod: barChartTimePeriod ?? this.barChartTimePeriod,
-      // barChartHasData: barChartHasData ?? this.barChartHasData,
       pageScrollOffset: pageScrollOffset ?? this.pageScrollOffset,
       barChartStats: barChartStats ?? this.barChartStats,
       drawLineChart: drawLineChart ?? this.drawLineChart,
+      lineChartHasBeenDrawn:
+          lineChartHasBeenDrawn ?? this.lineChartHasBeenDrawn,
     );
   }
 }
@@ -56,28 +56,20 @@ class ChartNotifier extends StateNotifier<ChartState> {
     state = state.copyWith(barChartTimePeriod: time);
   }
 
-  void setTotalMeditationTime(int time) {
-    state = state.copyWith(totalMeditationTime: time);
-  }
-
-  // void setChartsHaveData(bool haveData) {
-  //   state = state.copyWith(barChartHasData: haveData);
-  // }
-
-  void setPageScrollOffset({required double offsetY, required Size size}) {
-    if(offsetY / size.height > 0.50){
-      state = state.copyWith(drawLineChart: true);
-    }else{
-      state = state.copyWith(drawLineChart: false);
-    }
-  }
-
   void setBarChartStats(List<StatsModel> stats) {
     state = state.copyWith(barChartStats: stats);
   }
 
-  void setDrawLineChart(bool draw) {
-    state = state.copyWith(drawLineChart: draw);
+  void setTotalMeditationTime(int time) {
+    state = state.copyWith(totalMeditationTime: time);
+  }
+
+  void setPageScrollOffset({required double offsetY, required Size size}) {
+    if (offsetY / size.height > 0.50) {
+      state = state.copyWith(drawLineChart: true);
+    } else {
+      state = state.copyWith(drawLineChart: false);
+    }
   }
 }
 
@@ -87,9 +79,9 @@ final chartStateProvider =
     totalMeditationTime: 0,
     toggleBarChart: false,
     barChartTimePeriod: TimePeriod.week,
-    // barChartHasData: false,
     pageScrollOffset: 0,
     barChartStats: [],
     drawLineChart: false,
+    lineChartHasBeenDrawn: false,
   ));
 });

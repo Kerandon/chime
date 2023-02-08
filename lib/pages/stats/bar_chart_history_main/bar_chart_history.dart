@@ -37,7 +37,7 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
     final state = ref.watch(chartStateProvider);
     final notifier = ref.read(chartStateProvider.notifier);
 
-    if (!_futureHasRun) {
+    if (_futureHasRun == false) {
       _statsFuture = DatabaseManager()
           .getStatsByTimePeriod(period: state.barChartTimePeriod);
       _futureHasRun = true;
@@ -49,35 +49,32 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
       child: FutureBuilder<List<StatsModel>>(
         future: _statsFuture,
         builder: (context, snapshot) {
-
           if (snapshot.hasData) {
-
+            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+              notifier.setBarChartStats(stats);
+            });
             if (!_animate) {
               _runAnimation();
             }
             if (snapshot.data!.isNotEmpty) {
-              bars = _getBarData(snapshot.data!, state.barChartTimePeriod).toList();
-              if(state.barChartStats.isEmpty) {
-                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                  notifier.setBarChartStats(stats);
-                });
-              }
+              bars = _getBarData(snapshot.data!, state.barChartTimePeriod)
+                  .toList();
             } else {
-                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                  displayNoData = true;
-                });
-
+              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                displayNoData = true;
+              });
             }
           }
 
           return Stack(
             children: [
-              displayNoData ?  Center(
-                child: Text(
-                  kNoChartDataMsg,
-                  style: Theme.of(context).textTheme.bodySmall,
-                )
-              ).animate().fadeIn() : const SizedBox.shrink(),
+              displayNoData
+                  ? Center(
+                      child: Text(
+                      kNoChartDataMsg,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    )).animate().fadeIn()
+                  : const SizedBox.shrink(),
               BarChart(
                 BarChartData(
                   barTouchData: getBarTouchData(showLabels: _showLabels),
@@ -206,7 +203,7 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
           x: period == TimePeriod.allTime ? allTimeIndex : stats.indexOf(e),
           barRods: [
             BarChartRodData(
-                width: kChartBarLineWidth,
+                width: kChartBarLineWidth * 3,
                 color: Theme.of(context).primaryColor,
                 backDrawRodData: BackgroundBarChartRodData(
                   show: true,
