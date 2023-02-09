@@ -101,6 +101,15 @@ class DatabaseManager {
     return StatsModel.fromMap(map: map.first, timePeriod: TimePeriod.allTime);
   }
 
+  Future<List<StatsModel>> getAllStats() async {
+    final db = await initDatabase();
+
+    final maps = await db.rawQuery('SELECT * FROM $_statsTable');
+
+    return List.generate(
+        maps.length, (index) => StatsModel.fromMap(map: maps[index]));
+  }
+
   Future clearAllStats() async {
     final db = await initDatabase();
     db.delete(_statsTable);

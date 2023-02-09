@@ -1,12 +1,15 @@
 import 'package:chime/pages/stats/total_medition_time_title.dart';
 import 'package:chime/pages/stats/streak/streak_stats.dart';
 import 'package:chime/state/chart_state.dart';
+import 'package:chime/state/database_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../enums/time_period.dart';
+import '../../models/stats_model.dart';
 import 'bar_chart_history_main/bar_chart_history.dart';
 import 'custom_line/animated_line_chart_main.dart';
 import 'bar_chart_history_main/bar_chart_period_toggle.dart';
+import 'linear_chart/time_stats.dart';
 
 class StatsPage extends ConsumerStatefulWidget {
   const StatsPage({Key? key}) : super(key: key);
@@ -87,12 +90,19 @@ class _StatsPageState extends ConsumerState<StatsPage> {
                   ],
                 ),
               ),
+              Divider(),
               Padding(
-                padding: EdgeInsets.only(top: size.height * 0.05, bottom: size.height * 0.05),
+                padding: EdgeInsets.only(
+                    top: size.height * 0.05, bottom: size.height * 0.05),
                 child: SizedBox(
                     height: size.height * 0.60,
                     child: const AnimatedLineChartMain()),
               ),
+              StatsDivider(),
+              SizedBox(
+                height: size.height * 0.30,
+                child: TimeStats(),
+              )
             ],
           ),
         ),
@@ -100,3 +110,20 @@ class _StatsPageState extends ConsumerState<StatsPage> {
     );
   }
 }
+
+class StatsDivider extends StatelessWidget {
+  const StatsDivider({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: ),
+      child: Divider(
+        color: Theme.of(context).secondaryHeaderColor,
+      ),
+    );
+  }
+}
+
