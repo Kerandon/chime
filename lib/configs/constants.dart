@@ -17,5 +17,8 @@ const kChartAxisFontSize = 10.0;
 const kClocksHeight = 0.25;
 const kChartBarLineWidth = 2.0;
 const kChartLabelsFontSize = 10.0;
+const kNoBarChartDataMsg = 'No meditation stats in this time period yet...';
 const kNoChartDataMsg = 'No meditation stats yet...';
+
 const kNoOfXLabelsOnLineChart = 5;
+

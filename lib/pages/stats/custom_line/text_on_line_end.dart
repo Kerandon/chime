@@ -27,8 +27,8 @@ class TextOnLinePainter extends CustomPainter {
       canvas: canvas,
       offset: Offset(
           ((seriesData.last.dataX * adjustedWidth) + widthIndent) -
-              (adjustedWidth * 0.15),
-          height - (seriesData.last.dataY * height) - (height * 0.06)),
+              (adjustedWidth * 0.05),
+          height - (seriesData.last.dataY * height) - (height * 0.05)),
       minWidth: size.width * 0.25,
       maxWidth: size.width * 0.25,
       textAlign: TextAlign.left,

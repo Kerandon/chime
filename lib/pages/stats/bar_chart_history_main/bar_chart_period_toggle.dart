@@ -24,17 +24,17 @@ class BarChartPeriodButton extends ConsumerWidget {
       child: Padding(
         padding: EdgeInsets.all(size.width * 0.01),
         child: OutlinedButton(
-          onPressed: state.barChartStats.isNotEmpty
-              ? () {
+          onPressed: () {
                   toggledCallback.call();
                   notifier.setBarChartTimePeriod(timePeriod);
-                }
-              : null,
+                },
           style: OutlinedButton.styleFrom(
               side: BorderSide(
-            color: state.barChartTimePeriod == timePeriod &&
-                    state.barChartStats.isNotEmpty
-                ? Theme.of(context).primaryColor
+            color: state.barChartTimePeriod == timePeriod ?
+                // &&
+                //     state.barChartStats.isNotEmpty
+                // ?
+            Theme.of(context).primaryColor
                 : AppColors.grey,
           )),
           child: Text(timePeriod.toText(),

@@ -1,11 +1,10 @@
+import 'package:chime/pages/stats/stats_divider.dart';
 import 'package:chime/pages/stats/total_medition_time_title.dart';
 import 'package:chime/pages/stats/streak/streak_stats.dart';
 import 'package:chime/state/chart_state.dart';
-import 'package:chime/state/database_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../enums/time_period.dart';
-import '../../models/stats_model.dart';
 import 'bar_chart_history_main/bar_chart_history.dart';
 import 'custom_line/animated_line_chart_main.dart';
 import 'bar_chart_history_main/bar_chart_period_toggle.dart';
@@ -22,6 +21,7 @@ class _StatsPageState extends ConsumerState<StatsPage> {
   final ScrollController _controller = ScrollController();
 
   bool _toggle = false;
+  bool _notifyOnInit = false;
 
   void _toggleHistoryChart() {
     setState(() {
@@ -36,6 +36,10 @@ class _StatsPageState extends ConsumerState<StatsPage> {
     final notifier = ref.read(chartStateProvider.notifier);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       notifier.setPageScrollOffset(offsetY: 0, size: size);
+      if (!_notifyOnInit) {
+        notifier.setLinearChartHasAnimated(false);
+        _notifyOnInit = true;
+      }
     });
 
     double pageWidthPadding = size.width * 0.05;
@@ -52,78 +56,78 @@ class _StatsPageState extends ConsumerState<StatsPage> {
           }),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: pageWidthPadding),
-          child: Column(
-            children: [
-              SizedBox(height: size.height * 0.20, child: const StreakStats()),
-              const SizedBox(
-                child: TotalMeditationTimeTitle(),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: size.height * 0.05),
-                child: SizedBox(
-                    height: size.height * 0.45,
-                    width: size.width,
-                    child: _toggle
-                        ? BarChartHistory(key: UniqueKey())
-                        : BarChartHistory(key: UniqueKey())),
-              ),
-              SizedBox(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    BarChartPeriodButton(
-                      timePeriod: TimePeriod.week,
-                      toggledCallback: _toggleHistoryChart,
-                    ),
-                    BarChartPeriodButton(
-                      timePeriod: TimePeriod.fortnight,
-                      toggledCallback: _toggleHistoryChart,
-                    ),
-                    BarChartPeriodButton(
-                      timePeriod: TimePeriod.year,
-                      toggledCallback: _toggleHistoryChart,
-                    ),
-                    BarChartPeriodButton(
-                      timePeriod: TimePeriod.allTime,
-                      toggledCallback: _toggleHistoryChart,
-                    ),
-                  ],
+          child: SingleChildScrollView(
+            physics: ScrollPhysics(),
+            child: Column(
+              children: [
+                SizedBox(
+                    height: size.height * 0.40, child: const StreakStats()),
+                const StatsDivider(
+                  removeTopPadding: true,
                 ),
-              ),
-              Divider(),
-              Padding(
-                padding: EdgeInsets.only(
-                    top: size.height * 0.05, bottom: size.height * 0.05),
-                child: SizedBox(
-                    height: size.height * 0.60,
-                    child: const AnimatedLineChartMain()),
-              ),
-              StatsDivider(),
-              SizedBox(
-                height: size.height * 0.30,
-                child: TimeStats(),
-              )
-            ],
+                const SizedBox(
+                  child: TotalMeditationTimeTitle(),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: size.height * 0.08),
+                  child: SizedBox(
+                      height: size.height * 0.45,
+                      width: size.width,
+                      child: _toggle
+                          ? BarChartHistory(key: UniqueKey())
+                          : BarChartHistory(key: UniqueKey())),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: size.height * 0.02),
+                  child: SizedBox(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        BarChartPeriodButton(
+                          timePeriod: TimePeriod.week,
+                          toggledCallback: _toggleHistoryChart,
+                        ),
+                        BarChartPeriodButton(
+                          timePeriod: TimePeriod.fortnight,
+                          toggledCallback: _toggleHistoryChart,
+                        ),
+                        BarChartPeriodButton(
+                          timePeriod: TimePeriod.year,
+                          toggledCallback: _toggleHistoryChart,
+                        ),
+                        BarChartPeriodButton(
+                          timePeriod: TimePeriod.allTime,
+                          toggledCallback: _toggleHistoryChart,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const StatsDivider(),
+                Padding(
+                  padding: EdgeInsets.only(
+                      top: size.height * 0.01, bottom: size.height * 0.05),
+                  child: SizedBox(
+                      height: size.height * 0.60,
+                      child: const AnimatedLineChartMain()),
+                ),
+                const StatsDivider(),
+                SizedBox(
+                  height: size.height * 0.30,
+                  child: const TimeStats(),
+                ),
+                ListView.builder(
+                  itemCount: 20,
+                  itemBuilder: (context, index) =>
+                      CheckboxListTile(value: true, onChanged: (value) {}),
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                )
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 }
-
-class StatsDivider extends StatelessWidget {
-  const StatsDivider({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: ),
-      child: Divider(
-        color: Theme.of(context).secondaryHeaderColor,
-      ),
-    );
-  }
-}
-

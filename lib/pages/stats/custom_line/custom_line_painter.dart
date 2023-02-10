@@ -35,6 +35,10 @@ class LinePainter extends CustomPainter {
 
     /// CHART LINE
 
+
+
+
+
     if (seriesData.isNotEmpty) {
       var paintLine = Paint()
         ..color = lineColor
@@ -50,12 +54,14 @@ class LinePainter extends CustomPainter {
         path.lineTo(d.dataX * (adjustedWidth) + widthIndent,
             height - (d.dataY * height));
       }
-
       ui.PathMetrics pathMetrics = path.computeMetrics();
-      ui.PathMetric pathMetric = pathMetrics.elementAt(0);
-      Path extracted = pathMetric.extractPath(0.0, pathMetric.length * percent);
+
+        ui.PathMetric pathMetric = pathMetrics.elementAt(0);
+        Path extracted = pathMetric.extractPath(
+            0.0, pathMetric.length * percent);
 
       canvas.drawPath(extracted, paintLine);
+
     }
 
     ///X & Y AXIS LINES
@@ -116,7 +122,7 @@ class LinePainter extends CustomPainter {
         createPaintedText(labelsY[i],
             canvas: canvas,
             offset: Offset(widthIndent - size.width * 0.085, (spacing * i)),
-            maxWidth: widthIndent * width,
+            maxWidth: widthIndent,
             minWidth: widthIndent,
             textStyle: textStyle,
             textAlign: TextAlign.right);

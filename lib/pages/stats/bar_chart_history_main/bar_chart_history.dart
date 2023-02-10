@@ -71,7 +71,7 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
               displayNoData
                   ? Center(
                       child: Text(
-                      kNoChartDataMsg,
+                      kNoBarChartDataMsg,
                       style: Theme.of(context).textTheme.bodySmall,
                     )).animate().fadeIn()
                   : const SizedBox.shrink(),

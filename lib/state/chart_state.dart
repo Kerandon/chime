@@ -10,8 +10,8 @@ class ChartState {
   final TimePeriod barChartTimePeriod;
   final double pageScrollOffset;
   final List<StatsModel> barChartStats;
-  final bool drawLineChart;
   final bool lineChartHasBeenDrawn;
+  final bool linearChartHasAnimated;
 
   ChartState({
     required this.totalMeditationTime,
@@ -19,8 +19,8 @@ class ChartState {
     required this.barChartTimePeriod,
     required this.pageScrollOffset,
     required this.barChartStats,
-    required this.drawLineChart,
     required this.lineChartHasBeenDrawn,
+    required this.linearChartHasAnimated,
   });
 
   ChartState copyWith({
@@ -29,8 +29,8 @@ class ChartState {
     TimePeriod? barChartTimePeriod,
     double? pageScrollOffset,
     List<StatsModel>? barChartStats,
-    bool? drawLineChart,
     bool? lineChartHasBeenDrawn,
+    bool? linearChartHasAnimated,
   }) {
     return ChartState(
       totalMeditationTime: totalMeditationTime ?? this.totalMeditationTime,
@@ -38,9 +38,10 @@ class ChartState {
       barChartTimePeriod: barChartTimePeriod ?? this.barChartTimePeriod,
       pageScrollOffset: pageScrollOffset ?? this.pageScrollOffset,
       barChartStats: barChartStats ?? this.barChartStats,
-      drawLineChart: drawLineChart ?? this.drawLineChart,
       lineChartHasBeenDrawn:
           lineChartHasBeenDrawn ?? this.lineChartHasBeenDrawn,
+      linearChartHasAnimated:
+          linearChartHasAnimated ?? this.linearChartHasAnimated,
     );
   }
 }
@@ -65,11 +66,11 @@ class ChartNotifier extends StateNotifier<ChartState> {
   }
 
   void setPageScrollOffset({required double offsetY, required Size size}) {
-    if (offsetY / size.height > 0.50) {
-      state = state.copyWith(drawLineChart: true);
-    } else {
-      state = state.copyWith(drawLineChart: false);
-    }
+    state = state.copyWith(pageScrollOffset: offsetY);
+  }
+
+  void setLinearChartHasAnimated(bool hasAnimated) {
+    state = state.copyWith(linearChartHasAnimated: hasAnimated);
   }
 }
 
@@ -81,7 +82,7 @@ final chartStateProvider =
     barChartTimePeriod: TimePeriod.week,
     pageScrollOffset: 0,
     barChartStats: [],
-    drawLineChart: false,
     lineChartHasBeenDrawn: false,
+    linearChartHasAnimated: false,
   ));
 });

@@ -23,8 +23,10 @@ class StreakStatsBox extends StatelessWidget {
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.displayLarge!.copyWith(
               color: Theme.of(context).primaryColor,
+            fontWeight: FontWeight.w500,
+            fontSize: 150
           ),
-        ).animate().fadeIn(),
+        ).animate().fadeIn().scaleXY(begin: 0.95),
         Text(
           text,
           textAlign: TextAlign.center,

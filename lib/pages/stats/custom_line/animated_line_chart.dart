@@ -76,6 +76,10 @@ class _AnimatedLineChartState extends ConsumerState<AnimatedLineChart>
             seriesData: widget.seriesData, maxRangeY: widget.maxRangeY)
         .toList();
 
+    for (var d in dataPoints) {
+      print('length is ${dataPoints.length} ${d.dataX} and ${d.dataY}');
+    }
+
     return Scaffold(
       body: AnimatedBuilder(
         animation: _controller,
@@ -105,20 +109,26 @@ class _AnimatedLineChartState extends ConsumerState<AnimatedLineChart>
                   child: Container(),
                 ),
                 _showEndLineText
-                    ? CustomPaint(
-                        painter: TextOnLinePainter(
-                            seriesData: dataPoints,
-                            text: (widget.maxRangeY * dataPoints.last.dataY)
-                                .toInt()
-                                .formatToHourMin(),
-                            textStyle: Theme.of(context)
-                                .textTheme
-                                .bodySmall!
-                                .copyWith(
-                                    color: Theme.of(context).primaryColor,
-                                    fontWeight: FontWeight.w500)),
-                        child: Container(),
-                      ).animate().fadeIn(duration: 1.seconds).slideY(begin: -0.02)
+                    ? widget.seriesData.isNotEmpty
+                        ? CustomPaint(
+                            painter: TextOnLinePainter(
+                                seriesData: dataPoints,
+                                text: (widget.maxRangeY * dataPoints.last.dataY)
+                                    .toInt()
+                                    .formatToHourMin(),
+                                textStyle: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall!
+                                    .copyWith(
+                                        color: Theme.of(context).primaryColor,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: kChartLabelsFontSize)),
+                            child: Container(),
+                          )
+                            .animate()
+                            .fadeIn(duration: 1.seconds)
+                            .slideY(begin: -0.02)
+                        : const SizedBox.shrink()
                     : const SizedBox.shrink()
               ],
             ),
@@ -131,8 +141,16 @@ class _AnimatedLineChartState extends ConsumerState<AnimatedLineChart>
   List<SeriesPoint> setChartPoints(
       {required List<SeriesPoint> seriesData, required int maxRangeY}) {
     List<SeriesPoint> data = [];
-    if (seriesData.isNotEmpty) {
-      double maxRangeX = seriesData.last.dataX;
+    /// NEED TO CREATE 2 POINTS IF THERE IS JUST ONE ENTRY
+    if (seriesData.length == 1) {
+      const posX = 1 / kNoOfXLabelsOnLineChart;
+      final posY = seriesData.first.dataY / maxRangeY;
+      data.addAll([
+        SeriesPoint(0, posY),
+        SeriesPoint(posX, posY)
+      ]);
+    } else if (seriesData.length >= 2) {
+      final maxRangeX = seriesData.last.dataX;
 
       /// DRAW POINTS PROPORTIONALLY IF >= 4;
       double fraction = 1.0;

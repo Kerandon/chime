@@ -14,6 +14,11 @@ class LegendKey extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var p = ((percent * 100).toStringAsFixed(1));
+    if(p == '100.0'){
+      p = '100';
+    }
+    final txt = ' $text ($p%)';
     final size = MediaQuery.of(context).size;
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -28,8 +33,8 @@ class LegendKey extends StatelessWidget {
               height: size.width * 0.02,
               decoration: BoxDecoration(shape: BoxShape.circle, color: color),
             ),
-            Text(
-              ' $text (${(percent * 100).toStringAsFixed(1)}%)',
+            Text(txt,
+
               style: Theme.of(context).textTheme.bodySmall,
             )
           ],

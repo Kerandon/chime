@@ -35,11 +35,12 @@ class _AnimatedLineChartMainState extends ConsumerState<AnimatedLineChartMain> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     final state = ref.watch(chartStateProvider);
     final notifier = ref.read(chartStateProvider.notifier);
 
     bool animate = false;
-    if (state.drawLineChart) {
+    if (state.pageScrollOffset / size.width > 1.3) {
       animate = true;
     } else {
       animate = false;
@@ -108,7 +109,7 @@ class _AnimatedLineChartMainState extends ConsumerState<AnimatedLineChartMain> {
     DateTime latestDateX = stats.last.dateTime;
     int daysBetweenDates = latestDateX.difference(oldestDateX).inDays;
 
-    DateFormat formatter = DateFormat.yMMMd();
+
 
     /// ALWAYS ADD THE OLDEST DATE IF NOT EMPTY
     /// AND ALWAYS ADD OLDEST AND NEWEST DATE IF SERIES >= 2;
@@ -141,6 +142,15 @@ class _AnimatedLineChartMainState extends ConsumerState<AnimatedLineChartMain> {
     }
 
     /// SORT AND FORMAT
+    DateFormat formatter;
+    if(daysBetweenDates <= 7){
+      formatter = DateFormat.E();
+    }else if(daysBetweenDates > 7 && daysBetweenDates <= 124){
+      formatter = DateFormat.MMMd();
+    }else{
+      formatter = DateFormat.yMMM();
+    }
+
     labelsXDateTime.sort((a, b) => a.compareTo(b));
     List<String> formatted = [];
     for (var d in labelsXDateTime) {
