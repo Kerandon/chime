@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../enums/select.dart';
 import '../enums/time_period.dart';
 import '../models/stats_model.dart';
 
@@ -12,6 +13,7 @@ class ChartState {
   final List<StatsModel> barChartStats;
   final bool lineChartHasBeenDrawn;
   final bool linearChartHasAnimated;
+  final Map<int, DateTime> selectedMeditationEvents;
 
   ChartState({
     required this.totalMeditationTime,
@@ -21,6 +23,7 @@ class ChartState {
     required this.barChartStats,
     required this.lineChartHasBeenDrawn,
     required this.linearChartHasAnimated,
+    required this.selectedMeditationEvents,
   });
 
   ChartState copyWith({
@@ -31,6 +34,7 @@ class ChartState {
     List<StatsModel>? barChartStats,
     bool? lineChartHasBeenDrawn,
     bool? linearChartHasAnimated,
+    Map<int, DateTime>? selectedMeditationEvents,
   }) {
     return ChartState(
       totalMeditationTime: totalMeditationTime ?? this.totalMeditationTime,
@@ -42,6 +46,8 @@ class ChartState {
           lineChartHasBeenDrawn ?? this.lineChartHasBeenDrawn,
       linearChartHasAnimated:
           linearChartHasAnimated ?? this.linearChartHasAnimated,
+      selectedMeditationEvents:
+          selectedMeditationEvents ?? this.selectedMeditationEvents,
     );
   }
 }
@@ -72,6 +78,24 @@ class ChartNotifier extends StateNotifier<ChartState> {
   void setLinearChartHasAnimated(bool hasAnimated) {
     state = state.copyWith(linearChartHasAnimated: hasAnimated);
   }
+
+  void selectMeditationEvents({
+    required Map<int, DateTime> items,
+    bool unselect = false,
+  }) {
+    Map<int, DateTime> events = state.selectedMeditationEvents;
+
+    for (int i = 0; i < items.length; i++) {
+      final item = items.entries.elementAt(i);
+      if (unselect == false) {
+        events.addAll({item.key: item.value});
+      } else {
+        events.remove(item.key);
+      }
+    }
+
+    state = state.copyWith(selectedMeditationEvents: events);
+  }
 }
 
 final chartStateProvider =
@@ -84,5 +108,6 @@ final chartStateProvider =
     barChartStats: [],
     lineChartHasBeenDrawn: false,
     linearChartHasAnimated: false,
+    selectedMeditationEvents: {},
   ));
 });

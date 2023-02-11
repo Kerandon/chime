@@ -1,3 +1,4 @@
+import 'package:chime/pages/stats/all_meditations_page/meditation_history_page.dart';
 import 'package:chime/pages/stats/stats_divider.dart';
 import 'package:chime/pages/stats/total_medition_time_title.dart';
 import 'package:chime/pages/stats/streak/streak_stats.dart';
@@ -57,14 +58,12 @@ class _StatsPageState extends ConsumerState<StatsPage> {
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: pageWidthPadding),
           child: SingleChildScrollView(
-            physics: ScrollPhysics(),
+            physics: const ScrollPhysics(),
             child: Column(
               children: [
                 SizedBox(
                     height: size.height * 0.40, child: const StreakStats()),
-                const StatsDivider(
-                  removeTopPadding: true,
-                ),
+                const StatsDivider(),
                 const SizedBox(
                   child: TotalMeditationTimeTitle(),
                 ),
@@ -116,12 +115,20 @@ class _StatsPageState extends ConsumerState<StatsPage> {
                   height: size.height * 0.30,
                   child: const TimeStats(),
                 ),
-                ListView.builder(
-                  itemCount: 20,
-                  itemBuilder: (context, index) =>
-                      CheckboxListTile(value: true, onChanged: (value) {}),
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
+                const StatsDivider(),
+                Padding(
+                  padding: EdgeInsets.only(bottom: size.height * 0.10),
+                  child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MeditationHistoryPage()));
+                      },
+                      child: Text(
+                        'Clear meditation sessions',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      )),
                 )
               ],
             ),

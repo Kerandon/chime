@@ -76,10 +76,6 @@ class _AnimatedLineChartState extends ConsumerState<AnimatedLineChart>
             seriesData: widget.seriesData, maxRangeY: widget.maxRangeY)
         .toList();
 
-    for (var d in dataPoints) {
-      print('length is ${dataPoints.length} ${d.dataX} and ${d.dataY}');
-    }
-
     return Scaffold(
       body: AnimatedBuilder(
         animation: _controller,

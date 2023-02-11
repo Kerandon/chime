@@ -17,11 +17,11 @@ class StatsModel extends Equatable {
   factory StatsModel.fromMap(
       {required Map<String, dynamic> map,
       TimePeriod timePeriod = TimePeriod.allTime}) {
-    String dateTime = map[DatabaseManager.statsDateTime];
+    String dateTime = map[DatabaseManager.statsDateTimeColumn];
 
     var statsModel = StatsModel(
       dateTime: DateTime.parse(dateTime),
-      totalMeditationTime: map[DatabaseManager.statsTotalMeditationTime],
+      totalMeditationTime: map[DatabaseManager.statsTotalMeditationTimeColumn],
       timePeriod: timePeriod,
     );
 

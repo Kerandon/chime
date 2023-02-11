@@ -19,32 +19,27 @@ class BarChartPeriodButton extends ConsumerWidget {
     final size = MediaQuery.of(context).size;
     final state = ref.watch(chartStateProvider);
     final notifier = ref.read(chartStateProvider.notifier);
-    return SizedBox(
-      height: size.height * 0.05,
-      child: Padding(
-        padding: EdgeInsets.all(size.width * 0.01),
-        child: OutlinedButton(
-          onPressed: () {
-                  toggledCallback.call();
-                  notifier.setBarChartTimePeriod(timePeriod);
-                },
-          style: OutlinedButton.styleFrom(
-              side: BorderSide(
-            color: state.barChartTimePeriod == timePeriod ?
-                // &&
-                //     state.barChartStats.isNotEmpty
-                // ?
-            Theme.of(context).primaryColor
-                : AppColors.grey,
-          )),
-          child: Text(timePeriod.toText(),
-              style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                    color: state.barChartTimePeriod == timePeriod &&
-                            state.barChartStats.isNotEmpty
-                        ? Theme.of(context).primaryColor
-                        : AppColors.grey,
-                  )),
-        ),
+    return Padding(
+      padding: EdgeInsets.all(size.width * 0.01),
+      child: OutlinedButton(
+        onPressed: () {
+                toggledCallback.call();
+                notifier.setBarChartTimePeriod(timePeriod);
+              },
+        style: OutlinedButton.styleFrom(
+            side: BorderSide(
+          color: state.barChartTimePeriod == timePeriod ?
+          Theme.of(context).primaryColor
+              : AppColors.grey,
+        )),
+        child: Text(timePeriod.toText(),
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  color: state.barChartTimePeriod == timePeriod &&
+                          state.barChartStats.isNotEmpty
+                      ? Theme.of(context).primaryColor
+                      : Theme.of(context)
+                      .secondaryHeaderColor
+                )),
       ),
     ).animate().scaleXY(begin: 0.90).fadeIn();
   }

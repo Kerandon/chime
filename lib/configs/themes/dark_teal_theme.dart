@@ -22,6 +22,9 @@ final darkTealTheme = ThemeData(
     iconTheme: const IconThemeData(color: Colors.white, size: 22),
     dialogBackgroundColor: AppColors.darkGrey,
     dialogTheme: DialogTheme(
+
+      backgroundColor: AppColors.darkGrey,
+      titleTextStyle: darkThemeTextStyle,
       alignment: Alignment.center,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(kBorderRadius),
@@ -66,4 +69,9 @@ final darkTealTheme = ThemeData(
         selectedIconTheme: IconThemeData(color: AppColors.tealPrimary),
         selectedLabelStyle: TextStyle(color: AppColors.tealPrimary),
         selectedItemColor: AppColors.tealPrimary,
-        unselectedItemColor: Colors.grey));
+        unselectedItemColor: Colors.grey),
+  snackBarTheme: SnackBarThemeData(
+    contentTextStyle: darkThemeTextStyle
+  ),
+
+);

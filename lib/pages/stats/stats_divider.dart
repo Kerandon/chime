@@ -2,19 +2,17 @@
 import 'package:flutter/material.dart';
 
 class StatsDivider extends StatelessWidget {
-  const StatsDivider({this.removeTopPadding = false,
+  const StatsDivider({this.padding,
     super.key,
   });
 
- final bool removeTopPadding;
+ final EdgeInsets? padding;
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final padding = size.height * 0.05;
     return Padding(
-      padding: removeTopPadding ? EdgeInsets.only(bottom: padding) :
-      EdgeInsets.symmetric(vertical: padding),
+      padding: padding ?? EdgeInsets.symmetric(vertical: size.height * 0.05),
       child: Divider(
         color: Theme.of(context).secondaryHeaderColor,
       ),

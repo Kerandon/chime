@@ -16,11 +16,11 @@ class DatabaseManager {
 
   static const String _databaseName = 'app_data',
       _prefsTable = 'prefs_table',
-      prefsKey = 'k',
-      prefsValue = 'v',
+      prefsKeyColumn = 'k',
+      prefsValueColumn = 'v',
       _statsTable = 'stats_table',
-      statsDateTime = 'date_time',
-      statsTotalMeditationTime = 'meditation_time';
+      statsDateTimeColumn = 'date_time',
+      statsTotalMeditationTimeColumn = 'meditation_time';
 
   Future<Database> initDatabase() async {
     final devicePath = await getDatabasesPath();
@@ -28,16 +28,16 @@ class DatabaseManager {
 
     return await openDatabase(path, onCreate: (db, version) async {
       await db.execute(
-          'CREATE TABLE $_prefsTable($prefsKey TEXT PRIMARY KEY, $prefsValue BLOB NOT NULL)');
+          'CREATE TABLE $_prefsTable($prefsKeyColumn TEXT PRIMARY KEY, $prefsValueColumn BLOB NOT NULL)');
       await db.execute(
-          'CREATE TABLE $_statsTable($statsDateTime TEXT PRIMARY KEY, $statsTotalMeditationTime INT NOT NULL)');
+          'CREATE TABLE $_statsTable($statsDateTimeColumn TEXT PRIMARY KEY, $statsTotalMeditationTimeColumn INT NOT NULL)');
     }, version: 1);
   }
 
   Future<int> insertIntoPrefs({required String k, required dynamic v}) async {
     final db = await initDatabase();
     return await db.rawInsert(
-        'INSERT OR REPLACE INTO $_prefsTable($prefsKey, $prefsValue) VALUES(?, ?)',
+        'INSERT OR REPLACE INTO $_prefsTable($prefsKeyColumn, $prefsValueColumn) VALUES(?, ?)',
         [k, v]);
   }
 
@@ -51,7 +51,7 @@ class DatabaseManager {
       {required DateTime dateTime, required int minutes}) async {
     final db = await initDatabase();
     return await db.rawInsert(
-        'INSERT OR REPLACE INTO $_statsTable($statsDateTime, $statsTotalMeditationTime) VALUES (?,?)',
+        'INSERT OR REPLACE INTO $_statsTable($statsDateTimeColumn, $statsTotalMeditationTimeColumn) VALUES (?,?)',
         [dateTime.toString(), minutes]);
   }
 
@@ -65,23 +65,23 @@ class DatabaseManager {
 
     if (allTimeUngrouped == true) {
       data = await db.rawQuery(
-          'SELECT SUM($statsTotalMeditationTime) as $statsTotalMeditationTime,  strftime("%Y-%m-%d", $statsDateTime) as \'$statsDateTime\' from $_statsTable ORDER BY date($statsDateTime) DESC');
+          'SELECT SUM($statsTotalMeditationTimeColumn) as $statsTotalMeditationTimeColumn,  strftime("%Y-%m-%d", $statsDateTimeColumn) as \'$statsDateTimeColumn\' from $_statsTable ORDER BY date($statsDateTimeColumn) DESC');
     } else if (allTimeGroupedByDay == true) {
       data = await db.rawQuery(
-          'SELECT SUM($statsTotalMeditationTime) as $statsTotalMeditationTime,  strftime("%Y-%m-%d", $statsDateTime) as \'$statsDateTime\' from $_statsTable GROUP BY strftime("%d-%m-%Y", $statsDateTime) ORDER BY date($statsDateTime) DESC');
+          'SELECT SUM($statsTotalMeditationTimeColumn) as $statsTotalMeditationTimeColumn,  strftime("%Y-%m-%d", $statsDateTimeColumn) as \'$statsDateTimeColumn\' from $_statsTable GROUP BY strftime("%d-%m-%Y", $statsDateTimeColumn) ORDER BY date($statsDateTimeColumn) DESC');
     } else {
       if (period == TimePeriod.week) {
         data = await db.rawQuery(
-            'SELECT SUM($statsTotalMeditationTime) as $statsTotalMeditationTime,  strftime("%Y-%m-%d", $statsDateTime) as \'$statsDateTime\' from $_statsTable WHERE $statsDateTime > (SELECT DATETIME(\'now\', \'-7 day\')) GROUP BY strftime("%d-%m-%Y", $statsDateTime)');
+            'SELECT SUM($statsTotalMeditationTimeColumn) as $statsTotalMeditationTimeColumn,  strftime("%Y-%m-%d", $statsDateTimeColumn) as \'$statsDateTimeColumn\' from $_statsTable WHERE $statsDateTimeColumn > (SELECT DATETIME(\'now\', \'-7 day\')) GROUP BY strftime("%d-%m-%Y", $statsDateTimeColumn)');
       } else if (period == TimePeriod.fortnight) {
         data = await db.rawQuery(
-            'SELECT SUM($statsTotalMeditationTime) as $statsTotalMeditationTime,  strftime("%Y-%m-%d", $statsDateTime) as \'$statsDateTime\' from $_statsTable WHERE $statsDateTime > (SELECT DATETIME(\'now\', \'-14 day\')) GROUP BY strftime("%d-%m-%Y", $statsDateTime)');
+            'SELECT SUM($statsTotalMeditationTimeColumn) as $statsTotalMeditationTimeColumn,  strftime("%Y-%m-%d", $statsDateTimeColumn) as \'$statsDateTimeColumn\' from $_statsTable WHERE $statsDateTimeColumn > (SELECT DATETIME(\'now\', \'-14 day\')) GROUP BY strftime("%d-%m-%Y", $statsDateTimeColumn)');
       } else if (period == TimePeriod.year) {
         data = await db.rawQuery(
-            'SELECT SUM($statsTotalMeditationTime) as $statsTotalMeditationTime,  strftime("%Y-%m-%d", $statsDateTime) as \'$statsDateTime\' from $_statsTable WHERE $statsDateTime > (SELECT DATETIME(\'now\', \'-1 year\')) GROUP BY strftime("%m-%Y", $statsDateTime)');
+            'SELECT SUM($statsTotalMeditationTimeColumn) as $statsTotalMeditationTimeColumn,  strftime("%Y-%m-%d", $statsDateTimeColumn) as \'$statsDateTimeColumn\' from $_statsTable WHERE $statsDateTimeColumn > (SELECT DATETIME(\'now\', \'-1 year\')) GROUP BY strftime("%m-%Y", $statsDateTimeColumn)');
       } else if (period == TimePeriod.allTime) {
         data = await db.rawQuery(
-            'SELECT SUM($statsTotalMeditationTime) as $statsTotalMeditationTime,  strftime("%Y-%m-%d", $statsDateTime) as \'$statsDateTime\' from $_statsTable GROUP BY strftime("%Y", $statsDateTime)');
+            'SELECT SUM($statsTotalMeditationTimeColumn) as $statsTotalMeditationTimeColumn,  strftime("%Y-%m-%d", $statsDateTimeColumn) as \'$statsDateTimeColumn\' from $_statsTable GROUP BY strftime("%Y", $statsDateTimeColumn)');
       }
     }
 
@@ -97,7 +97,7 @@ class DatabaseManager {
   Future<StatsModel> getLastEntry() async {
     final db = await initDatabase();
     final map = await db.rawQuery(
-        'SELECT * FROM $_statsTable ORDER BY $statsDateTime DESC LIMIT 1');
+        'SELECT * FROM $_statsTable ORDER BY $statsDateTimeColumn DESC LIMIT 1');
     return StatsModel.fromMap(map: map.first, timePeriod: TimePeriod.allTime);
   }
 
@@ -108,6 +108,18 @@ class DatabaseManager {
 
     return List.generate(
         maps.length, (index) => StatsModel.fromMap(map: maps[index]));
+  }
+  
+  Future<void> removeStat(List<DateTime> dateTimes) async {
+    final db = await initDatabase();
+
+    for(var d in dateTimes){
+      final List<Map<String, dynamic>> result = await db.rawQuery(
+          'DELETE FROM $_statsTable WHERE $statsDateTimeColumn = ?', [d.toString()]
+      );
+    }
+
+
   }
 
   Future clearAllStats() async {
