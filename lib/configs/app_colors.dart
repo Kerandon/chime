@@ -1,18 +1,37 @@
+import 'package:chime/models/theme_color_model.dart';
 import 'package:flutter/material.dart';
 
-class AppColors {
-  static const tealPrimary = Color.fromARGB(255, 0, 128, 128);
-  static const tealLight= Color.fromARGB(255, 178, 216, 216);
-  static const tealDark = Color.fromARGB(255, 1, 77, 78);
-  static const orangePrimary = Colors.deepOrangeAccent;
-  static const orangeDark = Colors.deepOrange;
-  static const redPrimary = Colors.red;
-  static const redDark = Color.fromARGB(255, 128, 0, 0);
-  static const bluePrimary = Colors.blueAccent;
-  static const blueDark = Color.fromARGB(255, 0, 6, 177);
+import '../enums/app_color_themes.dart';
 
-  static const offWhiteLight = Color.fromARGB(255, 246, 246, 246);
-  static const offWhite = Color.fromARGB(255, 230, 230, 230);
+class AppColors {
+  static List<ThemeColorModel> themeColors = [
+    ThemeColorModel(AppColorTheme.amber, Color.fromARGB(255, 255, 191, 0)),
+    ThemeColorModel(AppColorTheme.cream, Color.fromARGB(255, 203, 204, 164)),
+    ThemeColorModel(AppColorTheme.crimson, Color.fromARGB(255, 220, 20, 60)),
+    ThemeColorModel(AppColorTheme.sky, Color.fromARGB(255, 149, 200, 216)),
+    ThemeColorModel(AppColorTheme.turquoise, Color.fromARGB(255, 48, 213, 200)),
+    ThemeColorModel(AppColorTheme.tangerine, Color.fromARGB(255, 250, 129, 40)),
+  ];
+
+  // static Map<String, Color> colorThemes = {
+  //   'Amber': Color.fromARGB(255, 255, 191, 0),
+  //   'Cream': Color.fromARGB(255, 203, 204, 164),
+  //   'Crimson': Color.fromARGB(255, 220, 20, 60),
+  //   'Navy': Color.fromARGB(255, 0, 0, 128),
+  //   'Sky': Color.fromARGB(255, 149, 200, 216),
+  //   'Turquoise': Color.fromARGB(255, 63, 224, 208)
+  // };
+
+  // static const amber = Color.fromARGB(255, 255, 191, 0);
+  // static const cobalt = Color.fromARGB(255, 19, 56, 190);
+  // static const cream = Color.fromARGB(255, 203, 204, 164);
+  // static const crimson = Color.fromARGB(255, 220, 20, 60);
+  // static const navy = Color.fromARGB(255, 0, 0, 128);
+  // static const sky = Color.fromARGB(255, 149, 200, 216);
+  //
+  // static const tangerine = Color.fromARGB(255, 242, 133, 0);
+  // static const turquoise = Color.fromARGB(255, 63, 224, 208);
+
   static const lightGrey = Color.fromARGB(255, 211, 211, 211);
   static const grey = Color.fromARGB(255, 110, 110, 110);
   static const darkGrey = Color.fromARGB(255, 50, 50, 50);

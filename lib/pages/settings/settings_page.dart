@@ -3,8 +3,12 @@ import 'package:chime/enums/bell.dart';
 import 'package:chime/pages/settings/vibrate/vibrate_page.dart';
 import 'package:chime/state/app_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/cli_commands.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../../configs/app_colors.dart';
+import '../../enums/prefs.dart';
+import '../../state/database_manager.dart';
 import 'bell_on_start/bell_on_start_tile.dart';
 import 'mute_device/mute_device_page.dart';
 import 'open_session/open_session_tile.dart';
@@ -29,7 +33,7 @@ class SettingsPage extends ConsumerWidget {
         child: Column(
           children: [
             const SettingsTitleDivider(
-              title: 'Session adjustments',
+              title: 'Set up',
               hideDivider: true,
             ),
             const OpenSessionTile(),
@@ -70,26 +74,23 @@ class SettingsPage extends ConsumerWidget {
             const Vibrate(),
             const MuteDevicePage(),
             const SettingsTitleDivider(
-              title: 'Appearance',
+              title: 'App theme',
             ),
             SettingsTile(
-                icon: const Icon(
-                  Icons.color_lens_outlined,
-                ),
-                title: 'Color theme',
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const ColorThemePage(),
-                    ),
-                  );
-                }),
-            SettingsTile(
-                icon: const Icon(
-                  FontAwesomeIcons.clock,
-                ),
-                title: 'Hide countdown clock',
-                onPressed: () {}),
+              icon: const Icon(
+                Icons.color_lens_outlined,
+              ),
+              title: 'Color theme',
+              subTitle: state.colorTheme.name.capitalize(),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const ColorThemePage(),
+                  ),
+                );
+              },
+            ),
+            DarkThemeSwitchButton(),
             const SettingsTitleDivider(),
             SettingsTile(
                 icon: const Icon(
@@ -101,5 +102,36 @@ class SettingsPage extends ConsumerWidget {
         ),
       ),
     );
+  }
+}
+
+class DarkThemeSwitchButton extends ConsumerWidget {
+  const DarkThemeSwitchButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final size = MediaQuery.of(context).size;
+    final state = ref.watch(stateProvider);
+    final notifier = ref.read(stateProvider.notifier);
+
+    return SwitchListTile(
+        title: Row(
+          children: [
+            Icon(Icons.dark_mode_outlined),
+            Padding(
+
+              padding: EdgeInsets.only(left: size.width * 0.08),
+              child: Text('Dark Mode'),
+            ),
+          ],
+        ),
+        inactiveTrackColor: AppColors.grey,
+        inactiveThumbColor: AppColors.lightGrey,
+        value: state.isDarkTheme,
+        onChanged: (value) async {
+          notifier.setBrightness(value);
+          await DatabaseManager()
+              .insertIntoPrefs(k: Prefs.themeBrightness.toString(), v: value);
+        });
   }
 }

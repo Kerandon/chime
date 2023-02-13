@@ -1,7 +1,7 @@
 import 'package:chime/configs/constants.dart';
 import 'package:chime/state/database_manager.dart';
 import 'package:chime/enums/audio_type.dart';
-import 'package:chime/enums/color_themes.dart';
+import 'package:chime/enums/app_color_themes.dart';
 import 'package:chime/enums/session_state.dart';
 import 'package:chime/utils/calculate_intervals.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -18,7 +18,6 @@ class AppState {
   final bool sessionHasStarted;
   final FocusState focusState;
   final bool longTapInProgress;
-  final ColorTheme colorTheme;
   final int currentPage;
 
   //TIME
@@ -51,19 +50,18 @@ class AppState {
   //STATS
   final bool checkIfStatsUpdated;
 
-  //Layout
-  final bool hideClock;
+  //THEME
+  final AppColorTheme colorTheme;
+  final bool isDarkTheme;
 
-  //Chart
-  // final TimePeriod barChartTimePeriod;
-  // final bool chartsHaveData;
+  //LAYOUT
+  final bool hideClock;
 
   AppState({
     required this.sessionState,
     required this.sessionHasStarted,
     required this.focusState,
     required this.longTapInProgress,
-    required this.colorTheme,
     required this.currentPage,
     required this.totalTimeMinutes,
     required this.initialTimeIsSet,
@@ -83,16 +81,15 @@ class AppState {
     required this.vibrateOnCompletion,
     required this.deviceIsMuted,
     required this.checkIfStatsUpdated,
+    required this.colorTheme,
+    required this.isDarkTheme,
     required this.hideClock,
-    // required this.barChartTimePeriod,
-    // required this.chartsHaveData,
   });
 
   AppState copyWith({
     SessionState? sessionState,
     bool? sessionHasStarted,
     FocusState? focusState,
-    ColorTheme? colorTheme,
     int? currentPage,
     bool? longTapInProgress,
     int? totalTimeMinutes,
@@ -113,16 +110,15 @@ class AppState {
     bool? vibrateOnCompletion,
     bool? deviceIsMuted,
     bool? checkIfStatsUpdated,
+    AppColorTheme? colorTheme,
+    bool? isDarkTheme,
     bool? hideClock,
-    // TimePeriod? barChartTimePeriod,
-    // bool? chartsHaveData,
   }) {
     return AppState(
       sessionState: sessionState ?? this.sessionState,
       sessionHasStarted: sessionHasStarted ?? this.sessionHasStarted,
       focusState: focusState ?? this.focusState,
       longTapInProgress: longTapInProgress ?? this.longTapInProgress,
-      colorTheme: colorTheme ?? this.colorTheme,
       currentPage: currentPage ?? this.currentPage,
       totalTimeMinutes: totalTimeMinutes ?? this.totalTimeMinutes,
       initialTimeIsSet: initialTimeIsSet ?? this.initialTimeIsSet,
@@ -146,9 +142,9 @@ class AppState {
       vibrateOnCompletion: vibrateOnCompletion ?? this.vibrateOnCompletion,
       deviceIsMuted: deviceIsMuted ?? this.deviceIsMuted,
       checkIfStatsUpdated: checkIfStatsUpdated ?? this.checkIfStatsUpdated,
+      colorTheme: colorTheme ?? this.colorTheme,
+      isDarkTheme: isDarkTheme ?? this.isDarkTheme,
       hideClock: hideClock ?? this.hideClock,
-      // barChartTimePeriod: barChartTimePeriod ?? this.barChartTimePeriod,
-      // chartsHaveData: chartsHaveData ?? this.BarChartHasData,
     );
   }
 }
@@ -212,10 +208,6 @@ class AppNotifier extends StateNotifier<AppState> {
     state = state.copyWith(longTapInProgress: inProgress);
   }
 
-  void setColorTheme(ColorTheme colorTheme) {
-    state = state.copyWith(colorTheme: colorTheme);
-  }
-
   void setPage(int index) {
     state = state.copyWith(currentPage: index);
   }
@@ -274,7 +266,6 @@ class AppNotifier extends StateNotifier<AppState> {
   }
 
   void setBellSelected(Bell bell) async {
-    //await DatabaseManager().insertIntoPrefs(k: Prefs.bellSelected.name, v: bell);
     state = state.copyWith(bellSelected: bell);
   }
 
@@ -307,7 +298,13 @@ class AppNotifier extends StateNotifier<AppState> {
     state = state.copyWith(hideClock: hide);
   }
 
+  void setColorTheme(AppColorTheme colorTheme) {
+    state = state.copyWith(colorTheme: colorTheme);
+  }
 
+  void setBrightness(bool isDark) {
+    state = state.copyWith(isDarkTheme: isDark);
+  }
 
   void setVibrateOnCompletion(bool vibrate) {
     state = state.copyWith(vibrateOnCompletion: vibrate);
@@ -320,30 +317,30 @@ class AppNotifier extends StateNotifier<AppState> {
 
 final stateProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
   return AppNotifier(AppState(
-    sessionState: SessionState.notStarted,
-    sessionHasStarted: false,
-    focusState: FocusState.none,
-    longTapInProgress: false,
-    colorTheme: ColorTheme.darkTeal,
-    currentPage: 0,
-    totalTimeMinutes: 60,
-    initialTimeIsSet: false,
-    millisecondsRemaining: 0,
-    pausedMillisecondsRemaining: 0,
-    currentCountdownTime: 5,
-    totalCountdownTime: 6,
-    openSession: false,
-    bellIntervalMenuSelection: {1},
-    bellSelected: Bell.chime,
-    bellIntervalTimeSelected: 1,
-    bellTimesToRing: {},
-    bellVolume: 0.50,
-    bellOnSessionStart: true,
-    ambienceSelected: Ambience.none,
-    ambienceVolume: 0.50,
-    checkIfStatsUpdated: false,
-    hideClock: false,
-    vibrateOnCompletion: true,
-    deviceIsMuted: true,
-  ));
+      sessionState: SessionState.notStarted,
+      sessionHasStarted: false,
+      focusState: FocusState.none,
+      longTapInProgress: false,
+      colorTheme: AppColorTheme.turquoise,
+      currentPage: 0,
+      totalTimeMinutes: 60,
+      initialTimeIsSet: false,
+      millisecondsRemaining: 0,
+      pausedMillisecondsRemaining: 0,
+      currentCountdownTime: 5,
+      totalCountdownTime: 6,
+      openSession: false,
+      bellIntervalMenuSelection: {1},
+      bellSelected: Bell.chime,
+      bellIntervalTimeSelected: 1,
+      bellTimesToRing: {},
+      bellVolume: 0.50,
+      bellOnSessionStart: true,
+      ambienceSelected: Ambience.none,
+      ambienceVolume: 0.50,
+      checkIfStatsUpdated: false,
+      hideClock: false,
+      vibrateOnCompletion: true,
+      deviceIsMuted: true,
+      isDarkTheme: true));
 });

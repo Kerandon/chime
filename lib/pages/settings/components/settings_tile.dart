@@ -20,12 +20,11 @@ class SettingsTile extends StatelessWidget {
       leading: icon,
       title: Text(
         title,
-        style: Theme.of(context).textTheme.bodySmall,
       ),
       subtitle: subTitle != null
           ? Text(
               subTitle!,
-              style: Theme.of(context).textTheme.bodySmall!.copyWith(
+              style: Theme.of(context).textTheme.labelMedium!.copyWith(
                     color: Theme.of(context).primaryColor,
                   ),
             )

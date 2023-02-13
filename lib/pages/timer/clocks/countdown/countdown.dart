@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../configs/constants.dart';
-import '../../../state/app_state.dart';
+import '../../../../configs/constants.dart';
+import '../../../../state/app_state.dart';
 
 class Countdown extends ConsumerWidget {
   const Countdown({Key? key}) : super(key: key);
@@ -20,7 +20,7 @@ class Countdown extends ConsumerWidget {
         children: [
           Center(
             child: SizedBox(
-              width: size.width * 0.18,
+              width: size.width * 0.20,
               child: Text( seconds == 0 ? '' :
                 seconds.toString().padLeft(2, '0'),
                 style: Theme.of(context).textTheme.displayLarge,

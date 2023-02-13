@@ -30,7 +30,7 @@ extension AmbienceText on Ambience {
       case Ambience.meditationMusic4:
         return 'Meditation Music 4';
       case Ambience.song:
-        return 'pop song';
+        return 'Pop song';
     }
   }
 }

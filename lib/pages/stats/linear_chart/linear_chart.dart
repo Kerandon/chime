@@ -12,7 +12,6 @@ class LinearChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final isEmpty = dayTimes.every((element) => element.percent == 0);
 
     final size = MediaQuery.of(context).size;
@@ -21,25 +20,22 @@ class LinearChart extends StatelessWidget {
       height: size.height * 0.02,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(size.height * 0.10),
-        child: isEmpty ? Container(color: Theme.of(context).secondaryHeaderColor,) : Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children:
-
-
-
-
-          List.generate(
-            dayTimes.length,
-            (index) => Expanded(
-              flex: (dayTimes[index].percent * 100).toInt(),
-              child: Container(
-                color: dayTimes[index].color,
+        child: isEmpty
+            ? Container(
+                color: Theme.of(context).secondaryHeaderColor,
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                  dayTimes.length,
+                  (index) => Expanded(
+                    flex: (dayTimes[index].percent * 100).toInt(),
+                    child: Container(
+                      color: dayTimes[index].color,
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
-
-
-        ),
       ),
     );
   }

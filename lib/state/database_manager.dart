@@ -35,22 +35,22 @@ class DatabaseManager {
   }
 
   Future<int> insertIntoPrefs({required String k, required dynamic v}) async {
-    final db = await initDatabase();
-    return await db.rawInsert(
+    _database = await initDatabase();
+    return await _database!.rawInsert(
         'INSERT OR REPLACE INTO $_prefsTable($prefsKeyColumn, $prefsValueColumn) VALUES(?, ?)',
         [k, v]);
   }
 
-  Future<PrefsModel2> getPrefs() async {
-    final db = await initDatabase();
-    final data = await db.rawQuery('SELECT * FROM $_prefsTable');
-    return PrefsModel2.fromListMap(data);
+  Future<PrefsModel> getPrefs() async {
+    _database = await initDatabase();
+    final data = await _database!.rawQuery('SELECT * FROM $_prefsTable');
+    return PrefsModel.fromListMap(data);
   }
 
   Future<int> insertIntoStats(
       {required DateTime dateTime, required int minutes}) async {
-    final db = await initDatabase();
-    return await db.rawInsert(
+    _database = await initDatabase();
+    return await _database!.rawInsert(
         'INSERT OR REPLACE INTO $_statsTable($statsDateTimeColumn, $statsTotalMeditationTimeColumn) VALUES (?,?)',
         [dateTime.toString(), minutes]);
   }
@@ -95,36 +95,36 @@ class DatabaseManager {
   }
 
   Future<StatsModel> getLastEntry() async {
-    final db = await initDatabase();
-    final map = await db.rawQuery(
+    _database = await initDatabase();
+    final map = await _database!.rawQuery(
         'SELECT * FROM $_statsTable ORDER BY $statsDateTimeColumn DESC LIMIT 1');
     return StatsModel.fromMap(map: map.first, timePeriod: TimePeriod.allTime);
   }
 
   Future<List<StatsModel>> getAllStats() async {
-    final db = await initDatabase();
+    _database = await initDatabase();
 
-    final maps = await db.rawQuery('SELECT * FROM $_statsTable');
+    final maps = await _database!.rawQuery('SELECT * FROM $_statsTable');
 
     return List.generate(
         maps.length, (index) => StatsModel.fromMap(map: maps[index]));
   }
-  
-  Future<void> removeStat(List<DateTime> dateTimes) async {
-    final db = await initDatabase();
 
-    for(var d in dateTimes){
-      final List<Map<String, dynamic>> result = await db.rawQuery(
-          'DELETE FROM $_statsTable WHERE $statsDateTimeColumn = ?', [d.toString()]
-      );
+  Future<void> removeStats(List<DateTime> dateTimes) async {
+    _database = await initDatabase();
+
+    for (var d in dateTimes) {
+      await _database!.rawQuery(
+          'DELETE FROM $_statsTable WHERE $statsDateTimeColumn = ?',
+          [d.toString()]);
     }
-
-
   }
 
-  Future clearAllStats() async {
-    final db = await initDatabase();
-    db.delete(_statsTable);
-    db.delete(_prefsTable);
+  Future removeAllPrefsAndStats() async {
+    _database = await initDatabase();
+    _database!.delete(_prefsTable);
+    _database!.delete(_statsTable);
+
+
   }
 }

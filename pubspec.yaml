@@ -53,6 +53,7 @@ dependencies:
   numberpicker: ^2.1.1
   flutter_animate: ^3.1.0
   tuple: ^2.0.1
+  material_color_utilities: ^0.2.0
 
 flutter_native_splash:
   color: "#ffffff"

@@ -1,4 +1,3 @@
-import 'package:chime/pages/stats/all_meditations_page/meditation_history_page.dart';
 import 'package:chime/pages/stats/stats_divider.dart';
 import 'package:chime/pages/stats/total_medition_time_title.dart';
 import 'package:chime/pages/stats/streak/streak_stats.dart';
@@ -10,6 +9,7 @@ import 'bar_chart_history_main/bar_chart_history.dart';
 import 'custom_line/animated_line_chart_main.dart';
 import 'bar_chart_history_main/bar_chart_period_toggle.dart';
 import 'linear_chart/time_stats.dart';
+import 'meditation_history/meditation_history_page.dart';
 
 class StatsPage extends ConsumerStatefulWidget {
   const StatsPage({Key? key}) : super(key: key);
@@ -123,7 +123,7 @@ class _StatsPageState extends ConsumerState<StatsPage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => MeditationHistoryPage()));
+                                builder: (context) => const MeditationHistoryPage()));
                       },
                       child: Text(
                         'Clear meditation sessions',

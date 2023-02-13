@@ -1,9 +1,11 @@
 import 'package:chime/configs/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/cli_commands.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../configs/app_colors.dart';
 import '../../../state/database_manager.dart';
-import '../../../enums/color_themes.dart';
+import '../../../enums/app_color_themes.dart';
 import '../../../enums/prefs.dart';
 import '../../../state/app_state.dart';
 
@@ -13,7 +15,7 @@ class ColorThemeCheckbox extends ConsumerWidget {
     super.key,
   });
 
-  final ColorTheme colorTheme;
+  final AppColorTheme colorTheme;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -22,7 +24,7 @@ class ColorThemeCheckbox extends ConsumerWidget {
     final notifier = ref.read(stateProvider.notifier);
 
     return CheckboxListTile(
-        title: Text(colorTheme.toText()),
+        title: Text(colorTheme.name.capitalize()),
         subtitle: Padding(
           padding: EdgeInsets.symmetric(vertical: size.height * 0.01),
           child: Align(
@@ -31,7 +33,10 @@ class ColorThemeCheckbox extends ConsumerWidget {
               width: size.width * 0.30,
               height: size.height * 0.02,
               decoration: BoxDecoration(
-                  color: colorTheme.toColor(),
+                  color: AppColors.themeColors
+                      .firstWhere(
+                          (element) => element.color.name == colorTheme.name)
+                      .arbg,
                   borderRadius: BorderRadius.circular(kBorderRadius)),
             ),
           ),

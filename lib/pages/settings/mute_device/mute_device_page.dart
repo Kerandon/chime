@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:vibration/vibration.dart';
 
+import '../../../configs/app_colors.dart';
 import '../../../state/app_state.dart';
 
 class MuteDevicePage extends ConsumerStatefulWidget {
@@ -19,34 +20,25 @@ class _MuteDevicePageState extends ConsumerState<MuteDevicePage> {
     final state = ref.watch(stateProvider);
     final notifier = ref.read(stateProvider.notifier);
     return SwitchListTile(
-        inactiveTrackColor: Theme.of(context).disabledColor,
-        inactiveThumbColor: Theme.of(context).disabledColor,
+        inactiveTrackColor: AppColors.grey,
+        inactiveThumbColor: AppColors.lightGrey,
         title: Row(
           children: [
-            const Icon(Icons.volume_mute_outlined),
             Padding(
-              padding: EdgeInsets.only(left: size.width * 0.08),
-              child: Text('Mute device',
-                  style: Theme.of(context).textTheme.bodySmall),
+              padding: EdgeInsets.only(right: size.width * 0.08),
+              child: SizedBox(
+                  width: size.width * 0.05,
+                  child: const Icon(Icons.volume_mute_outlined)),
             ),
+            Text('Mute device alerts & calls'),
           ],
-        ),
-        subtitle: Padding(
-          padding: EdgeInsets.only(left: size.width * 0.135),
-          child: Text('Turn off msg alerts & calls',
-            style: Theme.of(context).textTheme.bodySmall!.copyWith(
-              color: Theme.of(context).primaryColor,
-            ),
-
-          ),
         ),
         value: state.deviceIsMuted,
         onChanged: (value) async {
           notifier.setDeviceIsMuted(value);
-          if(await Vibration.hasVibrator() == true) {
+          if (await Vibration.hasVibrator() == true) {
             await vibrateDevice();
           }
-        }
-            );
+        });
   }
 }

@@ -1,20 +1,19 @@
 import 'dart:async';
 import 'package:chime/audio/audio_manager.dart';
-import 'package:chime/configs/themes/dark_blue_theme.dart';
-import 'package:chime/configs/themes/dark_orange_theme.dart';
-import 'package:chime/configs/themes/light_theme.dart';
+import 'package:chime/enums/app_color_themes.dart';
+import 'package:chime/models/theme_color_model.dart';
 import 'package:chime/pages/home.dart';
 import 'package:chime/state/database_manager.dart';
 import 'package:chime/models/prefs_model.dart';
 import 'package:chime/state/app_state.dart';
+import 'package:chime/utils/methods/cache_image.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'configs/themes/dark_red_theme.dart';
-import 'configs/themes/dark_teal_theme.dart';
-import 'enums/color_themes.dart';
+import 'configs/app_colors.dart';
+import 'configs/themes/custom_app_theme.dart';
 
 Future<void> main() async {
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -45,49 +44,36 @@ class ChimeApp extends ConsumerStatefulWidget {
 
 class _ChimeAppState extends ConsumerState<ChimeApp> {
   bool _prefsUpdated = false;
-  late final Future<PrefsModel2> _futurePref;
+  late final Future<PrefsModel> _prefFuture;
+  late final Future<int> _cacheImagesFuture;
 
   @override
   void initState() {
-    _futurePref = DatabaseManager().getPrefs();
-    _initAudioPlayers();
+    _prefFuture = DatabaseManager().getPrefs();
+    _cacheImagesFuture =
+        cacheImage(context: context, url: 'assets/images/meditation.png');
     super.initState();
-  }
-
-  _initAudioPlayers() async {
-    await AudioManager().initAudioPlayers();
   }
 
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(stateProvider);
     final notifier = ref.read(stateProvider.notifier);
-    ThemeData appTheme = darkTealTheme;
-
-    return FutureBuilder<PrefsModel2>(
-      future: _futurePref,
+    AppColorTheme colorTheme = AppColorTheme.turquoise;
+    return FutureBuilder<dynamic>(
+      future: Future.wait(
+        [_prefFuture, _cacheImagesFuture],
+      ),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          final prefsModel = snapshot.data;
+          final prefsModel = snapshot.data[0];
 
-          switch (state.colorTheme) {
-            case ColorTheme.darkBlue:
-              appTheme = darkBlueTheme;
-              break;
-            case ColorTheme.darkTeal:
-              appTheme = darkTealTheme;
-              break;
-            case ColorTheme.darkOrange:
-              appTheme = darkOrangeTheme;
-              break;
-            case ColorTheme.darkRed:
-              appTheme = darkRedTheme;
-              break;
-            case ColorTheme.light:
-              appTheme = lightTheme;
-              break;
-          }
-          WidgetsBinding.instance.addPostFrameCallback(
+
+          colorTheme = AppColors.themeColors.firstWhere((element) => element.color.name == state.colorTheme.name).color;
+
+          // colorTheme = AppColorTheme.values.firstWhere((element) => element.name == state.colorTheme.name);
+
+                   WidgetsBinding.instance.addPostFrameCallback(
             (timeStamp) {
               if (!_prefsUpdated) {
                 // notifier.setTotalTime(minutes: prefsModel!.totalTime);
@@ -100,6 +86,7 @@ class _ChimeAppState extends ConsumerState<ChimeApp> {
                 notifier.setAmbienceSelected(prefsModel.ambienceSelected);
                 notifier.setAmbienceVolume(prefsModel.ambienceVolume);
                 notifier.setColorTheme(prefsModel.colorTheme);
+                notifier.setBrightness(prefsModel.brightness);
                 notifier.setHideClock(prefsModel.hideClock);
 
                 _prefsUpdated = true;
@@ -113,6 +100,13 @@ class _ChimeAppState extends ConsumerState<ChimeApp> {
             },
           );
         }
+
+        final appTheme= CustomAppTheme.getThemeData(
+            theme: colorTheme,
+            brightness: state.isDarkTheme ? Brightness.dark : Brightness.light);
+
+        print('dark ${state.isDarkTheme}');
+
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: appTheme,

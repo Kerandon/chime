@@ -1,12 +1,10 @@
-import 'package:chime/pages/stats/all_meditations_page/meditation_history_page.dart';
-import 'package:chime/pages/stats/stats_page.dart';
 import 'package:chime/state/database_manager.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../models/stats_model.dart';
 import '../../../state/chart_state.dart';
+import 'meditation_history_page.dart';
 
 class SelectHistory extends ConsumerWidget {
   const SelectHistory({
@@ -34,8 +32,9 @@ class SelectHistory extends ConsumerWidget {
         size.width * 0.03,
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          SizedBox.shrink(),
           Row(
             children: [
               OutlinedButton(
@@ -48,7 +47,7 @@ class SelectHistory extends ConsumerWidget {
                             .primaryColor
                             : Theme
                             .of(context)
-                            .secondaryHeaderColor)),
+                            .secondaryHeaderColor,),),
                 onPressed: () {
                   notifier.selectMeditationEvents(items: items);
                 },
@@ -105,8 +104,7 @@ class SelectHistory extends ConsumerWidget {
           ),
           Row(
             children: [
-              state.selectedMeditationEvents.isNotEmpty
-                  ? IconButton(
+              if (state.selectedMeditationEvents.isNotEmpty) IconButton(
                   onPressed: () {
                     showDialog(
                         context: context,
@@ -118,7 +116,7 @@ class SelectHistory extends ConsumerWidget {
                               actions: [
                                 OutlinedButton(
 
-                                    onPressed: () async {
+                                    onPressed: () {
 
 
 
@@ -131,14 +129,14 @@ class SelectHistory extends ConsumerWidget {
                                       notifier.selectMeditationEvents(
                                           items: items, unselect: true);
 
-                                      await DatabaseManager()
-                                          .removeStat(dateTimes);
+                                      DatabaseManager()
+                                          .removeStats(dateTimes);
 
 
                                       Navigator.of(context, rootNavigator: true).pop('dialog');
 
                                       Navigator.maybePop(context).then((value) => Navigator.push(context,
-                                         MaterialPageRoute(builder: (context) => MeditationHistoryPage())
+                                         MaterialPageRoute(builder: (context) => const MeditationHistoryPage())
                                       ));
                                     },
                                     child: Text('Yes', style: Theme.of(context).textTheme.bodySmall,)),
@@ -158,8 +156,7 @@ class SelectHistory extends ConsumerWidget {
                         .of(context)
                         .secondaryHeaderColor
                         : Colors.red,
-                  ))
-                  : const SizedBox.shrink(),
+                  )) else const SizedBox.shrink(),
               state.selectedMeditationEvents.isNotEmpty
                   ? Text(
                 '(${state.selectedMeditationEvents.length.toString()})',

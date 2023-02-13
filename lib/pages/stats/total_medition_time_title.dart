@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../enums/time_period.dart';
 import '../../state/chart_state.dart';
-import '../../utils/methods/methods.dart';
+import '../../utils/methods/stats_methods.dart';
 
 class TotalMeditationTimeTitle extends ConsumerWidget {
   const TotalMeditationTimeTitle({
@@ -49,16 +49,17 @@ class TotalMeditationTimeTitle extends ConsumerWidget {
         text: period == TimePeriod.allTime || totalText == '0'
             ? 'You have meditated for '
             : 'You meditated for ',
-        style: Theme.of(context).textTheme.bodySmall,
+        style: Theme.of(context).textTheme.displaySmall,
         children: [
           TextSpan(
             text: totalText,
-            style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).primaryColor),
+            style: Theme.of(context).textTheme.displaySmall!.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).primaryColor,
+                ),
           ),
           TextSpan(
-              text: periodText, style: Theme.of(context).textTheme.bodySmall!),
+              text: periodText, style: Theme.of(context).textTheme.displaySmall),
         ],
       ),
     ).animate().fadeIn();

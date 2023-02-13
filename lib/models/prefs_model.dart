@@ -1,10 +1,11 @@
+import '../configs/app_colors.dart';
 import '../enums/ambience.dart';
 import '../enums/bell.dart';
-import '../enums/color_themes.dart';
+import '../enums/app_color_themes.dart';
 import '../enums/prefs.dart';
 
-class PrefsModel2 {
-  final ColorTheme colorTheme;
+class PrefsModel {
+
   final int totalTime;
   final int totalCountdown;
 
@@ -18,7 +19,10 @@ class PrefsModel2 {
 
   final bool hideClock;
 
-  PrefsModel2({
+  final AppColorTheme colorTheme;
+  final bool brightness;
+
+  PrefsModel({
     required this.totalTime,
     required this.totalCountdown,
     required this.bellSelected,
@@ -29,9 +33,10 @@ class PrefsModel2 {
     required this.ambienceVolume,
     required this.hideClock,
     required this.colorTheme,
+    required this.brightness,
   });
 
-  factory PrefsModel2.fromListMap(List<Map<String, dynamic>> listMap) {
+  factory PrefsModel.fromListMap(List<Map<String, dynamic>> listMap) {
     int totalTime = 60;
     int timeCountdown = 5;
     Ambience ambienceSelected = Ambience.none;
@@ -41,7 +46,8 @@ class PrefsModel2 {
     int bellInterval = 1;
     bool bellOnStart = true;
     bool hideClock = false;
-    ColorTheme colorTheme = ColorTheme.darkTeal;
+    AppColorTheme colorTheme = AppColorTheme.turquoise;
+    bool brightness = true;
 
     for (int i = 0; i < listMap.length; i++) {
       String prefKey = listMap[i].entries.elementAt(0).value;
@@ -87,13 +93,17 @@ class PrefsModel2 {
       }
 
       if (prefKey == Prefs.colorTheme.name) {
-        colorTheme = ColorTheme.values.firstWhere(
+        colorTheme = AppColorTheme.values.firstWhere(
             (element) => element.name == listMap[i].entries.elementAt(1).value,
-            orElse: () => ColorTheme.darkTeal);
+            orElse: () => AppColorTheme.turquoise);
+      }
+
+      if(prefKey == Prefs.themeBrightness.name){
+        brightness = listMap[i].entries.elementAt(1).value;
       }
     }
 
-    return PrefsModel2(
+    return PrefsModel(
       totalTime: totalTime,
       totalCountdown: timeCountdown,
       bellSelected: bellSelected,
@@ -104,6 +114,7 @@ class PrefsModel2 {
       ambienceVolume: ambienceVolume,
       hideClock: hideClock,
       colorTheme: colorTheme,
+      brightness: brightness
     );
   }
 }

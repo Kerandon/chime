@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:vibration/vibration.dart';
 
+import '../../../configs/app_colors.dart';
 import '../../../state/app_state.dart';
 
 class Vibrate extends ConsumerStatefulWidget {
@@ -38,16 +39,17 @@ class _VibrateState extends ConsumerState<Vibrate> {
         }
 
         return SwitchListTile(
-            inactiveTrackColor: Theme.of(context).disabledColor,
-            inactiveThumbColor: Theme.of(context).disabledColor,
+            inactiveTrackColor: AppColors.grey,
+            inactiveThumbColor: AppColors.lightGrey,
             title: Row(
               children: [
-                const Icon(Icons.vibration_outlined),
                 Padding(
-                  padding: EdgeInsets.only(left: size.width * 0.08),
-                  child: Text('Vibrate on completion',
-                      style: Theme.of(context).textTheme.bodySmall),
+                  padding: EdgeInsets.only(right: size.width * 0.08),
+                  child: SizedBox(
+                      width: size.width * 0.05,
+                      child: const Icon(Icons.vibration_outlined)),
                 ),
+                Text('Vibrate device on completion'),
               ],
             ),
             value: state.vibrateOnCompletion,

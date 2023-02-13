@@ -28,10 +28,9 @@ class SettingsTitleDivider extends StatelessWidget {
                   title!,
                   style: Theme.of(context)
                       .textTheme
-                      .bodySmall!
-                      .copyWith(color: Theme.of(context).secondaryHeaderColor, fontSize: 12),
+                      .labelMedium),
                 ),
-        ),
+
       ],
     );
   }

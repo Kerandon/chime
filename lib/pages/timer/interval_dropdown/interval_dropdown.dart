@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../state/app_state.dart';
 import '../../../configs/constants.dart';
-import '../../settings/meditation_bells/meditation_bells_page.dart';
 
 class IntervalDropdown extends ConsumerWidget {
   const IntervalDropdown({
@@ -26,23 +26,25 @@ class IntervalDropdown extends ConsumerWidget {
         DropdownMenuItem<int>(
           value: e,
           child: SizedBox(
-            width: size.width * kHomePageLineWidth / 1.2,
+            width: size.width * kHomePageLineWidth / 1.6,
             child: Center(
-              child: Text(
-                e == totalTime
-                    ? kOnTimeUpOnlyText
-                    : e == 1
-                        ? '$e minute'
-                        : '$e minutes',
-                textAlign: TextAlign.center,
-
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium!
-                    .copyWith(
-                    color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold,
-
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const FaIcon(
+                    FontAwesomeIcons.bell,
+                  ),
+                  SizedBox(width: size.width * 0.03,),
+                  Text(
+                    e == totalTime
+                        ? kOnTimeUpOnlyText
+                        : e == 1
+                            ? 'every ${e}min'
+                            : 'every ${e}min',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyMedium
+                  ),
+                ],
               ),
             ),
           ),
@@ -56,63 +58,33 @@ class IntervalDropdown extends ConsumerWidget {
       selectedValue = items.first.value;
     }
 
-    bool showOnTimeUpTitleText = false;
-    if (selectedValue == state.totalTimeMinutes) {
-      showOnTimeUpTitleText = true;
-    }
-
-    return SizedBox(
-      height: size.height * 0.10,
-      width: size.width * 0.60,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          InkWell(
-            onTap: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const MeditationBellsPage()));
-            },
-            child: Padding(
-              padding: EdgeInsets.only(bottom: size.height * 0.01),
-              child: RichText(
-                text: TextSpan(
-                  text: 'Play a',
-                  style: Theme.of(context).textTheme.bodySmall,
-                  children: [
-                    TextSpan(
-                      text: ' ${state.bellSelected.name}',
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: Theme.of(context).primaryColor,
-                          fontWeight: FontWeight.bold
-                      ),
-                    ),
-                    TextSpan(
-                      text: showOnTimeUpTitleText ? '' : ' every',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          items.isEmpty
-              ? const SizedBox.shrink()
-              : DropdownButton<int>(
-            style: Theme.of(context).textTheme.displaySmall!.copyWith(color: Theme.of(context).primaryColor
-            ),
-                  isDense: true,
-                  borderRadius: BorderRadius.circular(kBorderRadius),
-                  dropdownColor: Theme.of(context).dialogBackgroundColor,
-                  value: selectedValue,
-                  iconSize: 0,
-                  items: items.toList(),
-                  onChanged: (Object? value) {
-                    notifier.setBellIntervalTime(value as int);
-                  },
-                ),
-        ],
+    return Align(
+      alignment: Alignment(0, 1),
+      child: SizedBox(
+        height: size.height * 0.15,
+        width: size.width * 0.60,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            items.isEmpty
+                ? const SizedBox.shrink()
+                : DropdownButton<int>(
+                    style: Theme.of(context)
+                        .textTheme
+                        .displaySmall!
+                        .copyWith(overflow: TextOverflow.fade),
+                    isDense: true,
+                    borderRadius: BorderRadius.circular(kBorderRadius),
+                    value: selectedValue,
+                    iconSize: 0,
+                    items: items.toList(),
+                    onChanged: (Object? value) {
+                      notifier.setBellIntervalTime(value as int);
+                    },
+              underline: const SizedBox.shrink(),
+                  ),
+          ],
+        ),
       ),
     );
   }

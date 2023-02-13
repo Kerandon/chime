@@ -2,11 +2,11 @@ import 'package:chime/pages/timer/timed_or_open_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'app_timer_main.dart';
-import '../interval_dropdown/interval_dropdown.dart';
-import '../start_button/start_button.dart';
-import '../../../enums/session_state.dart';
-import '../../../state/app_state.dart';
+import 'clocks/app_timer_main.dart';
+import 'interval_dropdown/interval_dropdown.dart';
+import 'start_button/start_button.dart';
+import '../../enums/session_state.dart';
+import '../../state/app_state.dart';
 
 class TimerLayout extends ConsumerStatefulWidget {
   const TimerLayout({Key? key}) : super(key: key);
@@ -34,19 +34,16 @@ class _TimerPageState extends ConsumerState<TimerLayout> {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Expanded(
-                  flex: 5,
-                  child: SizedBox.shrink()),
               Expanded(
-                flex: 50,
+                flex: 30,
                 child: const AppTimerMain().animate().fadeIn()
               ),
               const Expanded(
-                flex: 80,
+                flex: 30,
                 child: StartButton(),
               ),
               Expanded(
-                  flex: 30,
+                  flex: 10,
                   child: sessionIsUnderway
                       ? const SizedBox.shrink()
                       : const IntervalDropdown()).animate().fadeIn()

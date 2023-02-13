@@ -27,19 +27,17 @@ class BarChartPeriodButton extends ConsumerWidget {
                 notifier.setBarChartTimePeriod(timePeriod);
               },
         style: OutlinedButton.styleFrom(
-            side: BorderSide(
-          color: state.barChartTimePeriod == timePeriod ?
+            side: BorderSide(color:
+          state.barChartTimePeriod == timePeriod ?
           Theme.of(context).primaryColor
-              : AppColors.grey,
+              : Theme.of(context)
+              .secondaryHeaderColor
         )),
         child: Text(timePeriod.toText(),
             style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                  color: state.barChartTimePeriod == timePeriod &&
-                          state.barChartStats.isNotEmpty
-                      ? Theme.of(context).primaryColor
-                      : Theme.of(context)
-                      .secondaryHeaderColor
-                )),
+              color:  state.barChartTimePeriod == timePeriod ?
+                  Theme.of(context).primaryColor : Theme.of(context).primaryColorLight
+            ))
       ),
     ).animate().scaleXY(begin: 0.90).fadeIn();
   }

@@ -3,12 +3,13 @@ import 'package:chime/enums/time_period.dart';
 import 'package:chime/models/stats_model.dart';
 import 'package:chime/state/chart_state.dart';
 import 'package:chime/state/database_manager.dart';
+import 'package:chime/utils/methods/date_time_methods.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
-import '../../../utils/methods/methods.dart';
+import '../../../utils/methods/stats_methods.dart';
 import 'bar_touch_data.dart';
 
 class BarChartHistory extends ConsumerStatefulWidget {
@@ -72,7 +73,7 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
                   ? Center(
                       child: Text(
                       kNoBarChartDataMsg,
-                      style: Theme.of(context).textTheme.bodySmall,
+                      style: Theme.of(context).textTheme.bodySmall
                     )).animate().fadeIn()
                   : const SizedBox.shrink(),
               BarChart(

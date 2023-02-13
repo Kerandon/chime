@@ -45,10 +45,11 @@ class _TimeStatsState extends ConsumerState<TimeStats> {
       future: _statsFuture,
       builder: (context, snapshot) {
         List<Color> colors = [
-          Colors.orange,
-          Colors.purple,
-          Colors.deepOrange,
-          Colors.yellow
+          const Color.fromARGB(255, 140, 255, 240),
+          const Color.fromARGB(255, 44, 118, 33),
+          const Color.fromARGB(255, 230, 105, 18),
+          const Color.fromARGB(255, 90, 51, 110),
+
         ];
 
         List<DateTime> dateTimeStats = [];
@@ -84,16 +85,6 @@ class _TimeStatsState extends ConsumerState<TimeStats> {
               dayTimesTotals.update(DayTime.lateNight, (value) => value + 1);
             }
           }
-
-          // for (int i = 0; i < DayTime.values.length; i++) {
-          //   final e = dayTimesTotals.entries;
-          //   dayTimes.add(
-          //     DayTimeModel(
-          //         time: e.elementAt(i).key,
-          //         percent: e.elementAt(i).value / totalEntries,
-          //         color: colors[i]),
-          //   );
-          // }
         }
         final values = dayTimesTotals.values;
         final totalEntries =
@@ -120,7 +111,8 @@ class _TimeStatsState extends ConsumerState<TimeStats> {
               _animate
                   ? Text(
                       'Your preferred times to meditate',
-                      style: Theme.of(context).textTheme.bodySmall,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyLarge,
                     ).animate().fadeIn()
                   : const SizedBox.shrink(),
               _animate
@@ -128,8 +120,8 @@ class _TimeStatsState extends ConsumerState<TimeStats> {
                       padding:
                           EdgeInsets.symmetric(vertical: size.height * 0.04),
                       child: Wrap(
-                        alignment: WrapAlignment.center,
-                        runAlignment: WrapAlignment.center,
+                        alignment: WrapAlignment.start,
+                        runAlignment: WrapAlignment.start,
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: List.generate(
                           dayTimes.length,

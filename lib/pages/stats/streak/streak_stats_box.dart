@@ -30,8 +30,7 @@ class StreakStatsBox extends StatelessWidget {
         Text(
           text,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodySmall!.copyWith(
-              fontSize: 12),
+          style: Theme.of(context).textTheme.labelLarge,
         ),
       ],
     );

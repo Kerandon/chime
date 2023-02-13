@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:numberpicker/numberpicker.dart';
 
-import '../../../state/app_state.dart';
+import '../../../../configs/app_colors.dart';
+import '../../../../state/app_state.dart';
 
 class CustomNumberPicker extends ConsumerWidget {
   const CustomNumberPicker({
@@ -32,14 +33,13 @@ class CustomNumberPicker extends ConsumerWidget {
         mainAxisAlignment: alignment,
         children: [
           NumberPicker(
-            textStyle: Theme.of(context).textTheme.displaySmall,
+            textStyle: Theme.of(context).textTheme.displaySmall!.copyWith(
+              fontSize: 20, color: Theme.of(context).secondaryHeaderColor
+            ),
             selectedTextStyle: Theme.of(context)
                 .textTheme
-                .displayMedium!
-                .copyWith(color: Theme.of(context).primaryColor,
-            fontWeight: FontWeight.w500
-            ),
-            itemWidth: size.width * 0.16,
+                .displayMedium,
+            itemWidth: size.width * 0.15,
             itemHeight: size.height * 0.08,
             minValue: 0,
             maxValue: text == 'M' ? 59 : 23,
@@ -54,6 +54,7 @@ class CustomNumberPicker extends ConsumerWidget {
           ),
           Text(
             text,
+            textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ],

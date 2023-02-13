@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../models/stats_model.dart';
 import '../../../state/database_manager.dart';
-import '../../../utils/methods/methods.dart';
+import '../../../utils/methods/stats_methods.dart';
 
 class StreakStats extends ConsumerStatefulWidget {
   const StreakStats({

@@ -1,52 +1,10 @@
 
+import 'package:chime/utils/methods/date_time_methods.dart';
+
 import '../../enums/time_period.dart';
 import '../../models/stats_model.dart';
 import '../../state/chart_state.dart';
 
-extension Format on int {
-  String formatToHour() {
-    var result = this ~/ 60;
-    if(result == 0){
-      return "";
-    }else {
-      return '${result}h';
-    }
-  }
-  String formatToHourMin() {
-    int m = this % 60;
-    int h = this ~/ 60;
-
-    if (h == 0) {
-      return '${m}m';
-    } else {
-      if (m > 1) {
-        return '${h}h ${m}m';
-      } else if (m == 0) {
-        return '${h}h';
-      }
-    }
-    return "";
-  }
-}
-
-extension DateSuffix on int {
-  String addDateSuffix() {
-    if (this >= 11 && this <= 13) {
-      return 'th';
-    }
-
-    switch (this % 10) {
-      case 1:
-        return 'st';
-      case 2:
-        return 'nd';
-      case 3:
-        return 'rd';
-      default:
-        return 'th';
-    }
-  }
-}
 
 int getCurrentStreak(List<StatsModel> stats) {
   int currentStreak = 0;

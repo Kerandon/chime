@@ -1,4 +1,5 @@
-import 'package:chime/utils/methods/methods.dart';
+import 'package:chime/utils/methods/date_time_methods.dart';
+import 'package:chime/utils/methods/stats_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -48,13 +49,14 @@ class _LastMeditationTimeTitleState extends State<LastMeditationTimeTitle> {
           }
 
           return RichText(
+            textAlign: TextAlign.center,
             text: TextSpan(
               text: 'You last meditated ',
-              style: Theme.of(context).textTheme.bodySmall,
+              style: Theme.of(context).textTheme.displaySmall,
               children: [
                 TextSpan(
                   text: lastMeditationDays,
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  style: Theme.of(context).textTheme.displaySmall!.copyWith(
                       fontWeight: FontWeight.bold,
                       color: Theme.of(context).primaryColor),
                 ),
@@ -63,7 +65,7 @@ class _LastMeditationTimeTitleState extends State<LastMeditationTimeTitle> {
                 ),
                 TextSpan(
                   text: lastMeditation,
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  style: Theme.of(context).textTheme.displaySmall!.copyWith(
                       fontWeight: FontWeight.bold,
                       color: Theme.of(context).primaryColor),
                 ),

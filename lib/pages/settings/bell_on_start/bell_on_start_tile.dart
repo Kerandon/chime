@@ -17,19 +17,25 @@ class BellOnStartTile extends ConsumerWidget {
     final state = ref.watch(stateProvider);
     final notifier = ref.read(stateProvider.notifier);
     return SwitchListTile(
-      inactiveTrackColor: Colors.grey,
+      inactiveTrackColor: AppColors.grey,
       inactiveThumbColor: AppColors.lightGrey,
       title: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(
-            FontAwesomeIcons.bell,
-          ),
           Padding(
-            padding: EdgeInsets.only(left: size.width * 0.08),
-            child: Text(
-              'Play bell on session start',
-              style: Theme.of(context).textTheme.bodySmall,
+            padding: EdgeInsets.only(right:  size.width * 0.05),
+            child: SizedBox(
+              width: size.width * 0.08,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: const Icon(
+                  FontAwesomeIcons.bell,
+                ),
+              ),
             ),
+          ),
+          Text(
+            'Play bell on session start',
           ),
         ],
       ),

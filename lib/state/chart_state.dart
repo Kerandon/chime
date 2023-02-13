@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
-import '../enums/select.dart';
 import '../enums/time_period.dart';
 import '../models/stats_model.dart';
 

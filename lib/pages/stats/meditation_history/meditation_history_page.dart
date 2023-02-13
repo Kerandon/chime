@@ -1,6 +1,8 @@
-import 'package:chime/pages/stats/all_meditations_page/select_history.dart';
+import 'package:chime/app_components/lotus_icon.dart';
+import 'package:chime/pages/stats/meditation_history/select_history.dart';
 import 'package:chime/state/database_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../models/stats_model.dart';
 import 'meditiation_event_tile.dart';
@@ -11,7 +13,8 @@ class MeditationHistoryPage extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<MeditationHistoryPage> createState() => _AllMeditationsListState();
+  ConsumerState<MeditationHistoryPage> createState() =>
+      _AllMeditationsListState();
 }
 
 class _AllMeditationsListState extends ConsumerState<MeditationHistoryPage> {
@@ -27,7 +30,9 @@ class _AllMeditationsListState extends ConsumerState<MeditationHistoryPage> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(title: Text('Meditiation history'),),
+      appBar: AppBar(
+        title: const Text('Meditiation history'),
+      ),
       body: FutureBuilder(
           future: _allMeditationFuture,
           builder: (context, snapshot) {
@@ -39,10 +44,9 @@ class _AllMeditationsListState extends ConsumerState<MeditationHistoryPage> {
               }
             }
 
-
-
             return Column(
               children: [
+                LotusIcon(),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: size.height * 0.03),
                   child: RichText(
@@ -50,22 +54,29 @@ class _AllMeditationsListState extends ConsumerState<MeditationHistoryPage> {
                       text: 'You have meditated ',
                       style: Theme.of(context).textTheme.bodySmall,
                       children: [
+
                         TextSpan(
-                            text: '${stats.length.toString()}',
-                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                color: Theme.of(context).primaryColor,
-                                fontWeight: FontWeight.bold)),
+                          text: stats.length.toString(),
+                          style:
+                              Theme.of(context).textTheme.bodySmall!.copyWith(
+                                    color: Theme.of(context).primaryColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                        ),
                         TextSpan(
-                            text: ' times',
-                            style: Theme.of(context).textTheme.bodySmall),
+                          text: stats.length == 1 ? ' time' : ' times',
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
                       ],
                     ),
                   ),
                 ),
-                SelectHistory(stats: stats,),
+                SelectHistory(
+                  stats: stats,
+                ),
                 ListView.builder(
                   itemCount: stats.length,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemBuilder: (context, index) => MeditationEventTile(
                     stat: stats[index],
@@ -78,4 +89,3 @@ class _AllMeditationsListState extends ConsumerState<MeditationHistoryPage> {
     );
   }
 }
-

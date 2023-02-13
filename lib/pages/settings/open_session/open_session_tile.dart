@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../../../configs/app_colors.dart';
 import '../../../state/app_state.dart';
 
 class OpenSessionTile extends ConsumerWidget {
@@ -14,20 +15,20 @@ class OpenSessionTile extends ConsumerWidget {
     final state = ref.watch(stateProvider);
     final notifier = ref.read(stateProvider.notifier);
     return SwitchListTile(
-      inactiveTrackColor: Theme.of(context).disabledColor,
-      inactiveThumbColor: Theme.of(context).disabledColor,
+        inactiveTrackColor: AppColors.grey,
+        inactiveThumbColor: AppColors.lightGrey,
       title: Row(
         children: [
-           FaIcon(
-
-              state.openSession ? FontAwesomeIcons.infinity : Icons.timer_outlined
-
+           Padding(
+             padding: EdgeInsets.only(right: size.width * 0.05),
+             child: SizedBox(
+               width: size.width * 0.08,
+               child: FaIcon(
+                  state.openSession ? FontAwesomeIcons.infinity : Icons.timer_outlined
           ),
-          Padding(
-            padding: EdgeInsets.only(left: size.width * 0.06),
-            child: Text('Open session (no timer)',
-                style: Theme.of(context).textTheme.bodySmall),
-          ),
+             ),
+           ),
+          Text('Open session (unlimited time)'),
         ],
       ),
       value: state.openSession,

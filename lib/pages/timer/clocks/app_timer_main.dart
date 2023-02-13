@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:chime/audio/audio_manager.dart';
 import 'package:chime/enums/session_state.dart';
+import 'package:chime/pages/timer/clocks/session_countdown/session_timer.dart';
 import 'package:chime/pages/timer/clocks/set_time_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quiver/async.dart';
 import '../../../state/app_state.dart';
-import 'countdown.dart';
-import 'session_timer.dart';
+import 'countdown/countdown.dart';
 
 class AppTimerMain extends ConsumerStatefulWidget {
   const AppTimerMain({
@@ -63,7 +63,7 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
 
         CountdownTimer(
                 Duration(
-                    milliseconds: ((state.totalCountdownTime * 1000) + 990)),
+                    milliseconds: ((state.totalCountdownTime * 1000) + 999)),
                 const Duration(milliseconds: 50))
             .listen((event) {
           notifier.setCurrentCountdownTime(event.remaining.inSeconds);
@@ -111,12 +111,7 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
       return Center(
         child: Text(
           'Open session',
-          style: Theme.of(context).textTheme.displaySmall!
-          .copyWith(
-            color: Theme.of(context).primaryColor,
-            fontSize: 30,
-            fontWeight: FontWeight.bold
-          ),
+          style: Theme.of(context).textTheme.headlineSmall,
           textAlign: TextAlign.center,
         ),
       );

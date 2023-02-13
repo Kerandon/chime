@@ -1,7 +1,8 @@
 import 'package:chime/configs/constants.dart';
 import 'package:chime/models/data_point.dart';
 import 'package:chime/pages/stats/custom_line/text_on_line_end.dart';
-import 'package:chime/utils/methods/methods.dart';
+import 'package:chime/utils/methods/date_time_methods.dart';
+import 'package:chime/utils/methods/stats_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';

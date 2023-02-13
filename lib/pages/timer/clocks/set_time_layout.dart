@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../configs/constants.dart';
-import 'custom_number_picker.dart';
+import 'number_picker/custom_number_picker.dart';
 
 class SetTimeFieldLayout extends StatelessWidget {
   const SetTimeFieldLayout({
@@ -15,13 +15,14 @@ class SetTimeFieldLayout extends StatelessWidget {
       height: size.height * kClocksHeight,
       child: Center(
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             const CustomNumberPicker(alignment: MainAxisAlignment.end, text: 'H',),
-            VerticalDivider(
-              indent: size.height * 0.05,
-            endIndent: size.height * 0.05,
-              color: Theme.of(context).secondaryHeaderColor,
+            Padding(
+              padding: EdgeInsets.only(left: size.width * 0.01),
+              child: VerticalDivider(
+                indent: size.height * 0.05,
+              endIndent: size.height * 0.05,
+              ),
             ),
             const CustomNumberPicker(alignment: MainAxisAlignment.start, text: 'M',)
 
