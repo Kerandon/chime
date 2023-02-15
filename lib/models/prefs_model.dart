@@ -1,4 +1,3 @@
-import '../configs/app_colors.dart';
 import '../enums/ambience.dart';
 import '../enums/bell.dart';
 import '../enums/app_color_themes.dart';

@@ -26,15 +26,15 @@ class BellOnStartTile extends ConsumerWidget {
             padding: EdgeInsets.only(right:  size.width * 0.05),
             child: SizedBox(
               width: size.width * 0.08,
-              child: Align(
+              child: const Align(
                 alignment: Alignment.centerLeft,
-                child: const Icon(
+                child: Icon(
                   FontAwesomeIcons.bell,
                 ),
               ),
             ),
           ),
-          Text(
+          const Text(
             'Play bell on session start',
           ),
         ],

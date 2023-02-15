@@ -30,7 +30,7 @@ class _MuteDevicePageState extends ConsumerState<MuteDevicePage> {
                   width: size.width * 0.05,
                   child: const Icon(Icons.volume_mute_outlined)),
             ),
-            Text('Mute device alerts & calls'),
+            const Text('Mute device alerts & calls'),
           ],
         ),
         value: state.deviceIsMuted,

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:numberpicker/numberpicker.dart';
-
-import '../../../../configs/app_colors.dart';
 import '../../../../state/app_state.dart';
 
 class CustomNumberPicker extends ConsumerWidget {

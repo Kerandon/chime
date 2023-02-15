@@ -49,7 +49,7 @@ class _VibrateState extends ConsumerState<Vibrate> {
                       width: size.width * 0.05,
                       child: const Icon(Icons.vibration_outlined)),
                 ),
-                Text('Vibrate device on completion'),
+                const Text('Vibrate device on completion'),
               ],
             ),
             value: state.vibrateOnCompletion,

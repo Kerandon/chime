@@ -5,12 +5,12 @@ import '../enums/app_color_themes.dart';
 
 class AppColors {
   static List<ThemeColorModel> themeColors = [
-    ThemeColorModel(AppColorTheme.amber, Color.fromARGB(255, 255, 191, 0)),
-    ThemeColorModel(AppColorTheme.cream, Color.fromARGB(255, 203, 204, 164)),
-    ThemeColorModel(AppColorTheme.crimson, Color.fromARGB(255, 220, 20, 60)),
-    ThemeColorModel(AppColorTheme.sky, Color.fromARGB(255, 149, 200, 216)),
-    ThemeColorModel(AppColorTheme.turquoise, Color.fromARGB(255, 48, 213, 200)),
-    ThemeColorModel(AppColorTheme.tangerine, Color.fromARGB(255, 250, 129, 40)),
+    ThemeColorModel(AppColorTheme.amber, const Color.fromARGB(255, 255, 191, 0)),
+    ThemeColorModel(AppColorTheme.cream, const Color.fromARGB(255, 203, 204, 164)),
+    ThemeColorModel(AppColorTheme.crimson, const Color.fromARGB(255, 220, 20, 60)),
+    ThemeColorModel(AppColorTheme.sky, const Color.fromARGB(255, 149, 200, 216)),
+    ThemeColorModel(AppColorTheme.turquoise, const Color.fromARGB(255, 48, 213, 200)),
+    ThemeColorModel(AppColorTheme.tangerine, const Color.fromARGB(255, 250, 129, 40)),
   ];
 
   // static Map<String, Color> colorThemes = {

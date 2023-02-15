@@ -1,4 +1,3 @@
-import 'package:chime/models/theme_color_model.dart';
 import 'package:flutter/material.dart';
 import '../../enums/app_color_themes.dart';
 import '../app_colors.dart';

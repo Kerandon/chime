@@ -19,11 +19,11 @@ class DarkThemeSwitchButton extends ConsumerWidget {
     return SwitchListTile(
         title: Row(
           children: [
-            Icon(Icons.dark_mode_outlined),
+            const Icon(Icons.dark_mode_outlined),
             Padding(
 
               padding: EdgeInsets.only(left: size.width * 0.08),
-              child: Text('Dark Mode'),
+              child: const Text('Dark Mode'),
             ),
           ],
         ),

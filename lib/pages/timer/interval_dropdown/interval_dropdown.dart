@@ -59,7 +59,7 @@ class IntervalDropdown extends ConsumerWidget {
     }
 
     return Align(
-      alignment: Alignment(0, 1),
+      alignment: const Alignment(0, 1),
       child: SizedBox(
         height: size.height * 0.15,
         width: size.width * 0.60,

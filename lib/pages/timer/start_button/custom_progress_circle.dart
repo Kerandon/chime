@@ -13,7 +13,7 @@ class CustomProgressCircle extends CustomPainter {
       {required this.percentage,
       required this.circleColor,
       required this.dashColor,
-      this.strokeWidthDash = kSessionTimerStrokeWidth * 0.50,
+      this.strokeWidthDash = kSessionTimerStrokeWidth * 0.60,
       });
 
   @override
@@ -24,7 +24,9 @@ class CustomProgressCircle extends CustomPainter {
     double centerY = size.height;
     Offset center = Offset(centerX / 2, centerY / 2);
     double radius = math.min(centerX * 0.50, centerY * 0.50);
-    double dotBuffer = size.width * 0.05;
+    double dotBuffer = size.width * 0.06;
+    int dotBufferMultiplier = 4;
+    int numberOfDashesMultipler = 12; /// 360 / 6 = 60;
 
     // var handX = center.dx + radius * math.cos(adjustedPercent * math.pi / 180);
     // var handY = center.dy + radius * math.sin(adjustedPercent * math.pi / 180);
@@ -47,14 +49,14 @@ class CustomProgressCircle extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..strokeWidth = strokeWidthDash;
 
-    for (double i = -90; i < 360; i += 9) {
+    for (double i = -90; i < 360; i += numberOfDashesMultipler) {
       var x1 = center.dx + (radius + dotBuffer) * math.cos(i * math.pi / 180);
       var y1 = center.dx + (radius + dotBuffer) * math.sin(i * math.pi / 180);
 
       var x2 =
-          center.dx + (radius + dotBuffer * 3) * math.cos(i * math.pi / 180);
+          center.dx + (radius + dotBuffer * dotBufferMultiplier) * math.cos(i * math.pi / 180);
       var y2 =
-          center.dx + (radius + dotBuffer * 3) * math.sin(i * math.pi / 180);
+          center.dx + (radius + dotBuffer * dotBufferMultiplier) * math.sin(i * math.pi / 180);
 
       canvas.drawLine(Offset(x1, y1), Offset(x2, y2), dashBrushBackground);
       canvas.drawLine(Offset(x1, y1), Offset(x2, y2), dashBrushBackground);
@@ -68,14 +70,14 @@ class CustomProgressCircle extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..strokeWidth = strokeWidthDash;
 
-    for (double i = -90; i < adjustedPercent; i += 9) {
+    for (double i = -90; i < adjustedPercent; i += numberOfDashesMultipler) {
       var x1 = center.dx + (radius + dotBuffer) * math.cos(i * math.pi / 180);
       var y1 = center.dx + (radius + dotBuffer) * math.sin(i * math.pi / 180);
 
       var x2 =
-          center.dx + (radius + dotBuffer * 3) * math.cos(i * math.pi / 180);
+          center.dx + (radius + dotBuffer * dotBufferMultiplier) * math.cos(i * math.pi / 180);
       var y2 =
-          center.dx + (radius + dotBuffer * 3) * math.sin(i * math.pi / 180);
+          center.dx + (radius + dotBuffer * dotBufferMultiplier) * math.sin(i * math.pi / 180);
 
 
 

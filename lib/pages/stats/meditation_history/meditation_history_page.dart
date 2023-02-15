@@ -2,7 +2,6 @@ import 'package:chime/app_components/lotus_icon.dart';
 import 'package:chime/pages/stats/meditation_history/select_history.dart';
 import 'package:chime/state/database_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../models/stats_model.dart';
 import 'meditiation_event_tile.dart';
@@ -46,7 +45,7 @@ class _AllMeditationsListState extends ConsumerState<MeditationHistoryPage> {
 
             return Column(
               children: [
-                LotusIcon(),
+                const LotusIcon(),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: size.height * 0.03),
                   child: RichText(

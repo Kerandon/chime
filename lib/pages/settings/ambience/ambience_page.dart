@@ -31,7 +31,7 @@ class _AmbiencePageState extends ConsumerState<AmbiencePage> {
     final state = ref.watch(stateProvider);
 
     if (!_audioPlayedOnLoad) {
-      AudioManager().playAmbience(ambience: state.ambienceSelected);
+
       _audioPlayedOnLoad = true;
     }
 
@@ -41,9 +41,7 @@ class _AmbiencePageState extends ConsumerState<AmbiencePage> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () async {
-            AudioManager().stop(
-                audioType: AudioType.ambience,
-                fadeOutMilliseconds: kAudioFadeDuration);
+
             await Navigator.maybePop(context);
           },
           icon: const Icon(

@@ -35,7 +35,7 @@ class BellsCheckBoxTile extends ConsumerWidget {
       value: state.bellSelected == bell,
       onChanged: (value) async {
         notifier.setBellSelected(bell);
-        await AudioManager().playBell(bell: bell);
+
         await DatabaseManager().insertIntoPrefs(k: Prefs.bellSelected.name, v: bell.name);
       },
     );

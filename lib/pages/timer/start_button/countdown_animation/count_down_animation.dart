@@ -1,30 +1,42 @@
+import 'package:chime/enums/session_state.dart';
+import 'package:chime/state/app_state.dart';
 import 'package:flutter/material.dart';
-
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'loading_bar.dart';
 
-class CountdownAnimation extends StatefulWidget {
+class CountdownAnimation extends ConsumerStatefulWidget {
   const CountdownAnimation({
     super.key,
     required this.animate,
+    required this.maxLoops,
   });
 
   final bool animate;
+  final int maxLoops;
 
   @override
-  State<CountdownAnimation> createState() => _CountdownAnimationState();
+  ConsumerState<CountdownAnimation> createState() => _CountdownAnimationState();
 }
 
-class _CountdownAnimationState extends State<CountdownAnimation>
+class _CountdownAnimationState extends ConsumerState<CountdownAnimation>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   int _index = 0;
+  int _looped = 0;
 
   @override
   void initState() {
     _controller =
-        AnimationController(duration: const Duration(seconds: 5), vsync: this);
+        AnimationController(duration: const Duration(seconds: 5), vsync: this)..addStatusListener((status) {
+          if(status == AnimationStatus.completed && _looped < widget.maxLoops - 1){
+            _controller.reset();
+            _controller.forward();
+            _looped++;
+          }
+        });
     super.initState();
-    _controller.repeat();
+
+    _controller.forward();
   }
 
   @override
@@ -35,9 +47,13 @@ class _CountdownAnimationState extends State<CountdownAnimation>
 
   @override
   Widget build(BuildContext context) {
+
+    final notifier = ref.read(stateProvider.notifier);
+
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
+
         if (_controller.value <= 0.20) {
           _index = 0;
         }
@@ -50,7 +66,6 @@ class _CountdownAnimationState extends State<CountdownAnimation>
         if (_controller.value > 0.60 && _controller.value <= 0.80) {
           _index = 3;
         }
-
         if (_controller.value > 0.80) {
           _index = 4;
         }

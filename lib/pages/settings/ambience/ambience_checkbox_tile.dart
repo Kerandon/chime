@@ -45,7 +45,7 @@ class _AmbienceCheckBoxTileState extends ConsumerState<AmbienceCheckBoxTile> {
       onChanged: (value) async {
         Ambience ambience = widget.ambienceData.ambience;
         notifier.setAmbienceSelected(ambience);
-        await AudioManager().playAmbience(ambience: ambience);
+
         await DatabaseManager().insertIntoPrefs(k: Prefs.ambienceSelected.name, v: ambience.name);
       },
     );

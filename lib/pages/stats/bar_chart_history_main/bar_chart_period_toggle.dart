@@ -2,7 +2,6 @@ import 'package:chime/state/chart_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../../../configs/app_colors.dart';
 import '../../../enums/time_period.dart';
 
 class BarChartPeriodButton extends ConsumerWidget {

@@ -11,10 +11,11 @@ class SetTimeFieldLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return SizedBox(
+    return Container(
       height: size.height * kClocksHeight,
       child: Center(
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const CustomNumberPicker(alignment: MainAxisAlignment.end, text: 'H',),
             Padding(

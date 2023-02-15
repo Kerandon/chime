@@ -28,7 +28,7 @@ class OpenSessionTile extends ConsumerWidget {
           ),
              ),
            ),
-          Text('Open session (unlimited time)'),
+          const Text('Open session (unlimited time)'),
         ],
       ),
       value: state.openSession,

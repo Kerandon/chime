@@ -34,7 +34,6 @@ class SelectHistory extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          SizedBox.shrink(),
           Row(
             children: [
               OutlinedButton(

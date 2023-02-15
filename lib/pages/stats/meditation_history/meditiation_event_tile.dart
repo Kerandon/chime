@@ -1,6 +1,5 @@
 import 'package:chime/state/chart_state.dart';
 import 'package:chime/utils/methods/date_time_methods.dart';
-import 'package:chime/utils/methods/stats_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';

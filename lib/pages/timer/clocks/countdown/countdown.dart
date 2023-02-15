@@ -10,8 +10,9 @@ class Countdown extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
-    final size = MediaQuery.of(context).size;
+    final size = MediaQuery
+        .of(context)
+        .size;
     final state = ref.watch(stateProvider);
     int seconds = state.currentCountdownTime;
     return SizedBox(
@@ -19,28 +20,28 @@ class Countdown extends ConsumerWidget {
       child: Stack(
         children: [
           Center(
-            child: SizedBox(
-              width: size.width * 0.20,
-              child: Text( seconds == 0 ? '' :
-                seconds.toString().padLeft(2, '0'),
-                style: Theme.of(context).textTheme.displayLarge,
-                textAlign: TextAlign.right,
-              )                  .animate()
-                  .fadeIn(duration: 500.milliseconds)
-                  .fadeOut(
-                  duration: 500.milliseconds,
-                  delay: (state.totalCountdownTime).seconds)
+            child: Text(
+              seconds.toString().padLeft(2, '0'),
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .displayLarge,
+              textAlign: TextAlign.right,
             )
           ),
           Align(
               alignment: const Alignment(0, 0.80),
-              child: const Text('Session will begin shortly...')
-                  .animate()
-                  .fadeIn()
-                  .fadeOut(delay: (state.totalCountdownTime).seconds)
-        )
+              child: Text(kSessionWillBeginShortly, style: Theme
+                  .of(context)
+                  .textTheme
+                  .bodySmall,)
+          )
         ],
-      ),
+      ).animate()
+          .fadeIn(duration: 300.milliseconds)
+          .fadeOut(
+          duration: 100.milliseconds,
+          delay: (state.totalCountdownTime).seconds),
     );
   }
 }

@@ -16,8 +16,7 @@ class AppState {
   //APP STATE
   final SessionState sessionState;
   final bool sessionHasStarted;
-  final FocusState focusState;
-  final bool longTapInProgress;
+  final bool sessionStopped;
   final int currentPage;
 
   //TIME
@@ -57,11 +56,13 @@ class AppState {
   //LAYOUT
   final bool hideClock;
 
+  //SPLASH
+  final bool animateSplash;
+
   AppState({
     required this.sessionState,
     required this.sessionHasStarted,
-    required this.focusState,
-    required this.longTapInProgress,
+    required this.sessionStopped,
     required this.currentPage,
     required this.totalTimeMinutes,
     required this.initialTimeIsSet,
@@ -84,6 +85,7 @@ class AppState {
     required this.colorTheme,
     required this.isDarkTheme,
     required this.hideClock,
+    required this.animateSplash,
   });
 
   AppState copyWith({
@@ -91,7 +93,7 @@ class AppState {
     bool? sessionHasStarted,
     FocusState? focusState,
     int? currentPage,
-    bool? longTapInProgress,
+    bool? sessionStopped,
     int? totalTimeMinutes,
     bool? initialTimeIsSet,
     int? millisecondsRemaining,
@@ -113,12 +115,12 @@ class AppState {
     AppColorTheme? colorTheme,
     bool? isDarkTheme,
     bool? hideClock,
+    bool? animateSplash,
   }) {
     return AppState(
       sessionState: sessionState ?? this.sessionState,
       sessionHasStarted: sessionHasStarted ?? this.sessionHasStarted,
-      focusState: focusState ?? this.focusState,
-      longTapInProgress: longTapInProgress ?? this.longTapInProgress,
+      sessionStopped: sessionStopped ?? this.sessionStopped,
       currentPage: currentPage ?? this.currentPage,
       totalTimeMinutes: totalTimeMinutes ?? this.totalTimeMinutes,
       initialTimeIsSet: initialTimeIsSet ?? this.initialTimeIsSet,
@@ -145,6 +147,7 @@ class AppState {
       colorTheme: colorTheme ?? this.colorTheme,
       isDarkTheme: isDarkTheme ?? this.isDarkTheme,
       hideClock: hideClock ?? this.hideClock,
+      animateSplash: animateSplash ?? this.animateSplash
     );
   }
 }
@@ -176,15 +179,13 @@ class AppNotifier extends StateNotifier<AppState> {
     state = state.copyWith(sessionState: sessionState);
 
     if (sessionState == SessionState.notStarted) {
-      AudioManager().stop(audioType: AudioType.ambience);
+
     } else if (sessionState == SessionState.countdown) {
-      await AudioManager().playAmbience(
-          ambience: state.ambienceSelected,
-          fadeInMilliseconds: kAudioFadeDuration * 2);
+
     } else if (sessionState == SessionState.inProgress) {
-      await AudioManager().resumeAmbience();
+
     } else if (sessionState == SessionState.paused) {
-      await AudioManager().pauseAmbience();
+
     } else if (sessionState == SessionState.ended) {
       if (state.vibrateOnCompletion) {
         await vibrateDevice();
@@ -199,20 +200,21 @@ class AppNotifier extends StateNotifier<AppState> {
 
   void resetSession() {
     state = state.copyWith(
-        pausedMillisecondsRemaining: 0,
-        sessionHasStarted: false,
-        millisecondsRemaining: 0);
+      pausedMillisecondsRemaining: 0,
+      currentCountdownTime: 0,
+      millisecondsRemaining: 0,
+    );
   }
 
-  void setLongTapInProgress(bool inProgress) {
-    state = state.copyWith(longTapInProgress: inProgress);
+  void setSessionStopped(bool stopped) {
+    state = state.copyWith(sessionStopped: stopped);
   }
 
   void setPage(int index) {
     state = state.copyWith(currentPage: index);
   }
 
-  void seMillisecondsRemaining(int milliseconds) {
+  void setMillisecondsRemaining(int milliseconds) {
     state = state.copyWith(millisecondsRemaining: milliseconds);
   }
 
@@ -223,6 +225,7 @@ class AppNotifier extends StateNotifier<AppState> {
     } else {
       time = state.millisecondsRemaining;
     }
+
     state = state.copyWith(pausedMillisecondsRemaining: time);
   }
 
@@ -276,18 +279,18 @@ class AppNotifier extends StateNotifier<AppState> {
   void setAmbienceSelected(Ambience ambience) async {
     state = state.copyWith(ambienceSelected: ambience);
     if (ambience == Ambience.none) {
-      await AudioManager().stop(audioType: AudioType.ambience);
+
     }
   }
 
   void setBellVolume(double volume) {
     state = state.copyWith(ambienceVolume: volume);
-    AudioManager().setVolume(audioType: AudioType.bells, volume: volume);
+
   }
 
   void setAmbienceVolume(double volume) {
     state = state.copyWith(ambienceVolume: volume);
-    AudioManager().setVolume(audioType: AudioType.ambience, volume: volume);
+
   }
 
   void checkIfStatsUpdated(bool check) {
@@ -313,14 +316,18 @@ class AppNotifier extends StateNotifier<AppState> {
   void setDeviceIsMuted(bool muted) {
     state = state.copyWith(deviceIsMuted: muted);
   }
+
+  void setAnimateSplash(bool animate){
+    state = state.copyWith(animateSplash: animate);
+  }
+
 }
 
 final stateProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
   return AppNotifier(AppState(
       sessionState: SessionState.notStarted,
       sessionHasStarted: false,
-      focusState: FocusState.none,
-      longTapInProgress: false,
+      sessionStopped: false,
       colorTheme: AppColorTheme.turquoise,
       currentPage: 0,
       totalTimeMinutes: 60,
@@ -342,5 +349,7 @@ final stateProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
       hideClock: false,
       vibrateOnCompletion: true,
       deviceIsMuted: true,
-      isDarkTheme: true));
+      isDarkTheme: true,
+      animateSplash: false,
+  ));
 });

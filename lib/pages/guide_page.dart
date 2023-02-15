@@ -1,4 +1,3 @@
-import 'package:chime/animation/fade_in_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../configs/constants.dart';

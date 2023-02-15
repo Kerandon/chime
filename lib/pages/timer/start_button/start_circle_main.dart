@@ -58,17 +58,13 @@ class _CustomCircularIndicatorState
 
     if (state.totalTimeMinutes != 0 && state.millisecondsRemaining != 0) {
       percent =
-          ((state.totalTimeMinutes * 60 * 1000) - state.millisecondsRemaining) /
-              (state.totalTimeMinutes * 60 * 1000);
+          ((state.totalTimeMinutes * 60000) - state.millisecondsRemaining) /
+              (state.totalTimeMinutes * 60000);
     }
 
-    if (!state.sessionHasStarted) {
-      percent = 1.0;
-    }
-
-    if (state.longTapInProgress) {
-      percent = state.pausedMillisecondsRemaining.toDouble();
-    }
+    // if (!state.sessionHasStarted) {
+    //   percent = 1.0;
+    // }
 
     if (percent.isNegative) {
       percent = 0;

@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
-import '../../../utils/methods/stats_methods.dart';
 import 'bar_touch_data.dart';
 
 class BarChartHistory extends ConsumerStatefulWidget {

@@ -1,7 +1,5 @@
 import 'dart:async';
-import 'package:chime/audio/audio_manager.dart';
 import 'package:chime/enums/app_color_themes.dart';
-import 'package:chime/models/theme_color_model.dart';
 import 'package:chime/pages/home.dart';
 import 'package:chime/state/database_manager.dart';
 import 'package:chime/models/prefs_model.dart';
@@ -104,8 +102,6 @@ class _ChimeAppState extends ConsumerState<ChimeApp> {
         final appTheme= CustomAppTheme.getThemeData(
             theme: colorTheme,
             brightness: state.isDarkTheme ? Brightness.dark : Brightness.light);
-
-        print('dark ${state.isDarkTheme}');
 
         return MaterialApp(
           debugShowCheckedModeBanner: false,
