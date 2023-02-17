@@ -19,7 +19,8 @@ class Countdown extends ConsumerWidget {
       height: size.height * kClocksHeight,
       child: Stack(
         children: [
-          Center(
+          Align(
+            alignment: const Alignment(0, -0.30),
             child: Text(
               seconds.toString().padLeft(2, '0'),
               style: Theme
@@ -27,10 +28,10 @@ class Countdown extends ConsumerWidget {
                   .textTheme
                   .displayLarge,
               textAlign: TextAlign.right,
-            )
+            ),
           ),
           Align(
-              alignment: const Alignment(0, 0.80),
+              alignment: const Alignment(0, 0.60),
               child: Text(kSessionWillBeginShortly, style: Theme
                   .of(context)
                   .textTheme

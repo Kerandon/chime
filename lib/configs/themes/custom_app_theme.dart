@@ -10,6 +10,14 @@ class CustomAppTheme {
     return ThemeData(
       brightness: brightness,
       secondaryHeaderColor: AppColors.grey,
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: Colors.white,
+          side: BorderSide(
+            color: Colors.white
+          )
+        )
+      ),
       sliderTheme: SliderThemeData(
         thumbColor: Colors.white,
         activeTrackColor: primaryColor

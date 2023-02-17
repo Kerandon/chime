@@ -1,23 +1,17 @@
-import 'package:chime/enums/ambience.dart';
-import 'package:chime/enums/bell.dart';
 import 'package:chime/pages/settings/vibrate/vibrate_page.dart';
 import 'package:chime/state/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/cli_commands.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../configs/app_colors.dart';
 import '../../enums/prefs.dart';
 import '../../state/database_manager.dart';
-import 'bell_on_start/bell_on_start_tile.dart';
 import 'mute_device/mute_device_page.dart';
-import 'open_session/open_session_tile.dart';
 import 'components/settings_divider.dart';
 import 'components/settings_tile.dart';
-import 'ambience/ambience_page.dart';
 import 'color_theme/color_theme_page.dart';
 import 'countdown/countdown_page.dart';
-import 'meditation_bells/meditation_bells_page.dart';
+
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -33,33 +27,33 @@ class SettingsPage extends ConsumerWidget {
         child: Column(
           children: [
             const SettingsTitleDivider(
-              title: 'Set up',
+              title: 'More Setup options',
               hideDivider: true,
             ),
-            const OpenSessionTile(),
-            SettingsTile(
-              icon: const Icon(
-                FontAwesomeIcons.bell,
-              ),
-              title: 'Meditation bell',
-              subTitle: state.bellSelected.toText(),
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const MeditationBellsPage()));
-              },
-            ),
-            const BellOnStartTile(),
-            SettingsTile(
-              icon: const Icon(
-                Icons.piano_outlined,
-              ),
-              title: 'Ambience',
-              subTitle: state.ambienceSelected.toText(),
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const AmbiencePage()));
-              },
-            ),
+            //const OpenSessionTile(),
+            // SettingsTile(
+            //   icon: const Icon(
+            //     FontAwesomeIcons.bell,
+            //   ),
+            //   title: 'Meditation bell',
+            //   subTitle: state.bellSelected.toText(),
+            //   onPressed: () {
+            //     Navigator.of(context).push(MaterialPageRoute(
+            //         builder: (context) => const MeditationBellsPage()));
+            //   },
+            // ),
+            // const BellOnStartTile(),
+            // SettingsTile(
+            //   icon: const Icon(
+            //     Icons.piano_outlined,
+            //   ),
+            //   title: 'Ambience',
+            //   subTitle: state.ambienceSelected.toText(),
+            //   onPressed: () {
+            //     Navigator.of(context).push(MaterialPageRoute(
+            //         builder: (context) => const AmbiencePage()));
+            //   },
+            // ),
             SettingsTile(
               icon: const Icon(
                 Icons.timer_outlined,

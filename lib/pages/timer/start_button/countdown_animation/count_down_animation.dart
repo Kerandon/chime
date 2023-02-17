@@ -1,5 +1,3 @@
-import 'package:chime/enums/session_state.dart';
-import 'package:chime/state/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'loading_bar.dart';
@@ -47,8 +45,6 @@ class _CountdownAnimationState extends ConsumerState<CountdownAnimation>
 
   @override
   Widget build(BuildContext context) {
-
-    final notifier = ref.read(stateProvider.notifier);
 
     return AnimatedBuilder(
       animation: _controller,

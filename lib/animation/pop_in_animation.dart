@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 
-class PopInAnimation extends StatefulWidget {
-  const PopInAnimation({Key? key, required this.child, required this.animate,
+class PopAnimation extends StatefulWidget {
+  const PopAnimation({Key? key, required this.child, required this.animate, this.reverse = false,
   this.reset= false,
   })
       : super(key: key);
 
   final Widget child;
   final bool animate, reset;
+  final bool reverse;
 
   @override
-  State<PopInAnimation> createState() => _PopInAnimationState();
+  State<PopAnimation> createState() => _PopAnimationState();
 }
 
-class _PopInAnimationState extends State<PopInAnimation>
+class _PopAnimationState extends State<PopAnimation>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _scale;
@@ -21,16 +22,20 @@ class _PopInAnimationState extends State<PopInAnimation>
   @override
   void initState() {
     _controller =
-        AnimationController(duration: Duration(milliseconds: 500), vsync: this);
+        AnimationController(duration: const Duration(milliseconds: 500), vsync: this);
 
-    _scale = Tween<double>(begin: 0.0, end: 1.0)
-    .animate(CurvedAnimation(parent: _controller, curve: Curves.bounceInOut));
+    double begin = 0.0, end = 1.0;
+    if(widget.reverse){
+      begin = 1.0; end = 0.0;
+    }
+    _scale = Tween<double>(begin: begin, end: end)
+    .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
 
     super.initState();
   }
 
   @override
-  void didUpdateWidget(covariant PopInAnimation oldWidget) {
+  void didUpdateWidget(covariant PopAnimation oldWidget) {
     if(widget.animate && !_controller.isAnimating){
       _controller.forward();
     }

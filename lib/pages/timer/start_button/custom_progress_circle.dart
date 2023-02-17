@@ -26,7 +26,7 @@ class CustomProgressCircle extends CustomPainter {
     double radius = math.min(centerX * 0.50, centerY * 0.50);
     double dotBuffer = size.width * 0.06;
     int dotBufferMultiplier = 4;
-    int numberOfDashesMultipler = 12; /// 360 / 6 = 60;
+    int numberOfDashesMultiplier = 12; /// 360 / 6 = 60;
 
     // var handX = center.dx + radius * math.cos(adjustedPercent * math.pi / 180);
     // var handY = center.dy + radius * math.sin(adjustedPercent * math.pi / 180);
@@ -49,7 +49,7 @@ class CustomProgressCircle extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..strokeWidth = strokeWidthDash;
 
-    for (double i = -90; i < 360; i += numberOfDashesMultipler) {
+    for (double i = -90; i < 360; i += numberOfDashesMultiplier) {
       var x1 = center.dx + (radius + dotBuffer) * math.cos(i * math.pi / 180);
       var y1 = center.dx + (radius + dotBuffer) * math.sin(i * math.pi / 180);
 
@@ -70,7 +70,7 @@ class CustomProgressCircle extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..strokeWidth = strokeWidthDash;
 
-    for (double i = -90; i < adjustedPercent; i += numberOfDashesMultipler) {
+    for (double i = -90; i < adjustedPercent; i += numberOfDashesMultiplier) {
       var x1 = center.dx + (radius + dotBuffer) * math.cos(i * math.pi / 180);
       var y1 = center.dx + (radius + dotBuffer) * math.sin(i * math.pi / 180);
 

@@ -1,11 +1,8 @@
-import 'package:chime/configs/constants.dart';
 import 'package:chime/state/database_manager.dart';
-import 'package:chime/enums/audio_type.dart';
 import 'package:chime/enums/app_color_themes.dart';
 import 'package:chime/enums/session_state.dart';
 import 'package:chime/utils/calculate_intervals.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../audio/audio_manager.dart';
 import '../enums/ambience.dart';
 import '../enums/bell.dart';
 import '../enums/focus_state.dart';
@@ -31,12 +28,14 @@ class AppState {
   //BELLS
   final Set<int> bellIntervalMenuSelection;
   final Bell bellSelected;
-  final int bellIntervalTimeSelected;
+  final int selectedIntervalBellTime;
   final Set<int> bellTimesToRing;
   final double bellVolume;
   final bool bellOnSessionStart;
+  final bool bellOnSessionEnd;
 
   //AMBIENCE
+  final bool ambienceIsOn;
   final Ambience ambienceSelected;
   final double ambienceVolume;
 
@@ -73,10 +72,12 @@ class AppState {
     required this.openSession,
     required this.bellIntervalMenuSelection,
     required this.bellSelected,
-    required this.bellIntervalTimeSelected,
+    required this.selectedIntervalBellTime,
     required this.bellTimesToRing,
     required this.bellVolume,
     required this.bellOnSessionStart,
+    required this.bellOnSessionEnd,
+    required this.ambienceIsOn,
     required this.ambienceSelected,
     required this.ambienceVolume,
     required this.vibrateOnCompletion,
@@ -107,6 +108,8 @@ class AppState {
     Set<int>? bellTimesToRing,
     double? bellVolume,
     bool? bellOnSessionStart,
+    bool? bellOnSessionEnd,
+    bool? ambienceIsOn,
     Ambience? ambienceSelected,
     double? ambienceVolume,
     bool? vibrateOnCompletion,
@@ -118,37 +121,38 @@ class AppState {
     bool? animateSplash,
   }) {
     return AppState(
-      sessionState: sessionState ?? this.sessionState,
-      sessionHasStarted: sessionHasStarted ?? this.sessionHasStarted,
-      sessionStopped: sessionStopped ?? this.sessionStopped,
-      currentPage: currentPage ?? this.currentPage,
-      totalTimeMinutes: totalTimeMinutes ?? this.totalTimeMinutes,
-      initialTimeIsSet: initialTimeIsSet ?? this.initialTimeIsSet,
-      millisecondsRemaining:
-          millisecondsRemaining ?? this.millisecondsRemaining,
-      pausedMillisecondsRemaining:
-          pausedMillisecondsRemaining ?? this.pausedMillisecondsRemaining,
-      totalCountdownTime: totalCountdownTime ?? this.totalCountdownTime,
-      currentCountdownTime: currentCountdownTime ?? this.currentCountdownTime,
-      openSession: openSession ?? this.openSession,
-      bellIntervalMenuSelection:
-          bellIntervalMenuSelection ?? this.bellIntervalMenuSelection,
-      bellSelected: bellSelected ?? this.bellSelected,
-      bellIntervalTimeSelected:
-          bellIntervalTimeSelected ?? this.bellIntervalTimeSelected,
-      bellTimesToRing: bellTimesToRing ?? this.bellTimesToRing,
-      bellVolume: bellVolume ?? this.bellVolume,
-      bellOnSessionStart: bellOnSessionStart ?? this.bellOnSessionStart,
-      ambienceSelected: ambienceSelected ?? this.ambienceSelected,
-      ambienceVolume: ambienceVolume ?? this.ambienceVolume,
-      vibrateOnCompletion: vibrateOnCompletion ?? this.vibrateOnCompletion,
-      deviceIsMuted: deviceIsMuted ?? this.deviceIsMuted,
-      checkIfStatsUpdated: checkIfStatsUpdated ?? this.checkIfStatsUpdated,
-      colorTheme: colorTheme ?? this.colorTheme,
-      isDarkTheme: isDarkTheme ?? this.isDarkTheme,
-      hideClock: hideClock ?? this.hideClock,
-      animateSplash: animateSplash ?? this.animateSplash
-    );
+        sessionState: sessionState ?? this.sessionState,
+        sessionHasStarted: sessionHasStarted ?? this.sessionHasStarted,
+        sessionStopped: sessionStopped ?? this.sessionStopped,
+        currentPage: currentPage ?? this.currentPage,
+        totalTimeMinutes: totalTimeMinutes ?? this.totalTimeMinutes,
+        initialTimeIsSet: initialTimeIsSet ?? this.initialTimeIsSet,
+        millisecondsRemaining:
+            millisecondsRemaining ?? this.millisecondsRemaining,
+        pausedMillisecondsRemaining:
+            pausedMillisecondsRemaining ?? this.pausedMillisecondsRemaining,
+        totalCountdownTime: totalCountdownTime ?? this.totalCountdownTime,
+        currentCountdownTime: currentCountdownTime ?? this.currentCountdownTime,
+        openSession: openSession ?? this.openSession,
+        bellIntervalMenuSelection:
+            bellIntervalMenuSelection ?? this.bellIntervalMenuSelection,
+        bellSelected: bellSelected ?? this.bellSelected,
+        selectedIntervalBellTime:
+            bellIntervalTimeSelected ?? selectedIntervalBellTime,
+        bellTimesToRing: bellTimesToRing ?? this.bellTimesToRing,
+        bellVolume: bellVolume ?? this.bellVolume,
+        bellOnSessionStart: bellOnSessionStart ?? this.bellOnSessionStart,
+        bellOnSessionEnd: bellOnSessionEnd ?? this.bellOnSessionEnd,
+        ambienceIsOn: ambienceIsOn ?? this.ambienceIsOn,
+        ambienceSelected: ambienceSelected ?? this.ambienceSelected,
+        ambienceVolume: ambienceVolume ?? this.ambienceVolume,
+        vibrateOnCompletion: vibrateOnCompletion ?? this.vibrateOnCompletion,
+        deviceIsMuted: deviceIsMuted ?? this.deviceIsMuted,
+        checkIfStatsUpdated: checkIfStatsUpdated ?? this.checkIfStatsUpdated,
+        colorTheme: colorTheme ?? this.colorTheme,
+        isDarkTheme: isDarkTheme ?? this.isDarkTheme,
+        hideClock: hideClock ?? this.hideClock,
+        animateSplash: animateSplash ?? this.animateSplash);
   }
 }
 
@@ -166,9 +170,12 @@ class AppNotifier extends StateNotifier<AppState> {
       updatedTotalTime = currentTimeMinutes + (hours * 60);
     }
 
+    Set<int> intervals = calculateIntervals(
+        totalTime: updatedTotalTime, openSession: state.openSession);
+
     state = state.copyWith(
         totalTimeMinutes: updatedTotalTime,
-        bellIntervalMenuSelection: calculateIntervals(updatedTotalTime));
+        bellIntervalMenuSelection: intervals);
   }
 
   void isInitialTimeSet(bool set) {
@@ -179,13 +186,9 @@ class AppNotifier extends StateNotifier<AppState> {
     state = state.copyWith(sessionState: sessionState);
 
     if (sessionState == SessionState.notStarted) {
-
     } else if (sessionState == SessionState.countdown) {
-
     } else if (sessionState == SessionState.inProgress) {
-
     } else if (sessionState == SessionState.paused) {
-
     } else if (sessionState == SessionState.ended) {
       if (state.vibrateOnCompletion) {
         await vibrateDevice();
@@ -241,10 +244,6 @@ class AppNotifier extends StateNotifier<AppState> {
     state = state.copyWith(openSession: !state.openSession);
   }
 
-  void setBellMenuSelection(Set<int> times) {
-    state = state.copyWith(bellIntervalMenuSelection: times);
-  }
-
   void setBellIntervalTime(int time) async {
     await DatabaseManager()
         .insertIntoPrefs(k: Prefs.bellInterval.name, v: time);
@@ -253,44 +252,53 @@ class AppNotifier extends StateNotifier<AppState> {
   }
 
   void _calculateBellIntervalsAndTimes() {
-    if (state.bellIntervalTimeSelected == 0) {
+    if (state.selectedIntervalBellTime == 0) {
       return;
     }
-    Set<int> bellTimes = {};
-    int numberOfSounds =
-        state.totalTimeMinutes ~/ state.bellIntervalTimeSelected;
-    for (int i = 0; i < numberOfSounds; i++) {
-      int bellTime =
-          state.totalTimeMinutes - (state.bellIntervalTimeSelected * i);
-      bellTimes.add(bellTime);
-    }
+    List<int> possibleBellTimes = [1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 60];
 
-    state = state.copyWith(bellTimesToRing: bellTimes);
+    final bellTimes =
+        possibleBellTimes.takeWhile((value) => value < state.totalTimeMinutes);
+
+    // int numberOfSounds =
+    //     state.totalTimeMinutes ~/ state.selectedIntervalBellTime;
+    // for (int i = 0; i < numberOfSounds; i++) {
+    //   int bellTime =
+    //       state.totalTimeMinutes - (state.selectedIntervalBellTime * i);
+    //   bellTimes.add(bellTime);
+    // }
+    // bellTimes.insert(0, 0);
+
+    state = state.copyWith(bellTimesToRing: bellTimes.toSet());
   }
 
   void setBellSelected(Bell bell) async {
     state = state.copyWith(bellSelected: bell);
   }
 
-  void setBellOnSessionStart(bool onStart) {
-    state = state.copyWith(bellOnSessionStart: onStart);
+  void setBellOnSessionStart(bool start) {
+    state = state.copyWith(bellOnSessionStart: start);
   }
 
-  void setAmbienceSelected(Ambience ambience) async {
-    state = state.copyWith(ambienceSelected: ambience);
-    if (ambience == Ambience.none) {
-
-    }
+  void setBellOnSessionEnd(bool end) {
+    state = state.copyWith(bellOnSessionEnd: end);
   }
 
   void setBellVolume(double volume) {
     state = state.copyWith(ambienceVolume: volume);
+  }
 
+  void setAmbienceIsOn(bool on) {
+    state = state.copyWith(ambienceIsOn: on);
+  }
+
+  void setAmbienceSelected(Ambience ambience) async {
+    state = state.copyWith(ambienceSelected: ambience);
+    if (ambience == Ambience.none) {}
   }
 
   void setAmbienceVolume(double volume) {
     state = state.copyWith(ambienceVolume: volume);
-
   }
 
   void checkIfStatsUpdated(bool check) {
@@ -317,39 +325,40 @@ class AppNotifier extends StateNotifier<AppState> {
     state = state.copyWith(deviceIsMuted: muted);
   }
 
-  void setAnimateSplash(bool animate){
+  void setAnimateSplash(bool animate) {
     state = state.copyWith(animateSplash: animate);
   }
-
 }
 
 final stateProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
   return AppNotifier(AppState(
-      sessionState: SessionState.notStarted,
-      sessionHasStarted: false,
-      sessionStopped: false,
-      colorTheme: AppColorTheme.turquoise,
-      currentPage: 0,
-      totalTimeMinutes: 60,
-      initialTimeIsSet: false,
-      millisecondsRemaining: 0,
-      pausedMillisecondsRemaining: 0,
-      currentCountdownTime: 5,
-      totalCountdownTime: 6,
-      openSession: false,
-      bellIntervalMenuSelection: {1},
-      bellSelected: Bell.chime,
-      bellIntervalTimeSelected: 1,
-      bellTimesToRing: {},
-      bellVolume: 0.50,
-      bellOnSessionStart: true,
-      ambienceSelected: Ambience.none,
-      ambienceVolume: 0.50,
-      checkIfStatsUpdated: false,
-      hideClock: false,
-      vibrateOnCompletion: true,
-      deviceIsMuted: true,
-      isDarkTheme: true,
-      animateSplash: false,
+    sessionState: SessionState.notStarted,
+    sessionHasStarted: false,
+    sessionStopped: false,
+    colorTheme: AppColorTheme.turquoise,
+    currentPage: 0,
+    totalTimeMinutes: 60,
+    initialTimeIsSet: false,
+    millisecondsRemaining: 0,
+    pausedMillisecondsRemaining: 0,
+    currentCountdownTime: 5,
+    totalCountdownTime: 6,
+    openSession: false,
+    bellIntervalMenuSelection: {1},
+    bellSelected: Bell.chime,
+    selectedIntervalBellTime: 1,
+    bellTimesToRing: {},
+    bellVolume: 0.50,
+    bellOnSessionStart: true,
+    bellOnSessionEnd: true,
+    ambienceIsOn: false,
+    ambienceSelected: Ambience.none,
+    ambienceVolume: 0.50,
+    checkIfStatsUpdated: false,
+    hideClock: false,
+    vibrateOnCompletion: true,
+    deviceIsMuted: true,
+    isDarkTheme: true,
+    animateSplash: false,
   ));
 });

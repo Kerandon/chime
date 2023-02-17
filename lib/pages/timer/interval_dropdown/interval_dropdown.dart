@@ -41,7 +41,7 @@ class IntervalDropdown extends ConsumerWidget {
                         : e == 1
                             ? 'every ${e}min'
                             : 'every ${e}min',
-                    textAlign: TextAlign.center,
+                    textAlign: TextAlign.left,
                     style: Theme.of(context).textTheme.bodyMedium
                   ),
                 ],
@@ -52,14 +52,14 @@ class IntervalDropdown extends ConsumerWidget {
       );
     }
 
-    selectedValue = state.bellIntervalTimeSelected;
+    selectedValue = state.selectedIntervalBellTime;
     if (items.every((element) => element.value != selectedValue) &&
         items.isNotEmpty) {
       selectedValue = items.first.value;
     }
 
     return Align(
-      alignment: const Alignment(0, 1),
+      alignment: const Alignment(0.95, -0.90),
       child: SizedBox(
         height: size.height * 0.15,
         width: size.width * 0.60,

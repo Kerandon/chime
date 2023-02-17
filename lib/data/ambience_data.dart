@@ -5,12 +5,6 @@ import '../models/ambience_model.dart';
 
 List<AmbienceData> ambienceData = [
   AmbienceData(
-    ambience: Ambience.none,
-    icon: const Icon(
-      Icons.volume_off_outlined,
-    ),
-  ),
-  AmbienceData(
     ambience: Ambience.fireplace,
     icon: const Icon(
       Icons.fireplace_outlined,
@@ -48,12 +42,6 @@ List<AmbienceData> ambienceData = [
   ),
   AmbienceData(
     ambience: Ambience.meditationMusic4,
-    icon: const Icon(
-      Icons.piano_outlined,
-    ),
-  ),
-  AmbienceData(
-    ambience: Ambience.song,
     icon: const Icon(
       Icons.piano_outlined,
     ),

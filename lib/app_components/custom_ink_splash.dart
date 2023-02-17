@@ -20,7 +20,7 @@ class _CustomSplashState extends ConsumerState<CustomInkSplash>
   @override
   void initState() {
     _controller =
-        AnimationController(duration: Duration(milliseconds: 300), vsync: this);
+        AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
     super.initState();
   }
 
@@ -32,7 +32,7 @@ class _CustomSplashState extends ConsumerState<CustomInkSplash>
     if (state.animateSplash && !_controller.isAnimating) {
       _controller.reset();
       _controller.forward();
-      Future.delayed(Duration(milliseconds: 100), () {
+      Future.delayed(const Duration(milliseconds: 100), () {
         notifier.setAnimateSplash(false);
       });
     }
@@ -48,7 +48,7 @@ class _CustomSplashState extends ConsumerState<CustomInkSplash>
                   shape: BoxShape.circle,
                   color: Theme.of(context).splashColor,
                 )).animate().scaleXY(end: 1.10, curve: Curves.easeOut).fadeOut()
-              : SizedBox.shrink();
+              : const SizedBox.shrink();
         },
       ),
     );

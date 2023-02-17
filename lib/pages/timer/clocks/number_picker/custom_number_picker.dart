@@ -32,13 +32,13 @@ class CustomNumberPicker extends ConsumerWidget {
         children: [
           NumberPicker(
             textStyle: Theme.of(context).textTheme.displaySmall!.copyWith(
-              fontSize: 20, color: Theme.of(context).secondaryHeaderColor
+              fontSize: 15, color: Theme.of(context).secondaryHeaderColor
             ),
             selectedTextStyle: Theme.of(context)
                 .textTheme
                 .displayMedium,
             itemWidth: size.width * 0.15,
-            itemHeight: size.height * 0.08,
+            itemHeight: size.height * 0.06,
             minValue: 0,
             maxValue: text == 'M' ? 59 : 23,
             value: value,

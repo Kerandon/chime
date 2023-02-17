@@ -6,14 +6,17 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../configs/app_colors.dart';
 import '../../../state/app_state.dart';
 
-class BellOnStartTile extends ConsumerWidget {
-  const BellOnStartTile({
+class BellListTile extends ConsumerWidget {
+  const BellListTile({required this.text, required this.value, required this.onChanged,
     super.key,
   });
 
+  final String text;
+  final bool value;
+  final Function(bool) onChanged;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final size = MediaQuery.of(context).size;
     final state = ref.watch(stateProvider);
     final notifier = ref.read(stateProvider.notifier);
     return SwitchListTile(
@@ -22,27 +25,13 @@ class BellOnStartTile extends ConsumerWidget {
       title: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: EdgeInsets.only(right:  size.width * 0.05),
-            child: SizedBox(
-              width: size.width * 0.08,
-              child: const Align(
-                alignment: Alignment.centerLeft,
-                child: Icon(
-                  FontAwesomeIcons.bell,
-                ),
-              ),
-            ),
-          ),
-          const Text(
-            'Play bell on session start',
+          Text(
+            text,
           ),
         ],
       ),
-      value: state.bellOnSessionStart,
-      onChanged: (value) {
-        notifier.setBellOnSessionStart(value);
-      },
+      value: value,
+      onChanged: onChanged,
     );
   }
 }
