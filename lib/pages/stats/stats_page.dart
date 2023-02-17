@@ -126,7 +126,7 @@ class _StatsPageState extends ConsumerState<StatsPage> {
                                 builder: (context) => const MeditationHistoryPage()));
                       },
                       child: Text(
-                        'Clear meditation sessions',
+                        'Meditation history',
                         style: Theme.of(context).textTheme.bodySmall,
                       )),
                 )

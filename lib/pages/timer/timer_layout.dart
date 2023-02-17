@@ -69,7 +69,7 @@ class _TimerPageState extends ConsumerState<TimerLayout> {
               ),
               CustomHomeButton(
                 text: 'Ambience',
-                iconData: Icons.piano_off,
+                iconData: state.ambienceIsOn ? Icons.piano_outlined : Icons.piano_off_outlined,
                 onPressed: () {
                   Navigator.of(context).push(
                       MaterialPageRoute(builder: (context) => AmbiencePage()));

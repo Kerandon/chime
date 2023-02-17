@@ -10,7 +10,7 @@ class Colon extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return SizedBox(
-      width: size.width * 0.04,
+      width: size.width * 0.03,
       child: Text(
         ':',
         textAlign: TextAlign.center,

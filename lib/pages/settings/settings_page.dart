@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../configs/app_colors.dart';
 import '../../enums/prefs.dart';
 import '../../state/database_manager.dart';
+import '../stats/color_theme_page.dart';
 import 'mute_device/mute_device_page.dart';
 import 'components/settings_divider.dart';
 import 'components/settings_tile.dart';
@@ -79,7 +80,7 @@ class SettingsPage extends ConsumerWidget {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => const ColorThemePage(),
+                    builder: (context) => const ColorThemeP(),
                   ),
                 );
               },

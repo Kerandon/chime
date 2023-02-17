@@ -36,7 +36,9 @@ class _LastMeditationTimeTitleState extends State<LastMeditationTimeTitle> {
           DateTime now = DateTime.now();
 
           int daysSinceLastMeditation =
-              now.difference(lastEntry.dateTime).inDays;
+              now
+                  .difference(lastEntry.dateTime)
+                  .inDays;
 
           if (daysSinceLastMeditation == 0) {
             lastMeditationDays = 'today';
@@ -45,6 +47,7 @@ class _LastMeditationTimeTitleState extends State<LastMeditationTimeTitle> {
           } else {
             lastMeditationDays = '$daysSinceLastMeditation days ago';
           }
+        }
 
           return RichText(
             textAlign: TextAlign.center,
@@ -70,8 +73,6 @@ class _LastMeditationTimeTitleState extends State<LastMeditationTimeTitle> {
               ],
             ),
           ).animate().fadeIn();
-        }
-        return const SizedBox.shrink();
       },
     );
   }

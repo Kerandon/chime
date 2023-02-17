@@ -13,7 +13,7 @@ class NumberBox extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return SizedBox(
-      width: size.width * 0.16,
+      width: size.width * 0.20,
       child: Text(
         number.toString().padLeft(2, '0'),
         style: Theme.of(context).textTheme.displayLarge,

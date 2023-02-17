@@ -97,8 +97,10 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
       children: [
         if (state.sessionState == SessionState.inProgress ||
             state.sessionState == SessionState.paused ||
-            state.openSession && state.sessionState != SessionState.countdown) ...[const SessionTimer()],
-
+            state.openSession &&
+                state.sessionState != SessionState.countdown) ...[
+          const SessionTimer()
+        ],
         if (!state.openSession &&
                 state.sessionState == SessionState.notStarted ||
             state.sessionState == SessionState.ended) ...[
@@ -108,8 +110,11 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
         if (state.sessionState == SessionState.countdown) ...[
           const Countdown()
         ],
-        if(state.openSession)...[  SizedBox(height: size.height * 0.02,)],
-
+        if (state.openSession) ...[
+          SizedBox(
+            height: size.height * 0.02,
+          )
+        ],
       ],
     );
   }

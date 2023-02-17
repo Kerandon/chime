@@ -19,6 +19,8 @@ const kChartBarLineWidth = 2.0;
 const kChartLabelsFontSize = 10.0;
 const kNoBarChartDataMsg = 'No meditation stats in this time period yet...';
 const kNoChartDataMsg = 'No meditation stats yet...';
+const kNoMeditationHistoryMsg = 'No meditation history yet...';
 const kSessionWillBeginShortly = "Your session will begin shortly...";
 const kNoOfXLabelsOnLineChart = 5;
+const kFadeInTimeMilliseconds = 200;
 

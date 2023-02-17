@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
 import '../../../../configs/constants.dart';
 import '../../../../state/app_state.dart';
 import 'colon.dart';
@@ -36,6 +35,6 @@ class _SessionClockState extends ConsumerState<SessionTimer> {
           NumberBox(seconds),
         ],
       ),
-    ).animate().fadeIn(delay: 100.milliseconds);
+    ).animate().fadeIn(delay: kFadeInTimeMilliseconds.milliseconds);
   }
 }

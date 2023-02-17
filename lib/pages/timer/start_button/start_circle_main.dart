@@ -51,24 +51,27 @@ class _CustomCircularIndicatorState
       percent = 0;
     }
 
-    return Stack(
-      children: [
-        Align(
-          alignment: Alignment(0,-0.55),
-          child: SizedBox(
-            height: size.height * 0.32,
-            width: size.height * 0.32,
-            child: CustomPaint(
-              painter: CustomProgressCircle(
-                percentage: percent,
-                circleColor: Theme.of(context).primaryColorDark,
-                dashColor: Theme.of(context).primaryColor,
+    return SizedBox(
+      width: size.width * 0.90,
+      child: Stack(
+        children: [
+          Align(
+            alignment: Alignment(0,-0.55),
+            child: SizedBox(
+              height: size.height * 0.32,
+              width: size.height * 0.32,
+              child: CustomPaint(
+                painter: CustomProgressCircle(
+                  percentage: percent,
+                  circleColor: Theme.of(context).primaryColorDark,
+                  dashColor: Theme.of(context).primaryColor,
+                ),
+                child: CenterButton(),
               ),
-              child: CenterButton(),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

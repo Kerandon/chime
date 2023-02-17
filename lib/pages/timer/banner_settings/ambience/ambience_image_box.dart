@@ -61,7 +61,7 @@ class AmbienceImageBox extends ConsumerWidget {
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(kBorderRadius),
-                        color: Theme.of(context).primaryColorDark.withOpacity(0.50)
+                        color: Theme.of(context).primaryColor
                       ),
                       child: Padding(
                         padding: EdgeInsets.all(size.width * 0.01),

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../state/app_state.dart';
-import '../../../settings/bell_on_start/bell_on_start_tile.dart';
+import 'bell_on_start_tile.dart';
 import 'interval_bell_box.dart';
 import 'bells_sounds_page.dart';
 
@@ -21,16 +21,10 @@ class BellDialog extends ConsumerWidget {
     times.insert(times.length, 0);
 
     return AlertDialog(
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(FontAwesomeIcons.bell),
-          Text(' Meditation bell setup'),
-        ],
-      ),
+      title: Text(' Meditation bell setup', textAlign: TextAlign.center,),
       content: SizedBox(
         width: size.width,
-        height: size.height * 0.65,
+        height: size.height * 0.70,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
