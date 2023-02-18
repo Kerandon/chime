@@ -85,7 +85,6 @@ class SettingsPage extends ConsumerWidget {
                 );
               },
             ),
-            const DarkThemeSwitchButton(),
             const SettingsTitleDivider(),
             SettingsTile(
                 icon: const Icon(

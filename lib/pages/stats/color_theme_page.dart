@@ -1,5 +1,5 @@
 import 'package:chime/configs/constants.dart';
-import 'package:chime/pages/settings/dark_mode/dark_mode_switch_button.dart';
+import 'package:chime/pages/settings/color_theme/dark_mode_switch_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';

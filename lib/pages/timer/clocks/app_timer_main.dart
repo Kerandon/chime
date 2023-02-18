@@ -1,11 +1,12 @@
 import 'package:chime/enums/session_state.dart';
+import 'package:chime/pages/timer/clocks/session_countdown/countdown_timer.dart';
 import 'package:chime/pages/timer/clocks/session_countdown/session_timer.dart';
 import 'package:chime/pages/timer/clocks/number_picker/set_time_layout.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quiver/async.dart';
 import '../../../state/app_state.dart';
-import 'countdown/countdown.dart';
 
 class AppTimerMain extends ConsumerStatefulWidget {
   const AppTimerMain({
@@ -36,10 +37,10 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
       case SessionState.countdown:
         if (!_timerIsSet) {
           _timer = CountdownTimer(
-              Duration(milliseconds: (state.totalCountdownTime * 1000)),
+              Duration(
+                  milliseconds: ((state.totalCountdownTime * 1000) + 1000)),
               const Duration(milliseconds: 1))
             ..listen((event) {
-              print(event.remaining.inSeconds);
               if (event.remaining.inSeconds == 0 && !_countDownHasFinished) {
                 notifier.setSessionState(SessionState.inProgress);
                 _timerIsSet = false;
@@ -54,7 +55,7 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
       case SessionState.inProgress:
         if (!_timerIsSet) {
           if (!state.openSession) {
-            var t = state.totalTimeMinutes * 60000 + 1000;
+            var t = (state.totalTimeMinutes * 60000) + 900;
             if (state.pausedMillisecondsRemaining != 0) {
               t = state.pausedMillisecondsRemaining;
             }
@@ -91,30 +92,29 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
         break;
     }
 
+    bool showTimePicker = false;
+    bool showSessionTimer = false;
+
+    if (state.sessionState == SessionState.notStarted && !state.openSession) {
+      showTimePicker = true;
+    }
+    if (!showTimePicker && state.sessionState != SessionState.countdown) {
+      showSessionTimer = true;
+    }
+
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.end,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        if (state.sessionState == SessionState.inProgress ||
-            state.sessionState == SessionState.paused ||
-            state.openSession &&
-                state.sessionState != SessionState.countdown) ...[
-          const SessionTimer()
-        ],
-        if (!state.openSession &&
-                state.sessionState == SessionState.notStarted ||
-            state.sessionState == SessionState.ended) ...[
-          const SetTimeFieldLayout(),
-          //Countdown(),
+        if (showTimePicker) ...[
+          const TimePickerMain(),
         ],
         if (state.sessionState == SessionState.countdown) ...[
-          const Countdown()
+          const CountDownTimer(),
         ],
-        if (state.openSession) ...[
-          SizedBox(
-            height: size.height * 0.02,
-          )
-        ],
+        if (showSessionTimer) ...[
+          const SessionTimer(),
+        ]
       ],
     );
   }

@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:chime/configs/constants.dart';
 import 'package:chime/enums/app_color_themes.dart';
 import 'package:chime/pages/home.dart';
 import 'package:chime/state/database_manager.dart';
@@ -66,12 +68,14 @@ class _ChimeAppState extends ConsumerState<ChimeApp> {
         if (snapshot.hasData) {
           final prefsModel = snapshot.data[0];
 
-
-          colorTheme = AppColors.themeColors.firstWhere((element) => element.color.name == state.colorTheme.name).color;
+          colorTheme = AppColors.themeColors
+              .firstWhere(
+                  (element) => element.color.name == state.colorTheme.name)
+              .color;
 
           // colorTheme = AppColorTheme.values.firstWhere((element) => element.name == state.colorTheme.name);
 
-                   WidgetsBinding.instance.addPostFrameCallback(
+          WidgetsBinding.instance.addPostFrameCallback(
             (timeStamp) {
               if (!_prefsUpdated) {
                 // notifier.setTotalTime(minutes: prefsModel!.totalTime);
@@ -99,7 +103,7 @@ class _ChimeAppState extends ConsumerState<ChimeApp> {
           );
         }
 
-        final appTheme= CustomAppTheme.getThemeData(
+        final appTheme = CustomAppTheme.getThemeData(
             theme: colorTheme,
             brightness: state.isDarkTheme ? Brightness.dark : Brightness.light);
 
@@ -112,4 +116,3 @@ class _ChimeAppState extends ConsumerState<ChimeApp> {
     );
   }
 }
-

@@ -97,6 +97,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.1"
+  carousel_slider:
+    dependency: "direct main"
+    description:
+      name: carousel_slider
+      sha256: "9c695cc963bf1d04a47bd6021f68befce8970bcd61d24938e1fb0918cf5d9c42"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "4.2.1"
   characters:
     dependency: transitive
     description:
@@ -254,6 +262,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.2.17"
+  flutter_picker:
+    dependency: "direct main"
+    description:
+      name: flutter_picker
+      sha256: "2f94c6eefba8697b07e3cd008b75f06b4ba7053cb26d23ae0fcd5932b7dc75af"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.1.0"
   flutter_riverpod:
     dependency: transitive
     description:

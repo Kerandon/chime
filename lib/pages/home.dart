@@ -3,7 +3,7 @@ import 'package:chime/pages/guide_page.dart';
 import 'package:chime/pages/settings/settings_page.dart';
 import 'package:chime/pages/stats/stats_page.dart';
 import 'package:chime/pages/timer/stop_button.dart';
-import 'package:chime/pages/timer/timer_layout.dart';
+import 'package:chime/pages/timer/timer_page_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../animation/slide_animation.dart';
@@ -22,7 +22,7 @@ class Home extends ConsumerStatefulWidget {
 
 class _HomePageContentsState extends ConsumerState<Home> {
   static const List<Widget> _pageOptions = [
-    TimerLayout(),
+    TimerPageLayout(),
     SettingsPage(),
     StatsPage(),
     GuidePage(),

@@ -53,10 +53,11 @@ class _CustomCircularIndicatorState
 
     return SizedBox(
       width: size.width * 0.90,
+      height: size.width * 0.90,
       child: Stack(
         children: [
           Align(
-            alignment: Alignment(0,-0.55),
+            alignment: Alignment(0.0,0.0),
             child: SizedBox(
               height: size.height * 0.32,
               width: size.height * 0.32,

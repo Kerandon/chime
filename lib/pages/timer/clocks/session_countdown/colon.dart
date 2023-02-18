@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class Colon extends StatelessWidget {
   const Colon({
@@ -14,7 +15,7 @@ class Colon extends StatelessWidget {
       child: Text(
         ':',
         textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.displayMedium,
+        style: Theme.of(context).textTheme.displaySmall,
       ),
     );
   }

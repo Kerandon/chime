@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:numberpicker/numberpicker.dart';
+import '../../../../configs/constants.dart';
 import '../../../../state/app_state.dart';
 
 class CustomNumberPicker extends ConsumerWidget {
@@ -32,11 +34,8 @@ class CustomNumberPicker extends ConsumerWidget {
         children: [
           NumberPicker(
             textStyle: Theme.of(context).textTheme.displaySmall!.copyWith(
-              fontSize: 15, color: Theme.of(context).secondaryHeaderColor
-            ),
-            selectedTextStyle: Theme.of(context)
-                .textTheme
-                .displayMedium,
+                fontSize: 15, color: Theme.of(context).secondaryHeaderColor),
+            selectedTextStyle: Theme.of(context).textTheme.displaySmall,
             itemWidth: size.width * 0.15,
             itemHeight: size.height * 0.06,
             minValue: 0,
@@ -57,6 +56,6 @@ class CustomNumberPicker extends ConsumerWidget {
           ),
         ],
       ),
-    );
+    ).animate().fadeIn(duration: kFadeInTimeMilliseconds.milliseconds);
   }
 }
