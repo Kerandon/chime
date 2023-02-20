@@ -13,14 +13,16 @@ class AppState {
   //APP STATE
   final SessionState sessionState;
   final bool sessionHasStarted;
-  final bool sessionStopped;
+  //final bool sessionStopped;
   final int currentPage;
 
   //TIME
   final int totalTimeMinutes;
   final bool initialTimeIsSet;
   final int millisecondsRemaining;
-  final int pausedMillisecondsRemaining;
+  final int millisecondsElapsed;
+  final int pausedMilliseconds;
+  final bool countdownIsOn;
   final int totalCountdownTime;
   final int currentCountdownTime;
   final bool openSession;
@@ -61,12 +63,14 @@ class AppState {
   AppState({
     required this.sessionState,
     required this.sessionHasStarted,
-    required this.sessionStopped,
+    //required this.sessionStopped,
     required this.currentPage,
     required this.totalTimeMinutes,
     required this.initialTimeIsSet,
     required this.millisecondsRemaining,
-    required this.pausedMillisecondsRemaining,
+    required this.millisecondsElapsed,
+    required this.pausedMilliseconds,
+    required this.countdownIsOn,
     required this.totalCountdownTime,
     required this.currentCountdownTime,
     required this.openSession,
@@ -94,11 +98,13 @@ class AppState {
     bool? sessionHasStarted,
     FocusState? focusState,
     int? currentPage,
-    bool? sessionStopped,
+    //bool? sessionStopped,
     int? totalTimeMinutes,
     bool? initialTimeIsSet,
     int? millisecondsRemaining,
-    int? pausedMillisecondsRemaining,
+    int? millisecondsElapsed,
+    int? pausedMilliseconds,
+    bool? countdownIsOn,
     int? totalCountdownTime,
     int? currentCountdownTime,
     bool? openSession,
@@ -123,14 +129,15 @@ class AppState {
     return AppState(
         sessionState: sessionState ?? this.sessionState,
         sessionHasStarted: sessionHasStarted ?? this.sessionHasStarted,
-        sessionStopped: sessionStopped ?? this.sessionStopped,
+        //sessionStopped: sessionStopped ?? this.sessionStopped,
         currentPage: currentPage ?? this.currentPage,
         totalTimeMinutes: totalTimeMinutes ?? this.totalTimeMinutes,
         initialTimeIsSet: initialTimeIsSet ?? this.initialTimeIsSet,
         millisecondsRemaining:
             millisecondsRemaining ?? this.millisecondsRemaining,
-        pausedMillisecondsRemaining:
-            pausedMillisecondsRemaining ?? this.pausedMillisecondsRemaining,
+        millisecondsElapsed: millisecondsElapsed ?? this.millisecondsElapsed,
+        pausedMilliseconds: pausedMilliseconds ?? this.pausedMilliseconds,
+        countdownIsOn: countdownIsOn ?? this.countdownIsOn,
         totalCountdownTime: totalCountdownTime ?? this.totalCountdownTime,
         currentCountdownTime: currentCountdownTime ?? this.currentCountdownTime,
         openSession: openSession ?? this.openSession,
@@ -159,23 +166,35 @@ class AppState {
 class AppNotifier extends StateNotifier<AppState> {
   AppNotifier(state) : super(state);
 
-  void setTotalTime({int? minutes, int? hours}) {
+  void setTotalTime({int? minutes, int? hours, bool afterRestart = false}) {
+    int updatedTotalTime = 0;
     int currentTimeMinutes = state.totalTimeMinutes % 60;
     int currentTimeHours = state.totalTimeMinutes ~/ 60;
-    int updatedTotalTime = 0;
+    updatedTotalTime = 0;
     if (minutes != null) {
       updatedTotalTime = (currentTimeHours * 60) + minutes;
     }
     if (hours != null) {
       updatedTotalTime = currentTimeMinutes + (hours * 60);
     }
-
     Set<int> intervals = calculateIntervals(
         totalTime: updatedTotalTime, openSession: state.openSession);
 
     state = state.copyWith(
         totalTimeMinutes: updatedTotalTime,
         bellIntervalMenuSelection: intervals);
+
+    print('updated total time is ${updatedTotalTime}');
+
+    DatabaseManager()
+        .insertIntoPrefs(k: Prefs.timeTotal.name, v: updatedTotalTime);
+  }
+
+  void setTotalTimeAfterRestart(int total) {
+    Set<int> intervals =
+        calculateIntervals(totalTime: total, openSession: state.openSession);
+    state = state.copyWith(
+        totalTimeMinutes: total, bellIntervalMenuSelection: intervals);
   }
 
   void isInitialTimeSet(bool set) {
@@ -203,15 +222,15 @@ class AppNotifier extends StateNotifier<AppState> {
 
   void resetSession() {
     state = state.copyWith(
-      pausedMillisecondsRemaining: 0,
+      pausedMilliseconds: 0,
       currentCountdownTime: 0,
       millisecondsRemaining: 0,
     );
   }
 
-  void setSessionStopped(bool stopped) {
-    state = state.copyWith(sessionStopped: stopped);
-  }
+  // void setSessionStopped(bool stopped) {
+  //   state = state.copyWith(sessionStopped: stopped);
+  // }
 
   void setPage(int index) {
     state = state.copyWith(currentPage: index);
@@ -219,6 +238,10 @@ class AppNotifier extends StateNotifier<AppState> {
 
   void setMillisecondsRemaining(int milliseconds) {
     state = state.copyWith(millisecondsRemaining: milliseconds);
+  }
+
+  void setMillisecondsElapsed(int milliseconds) {
+    state = state.copyWith(millisecondsElapsed: milliseconds);
   }
 
   void setPausedTimeMillisecondsRemaining({bool? reset}) {
@@ -229,7 +252,11 @@ class AppNotifier extends StateNotifier<AppState> {
       time = state.millisecondsRemaining;
     }
 
-    state = state.copyWith(pausedMillisecondsRemaining: time);
+    state = state.copyWith(pausedMilliseconds: time);
+  }
+
+  void setCountdownIsOn(bool on) {
+    state = state.copyWith(countdownIsOn: on);
   }
 
   void setTotalCountdownTime(int time) {
@@ -334,13 +361,15 @@ final stateProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
   return AppNotifier(AppState(
     sessionState: SessionState.notStarted,
     sessionHasStarted: false,
-    sessionStopped: false,
+    //sessionStopped: false,
     colorTheme: AppColorTheme.turquoise,
     currentPage: 0,
     totalTimeMinutes: 60,
     initialTimeIsSet: false,
     millisecondsRemaining: 0,
-    pausedMillisecondsRemaining: 0,
+    millisecondsElapsed: 0,
+    pausedMilliseconds: 0,
+    countdownIsOn: false,
     currentCountdownTime: 5,
     totalCountdownTime: 6,
     openSession: false,

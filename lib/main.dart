@@ -72,15 +72,12 @@ class _ChimeAppState extends ConsumerState<ChimeApp> {
               .firstWhere(
                   (element) => element.color.name == state.colorTheme.name)
               .color;
-
-          // colorTheme = AppColorTheme.values.firstWhere((element) => element.name == state.colorTheme.name);
-
           WidgetsBinding.instance.addPostFrameCallback(
             (timeStamp) {
               if (!_prefsUpdated) {
-                // notifier.setTotalTime(minutes: prefsModel!.totalTime);
-                notifier.setTotalTime(minutes: prefsModel!.totalTime);
+                notifier.setTotalTimeAfterRestart(prefsModel.totalTime);
                 notifier.setTotalCountdownTime(prefsModel.totalCountdown);
+                notifier.setCountdownIsOn(prefsModel.countdownIsOn);
                 notifier.setBellSelected(prefsModel.bellSelected);
                 notifier.setBellIntervalTime(prefsModel.bellInterval);
                 notifier.setBellVolume(prefsModel.bellVolume);

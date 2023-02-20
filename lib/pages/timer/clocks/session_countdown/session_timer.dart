@@ -28,9 +28,16 @@ class _SessionClockState extends ConsumerState<SessionTimer> {
 
     if (state.sessionState == SessionState.inProgress ||
         state.sessionState == SessionState.paused) {
-      hours = (state.millisecondsRemaining ~/ 3600000);
-      minutes = ((state.millisecondsRemaining ~/ 60000) % 60);
-      seconds = ((state.millisecondsRemaining ~/ 1000) % 60);
+      if(!state.openSession) {
+        hours = (state.millisecondsRemaining ~/ 3600000);
+        minutes = ((state.millisecondsRemaining ~/ 60000) % 60);
+        seconds = ((state.millisecondsRemaining ~/ 1000) % 60);
+      }
+      if(state.openSession){
+        hours = (state.millisecondsElapsed ~/ 3600000);
+        minutes = ((state.millisecondsElapsed ~/ 60000) % 60);
+        seconds = ((state.millisecondsElapsed ~/ 1000) % 60);
+      }
     }
 
     return SizedBox(

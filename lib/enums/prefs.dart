@@ -8,6 +8,7 @@ enum Prefs {
   bellOnStart,
 
   colorTheme,
+  countdownIsOn,
   themeBrightness,
 
   hideClock,

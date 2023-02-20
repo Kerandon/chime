@@ -43,13 +43,13 @@ class _TimerPageState extends ConsumerState<TimerPageLayout> {
           ],
           Column(
             children: [
-              Container(
+              SizedBox(
                 height: size.height * 0.30,
                 child: const AppTimerMain()
                     .animate()
                     .fadeIn(duration: kFadeInTimeMilliseconds.milliseconds),
               ),
-              Container(
+              SizedBox(
                 height: size.height * 0.50,
                 width: size.width,
                 child: const Center(

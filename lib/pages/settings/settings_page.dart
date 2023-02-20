@@ -60,7 +60,7 @@ class SettingsPage extends ConsumerWidget {
                 Icons.timer_outlined,
               ),
               title: 'Warmup countdown',
-              subTitle: '${state.totalCountdownTime.toString()} seconds',
+              subTitle: state.countdownIsOn ? '${state.totalCountdownTime.toString()} seconds' : 'Countdown is off',
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => const CountdownPage()));

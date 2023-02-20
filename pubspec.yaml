@@ -93,9 +93,11 @@ flutter:
   assets:
     - assets/images/
     - assets/images/ambience/
+    - assets/images/completion/
     - assets/audio/
     - assets/audio/bells/
     - assets/audio/ambience/
+
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

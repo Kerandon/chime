@@ -28,7 +28,7 @@ class StopButton extends ConsumerWidget {
               backgroundColor: Theme.of(context).splashColor.withOpacity(0.10),
             ),
             onPressed: () {
-              notifier.setSessionStopped(true);
+             // notifier.setSessionStopped(true);
               WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                 notifier.setSessionState(SessionState.notStarted);
                 notifier.resetSession();

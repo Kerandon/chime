@@ -38,9 +38,11 @@ class CenterButton extends ConsumerWidget {
                           notifier.setAnimateSplash(true);
                         });
                         if (state.sessionState == SessionState.notStarted) {
-                          // notifier.setSessionStopped(false);
-
-                          notifier.setSessionState(SessionState.countdown);
+                          if (state.countdownIsOn) {
+                            notifier.setSessionState(SessionState.countdown);
+                          }else{
+                            notifier.setSessionState(SessionState.inProgress);
+                          }
                         }
 
                         if (state.sessionState == SessionState.inProgress) {

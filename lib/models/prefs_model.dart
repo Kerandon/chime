@@ -7,6 +7,7 @@ class PrefsModel {
 
   final int totalTime;
   final int totalCountdown;
+  final bool countdownIsOn;
 
   final Bell bellSelected;
   final double bellVolume;
@@ -24,6 +25,7 @@ class PrefsModel {
   PrefsModel({
     required this.totalTime,
     required this.totalCountdown,
+    required this.countdownIsOn,
     required this.bellSelected,
     required this.bellVolume,
     required this.bellOnStart,
@@ -38,6 +40,7 @@ class PrefsModel {
   factory PrefsModel.fromListMap(List<Map<String, dynamic>> listMap) {
     int totalTime = 60;
     int timeCountdown = 5;
+    bool countdownIsOn = true;
     Ambience ambienceSelected = Ambience.none;
     double ambienceVolume = 0.5;
     Bell bellSelected = Bell.chime;
@@ -57,6 +60,16 @@ class PrefsModel {
 
       if (prefKey == Prefs.timeCountdown.name) {
         timeCountdown = listMap[i].entries.elementAt(1).value;
+      }
+
+      if(prefKey == Prefs.countdownIsOn.name){
+        final value = listMap[i].entries.elementAt(1).value;
+        if(value == 0){
+          countdownIsOn = false;
+        }else{
+          countdownIsOn = true;
+        }
+
       }
 
       if (prefKey == Prefs.ambienceSelected.name) {
@@ -105,6 +118,7 @@ class PrefsModel {
     return PrefsModel(
       totalTime: totalTime,
       totalCountdown: timeCountdown,
+      countdownIsOn: countdownIsOn,
       bellSelected: bellSelected,
       bellInterval: bellInterval,
       bellVolume: bellVolume,

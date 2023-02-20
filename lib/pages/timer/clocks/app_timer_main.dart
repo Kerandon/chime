@@ -3,10 +3,10 @@ import 'package:chime/pages/timer/clocks/session_countdown/countdown_timer.dart'
 import 'package:chime/pages/timer/clocks/session_countdown/session_timer.dart';
 import 'package:chime/pages/timer/clocks/number_picker/set_time_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quiver/async.dart';
 import '../../../state/app_state.dart';
+import '../../completion_page.dart';
 
 class AppTimerMain extends ConsumerStatefulWidget {
   const AppTimerMain({
@@ -38,7 +38,9 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
         if (!_timerIsSet) {
           _timer = CountdownTimer(
               Duration(
-                  milliseconds: ((state.totalCountdownTime * 1000) + 1000)),
+                  milliseconds: ((
+                      state.totalCountdownTime * 1000
+                      ) + 1000)),
               const Duration(milliseconds: 1))
             ..listen((event) {
               if (event.remaining.inSeconds == 0 && !_countDownHasFinished) {
@@ -47,17 +49,22 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
                 _countDownHasFinished = true;
               }
               notifier.setCurrentCountdownTime(event.remaining.inSeconds);
+
             });
 
           _timerIsSet = true;
         }
         break;
       case SessionState.inProgress:
-        if (!_timerIsSet) {
           if (!state.openSession) {
-            var t = (state.totalTimeMinutes * 60000) + 900;
-            if (state.pausedMillisecondsRemaining != 0) {
-              t = state.pausedMillisecondsRemaining;
+            if(!_timerIsSet){
+            var t = (
+               // state.totalTimeMinutes * 60000
+                1000
+            )
+                + 900;
+            if (state.pausedMilliseconds != 0) {
+              t = state.pausedMilliseconds;
             }
 
             _timer = CountdownTimer(
@@ -65,16 +72,30 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
               ..listen((event) {
                 notifier
                     .setMillisecondsRemaining(event.remaining.inMilliseconds);
+              }).onDone(() {
+                if(state.sessionState == SessionState.inProgress){
+                  print('session done');
+                  notifier.setSessionState(SessionState.ended);
+                  showDialog(context: context, builder: (context) => CompletionPage()).then((value) async {
+                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                      notifier.setSessionState(SessionState.notStarted);
+                      notifier.resetSession();
+                    });
+                  });
+                }
+
               });
             _timerIsSet = true;
           }
         } else {
           if (!_timerIsSet) {
-            _timer =
-                CountdownTimer(Duration(days: 1), Duration(milliseconds: 1))
-                  ..listen((event) {
-                    print(event.elapsed.inMilliseconds);
-                  });
+            /// AFTER 23 HOURS, 59 MINUTES AND 59 SECONDS (MAX)
+            _timer = CountdownTimer(const Duration(seconds: 86399),
+                const Duration(milliseconds: 1))
+              ..listen((event) {
+                print(event.elapsed.inMilliseconds);
+                notifier.setMillisecondsElapsed(event.elapsed.inMilliseconds);
+              });
             _timerIsSet = true;
           }
         }
