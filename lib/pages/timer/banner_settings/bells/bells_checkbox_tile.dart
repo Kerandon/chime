@@ -26,7 +26,6 @@ class BellsCheckBoxTile extends ConsumerWidget {
             padding: EdgeInsets.only(left: size.width * 0.03),
             child: Text(
               bell.toText(),
-              style: Theme.of(context).textTheme.bodySmall,
             ),
           ),
         ],

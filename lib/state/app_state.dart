@@ -13,6 +13,7 @@ class AppState {
   //APP STATE
   final SessionState sessionState;
   final bool sessionHasStarted;
+
   //final bool sessionStopped;
   final int currentPage;
 
@@ -184,8 +185,6 @@ class AppNotifier extends StateNotifier<AppState> {
         totalTimeMinutes: updatedTotalTime,
         bellIntervalMenuSelection: intervals);
 
-    print('updated total time is ${updatedTotalTime}');
-
     DatabaseManager()
         .insertIntoPrefs(k: Prefs.timeTotal.name, v: updatedTotalTime);
   }
@@ -228,10 +227,6 @@ class AppNotifier extends StateNotifier<AppState> {
     );
   }
 
-  // void setSessionStopped(bool stopped) {
-  //   state = state.copyWith(sessionStopped: stopped);
-  // }
-
   void setPage(int index) {
     state = state.copyWith(currentPage: index);
   }
@@ -244,12 +239,16 @@ class AppNotifier extends StateNotifier<AppState> {
     state = state.copyWith(millisecondsElapsed: milliseconds);
   }
 
-  void setPausedTimeMillisecondsRemaining({bool? reset}) {
+  void setPausedTimeMilliseconds({bool? reset}) {
     int? time;
     if (reset == true) {
       time = 0;
     } else {
-      time = state.millisecondsRemaining;
+      if (state.openSession) {
+        time = state.millisecondsElapsed;
+      } else {
+        time = state.millisecondsRemaining;
+      }
     }
 
     state = state.copyWith(pausedMilliseconds: time);

@@ -15,7 +15,7 @@ class BellsSoundsPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const SettingsTitle(
-            icon: Icon(Icons.audiotrack_outlined), text: 'Bell Sounds'),
+            icon: Icon(Icons.audiotrack_outlined), text: 'Bell Sound'),
       ),
       body: SingleChildScrollView(
         child: Column(

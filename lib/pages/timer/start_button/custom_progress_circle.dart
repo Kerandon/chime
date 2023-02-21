@@ -23,9 +23,9 @@ class CustomProgressCircle extends CustomPainter {
     double centerX = size.width;
     double centerY = size.height;
     Offset center = Offset(centerX / 2, centerY / 2);
-    double radius = math.min(centerX * 0.40, centerY * 0.40);
-    double dotBuffer = size.width * 0.05;
-    int dotBufferMultiplier = 4;
+    double radius = math.min(centerX * 0.45, centerY * 0.45);
+    double dotBuffer = size.width * 0.03;
+    int dotBufferMultiplier = 3;
     int numberOfDashesMultiplier = 12; /// 360 / 6 = 60;
 
     /// Dash Background

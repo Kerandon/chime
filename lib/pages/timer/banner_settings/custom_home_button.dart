@@ -1,4 +1,4 @@
-import 'package:chime/animation/pop_in_animation.dart';
+import 'package:chime/animation/pop_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -27,7 +27,7 @@ class CustomHomeButton extends ConsumerWidget {
     final state = ref.watch(stateProvider);
     return FittedBox(
       child: PopAnimation(
-        animate: state.sessionState == SessionState.countdown,
+        animate: state.sessionState == SessionState.countdown || state.sessionState == SessionState.inProgress,
         reset: state.sessionState == SessionState.notStarted,
         reverse: true,
         child: Align(

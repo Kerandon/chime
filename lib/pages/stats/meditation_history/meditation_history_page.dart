@@ -1,10 +1,7 @@
-import 'package:chime/app_components/lotus_icon.dart';
 import 'package:chime/pages/stats/meditation_history/select_history.dart';
-import 'package:chime/pages/stats/stats_page.dart';
 import 'package:chime/state/database_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../../../configs/constants.dart';
 import '../../../models/stats_model.dart';
 import '../../home.dart';
 import 'meditiation_event_tile.dart';

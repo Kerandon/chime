@@ -33,7 +33,7 @@ class CountdownPage extends ConsumerWidget {
                 child: SwitchListTile(
                     inactiveTrackColor: AppColors.grey,
                     inactiveThumbColor: AppColors.lightGrey,
-                    title: Text('Turn on countdown'),
+                    title: const Text('Turn on countdown'),
                     value: state.countdownIsOn, onChanged: (value) async {
                       notifier.setCountdownIsOn(!state.countdownIsOn);
 

@@ -22,7 +22,7 @@ class _PopAnimationState extends State<PopAnimation>
   @override
   void initState() {
     _controller =
-        AnimationController(duration: const Duration(milliseconds: 500), vsync: this);
+        AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
 
     double begin = 0.0, end = 1.0;
     if(widget.reverse){

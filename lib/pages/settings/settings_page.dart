@@ -10,7 +10,6 @@ import '../stats/color_theme_page.dart';
 import 'mute_device/mute_device_page.dart';
 import 'components/settings_divider.dart';
 import 'components/settings_tile.dart';
-import 'color_theme/color_theme_page.dart';
 import 'countdown/countdown_page.dart';
 
 

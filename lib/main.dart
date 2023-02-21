@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:chime/configs/constants.dart';
 import 'package:chime/enums/app_color_themes.dart';
 import 'package:chime/pages/home.dart';
 import 'package:chime/state/database_manager.dart';

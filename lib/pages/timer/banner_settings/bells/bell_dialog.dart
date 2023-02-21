@@ -1,6 +1,5 @@
 import 'package:chime/enums/bell.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../state/app_state.dart';
 import 'bell_on_start_tile.dart';
@@ -20,11 +19,19 @@ class BellDialog extends ConsumerWidget {
 
     times.insert(times.length, 0);
 
+    double bellHeight = size.height * 0.15;
+    if(times.length > 5 && times.length <= 10){
+      bellHeight = size.height * 0.20;
+    }
+    if(times.length > 10){
+      bellHeight = size.height * 0.25;
+    }
+
     return AlertDialog(
-      title: Text(' Meditation bell setup', textAlign: TextAlign.center,),
+      title: const Text(' Meditation bell options', textAlign: TextAlign.center,),
       content: SizedBox(
         width: size.width,
-        height: size.height * 0.70,
+        height: size.height * 0.80,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,47 +39,46 @@ class BellDialog extends ConsumerWidget {
             Padding(
               padding: EdgeInsets.only(
                   top: size.height * 0.03, bottom: size.height * 0.01),
-              child: Text(
-                ' Interval bell frequency',
-                style: Theme.of(context).textTheme.labelSmall,
+              child: const Text(
+                ' Set interval bell every:',
               ),
             ),
             SizedBox(
-              height: size.height * 0.25,
+              height: bellHeight,
               child: GridView.builder(
                   itemCount: times.length,
                   itemBuilder: (context, index) {
                     return IntervalBellBox(time: times.elementAt(index));
                   },
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 4,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 5,
                       crossAxisSpacing: 6,
                       mainAxisSpacing: 6)),
             ),
-            Divider(),
+            const Divider(),
             Column(
               children: [
                 BellListTile(
-                  text: 'Bell on session begin',
+                  text: 'Bell on begin',
                   value: state.bellOnSessionStart,
                   onChanged: (value) {
                     notifier.setBellOnSessionStart(value);
                   },
                 ),
                 BellListTile(
-                  text: 'Bell on session end',
+                  text: 'Bell on end',
                   value: state.bellOnSessionEnd,
                   onChanged: (value) {
                     notifier.setBellOnSessionEnd(value);
                   },
                 ),
-                Divider(),
+                const Divider(),
                 ListTile(
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => BellsSoundsPage()));
+                        builder: (context) => const BellsSoundsPage()));
                   },
-                  title: Text('Bell sound'),
+                  title: const Text('Bell sound'),
                   subtitle: Text(state.bellSelected.toText(),
                       style: Theme.of(context)
                           .textTheme
@@ -95,7 +101,7 @@ class BellDialog extends ConsumerWidget {
                 onPressed: () async {
                   await Navigator.of(context).maybePop();
                 },
-                child: Text('OK')))
+                child: const Text('OK')))
       ],
     );
   }

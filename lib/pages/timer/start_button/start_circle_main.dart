@@ -1,6 +1,7 @@
 import 'package:chime/state/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../../../configs/constants.dart';
 import 'center_button.dart';
 import 'custom_progress_circle.dart';
 
@@ -43,8 +44,8 @@ class _CustomCircularIndicatorState
 
     if (state.totalTimeMinutes != 0 && state.millisecondsRemaining != 0) {
       percent =
-          ((state.totalTimeMinutes * 60000) - state.millisecondsRemaining) /
-              (state.totalTimeMinutes * 60000);
+          (((state.totalTimeMinutes * 60000)+ kAdditionalStartTime) - state.millisecondsRemaining) /
+              ((state.totalTimeMinutes * 60000) + kAdditionalStartTime);
     }
 
     if (percent.isNegative) {
@@ -57,7 +58,7 @@ class _CustomCircularIndicatorState
       child: Stack(
         children: [
           Align(
-            alignment: Alignment(0.0,0.0),
+            alignment: const Alignment(0.0,0.0),
             child: SizedBox(
               height: size.height * 0.32,
               width: size.height * 0.32,
@@ -67,7 +68,7 @@ class _CustomCircularIndicatorState
                   circleColor: Theme.of(context).primaryColorDark,
                   dashColor: Theme.of(context).primaryColor,
                 ),
-                child: CenterButton(),
+                child: const CenterButton(),
               ),
             ),
           ),

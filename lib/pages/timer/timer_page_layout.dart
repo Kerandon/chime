@@ -33,7 +33,7 @@ class _TimerPageState extends ConsumerState<TimerPageLayout> {
         children: [
           if (state.sessionState == SessionState.countdown) ...[
             Align(
-                    alignment: const Alignment(0, -0.40),
+                    alignment: const Alignment(0, -0.80),
                     child: Text(
                       kSessionWillBeginShortly,
                       style: Theme.of(context).textTheme.bodySmall,
@@ -108,19 +108,19 @@ class _TimerPageState extends ConsumerState<TimerPageLayout> {
   }
 
   String _setBellText(AppState state) {
-    String bellText = 'every ${state.selectedIntervalBellTime.toString()}m';
+    String bellText = 'Every ${state.selectedIntervalBellTime.toString()}m';
     if (state.selectedIntervalBellTime == 0) {
       if (state.bellOnSessionStart && state.bellOnSessionEnd) {
-        bellText = 'begin & end';
+        bellText = 'Begin & end';
       }
       if (state.bellOnSessionStart && !state.bellOnSessionEnd) {
-        bellText = 'begin only';
+        bellText = 'Begin only';
       }
       if (!state.bellOnSessionStart && state.bellOnSessionEnd) {
-        bellText = 'end only';
+        bellText = 'End only';
       }
       if (!state.bellOnSessionStart && !state.bellOnSessionEnd) {
-        bellText = ' no bells';
+        bellText = ' Interval bells';
       }
     }
     return bellText;

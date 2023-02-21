@@ -1,4 +1,3 @@
-import 'package:chime/animation/pop_in_animation.dart';
 import 'package:chime/pages/guide_page.dart';
 import 'package:chime/pages/settings/settings_page.dart';
 import 'package:chime/pages/stats/stats_page.dart';
@@ -87,10 +86,10 @@ class _HomePageContentsState extends ConsumerState<Home> {
               //       }),
               // ),
               bottomNavigationBar: SlideAnimation(
-                animate: state.sessionState == SessionState.countdown,
+                animate: state.sessionState == SessionState.countdown || state.sessionState == SessionState.inProgress,
                 reset: state.sessionState == SessionState.notStarted,
                 direction: SlideDirection.downAway,
-                duration: 800,
+                duration: 500,
                 child: IgnorePointer(
                   ignoring: state.sessionState != SessionState.notStarted,
                   child: BottomNavigationBar(
@@ -121,7 +120,7 @@ class _HomePageContentsState extends ConsumerState<Home> {
                 ),
               )),
         ),
-        Align(
+        const Align(
           alignment: Alignment(0,0.96),
           child: StopButton(),
         ),

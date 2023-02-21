@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../animation/pop_in_animation.dart';
+import '../../animation/pop_animation.dart';
 import '../../enums/session_state.dart';
 import '../../state/app_state.dart';
 
@@ -15,7 +15,7 @@ class StopButton extends ConsumerWidget {
     final state = ref.watch(stateProvider);
     final notifier = ref.read(stateProvider.notifier);
     return PopAnimation(
-      animate: state.sessionState == SessionState.countdown,
+      animate: state.sessionState == SessionState.countdown || state.sessionState == SessionState.inProgress,
       reset: state.sessionState == SessionState.notStarted,
       child: SizedBox(
         width: 50,
@@ -28,13 +28,12 @@ class StopButton extends ConsumerWidget {
               backgroundColor: Theme.of(context).splashColor.withOpacity(0.10),
             ),
             onPressed: () {
-             // notifier.setSessionStopped(true);
               WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                 notifier.setSessionState(SessionState.notStarted);
                 notifier.resetSession();
               });
             },
-            icon: Icon(Icons.stop_outlined)),
+            icon: const Icon(Icons.stop_outlined)),
       ),
     );
   }

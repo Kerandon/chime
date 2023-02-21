@@ -26,18 +26,22 @@ class _SessionClockState extends ConsumerState<SessionTimer> {
     int minutes = 0;
     int seconds = 0;
 
-    if (state.sessionState == SessionState.inProgress ||
-        state.sessionState == SessionState.paused) {
-      if(!state.openSession) {
+    if (state.sessionState == SessionState.inProgress) {
+      if (!state.openSession) {
         hours = (state.millisecondsRemaining ~/ 3600000);
         minutes = ((state.millisecondsRemaining ~/ 60000) % 60);
         seconds = ((state.millisecondsRemaining ~/ 1000) % 60);
       }
-      if(state.openSession){
+      if (state.openSession) {
         hours = (state.millisecondsElapsed ~/ 3600000);
         minutes = ((state.millisecondsElapsed ~/ 60000) % 60);
         seconds = ((state.millisecondsElapsed ~/ 1000) % 60);
       }
+    }
+    if (state.sessionState == SessionState.paused) {
+      hours = (state.pausedMilliseconds ~/ 3600000);
+      minutes = ((state.pausedMilliseconds ~/ 60000) % 60);
+      seconds = ((state.pausedMilliseconds ~/ 1000) % 60);
     }
 
     return SizedBox(
@@ -47,7 +51,8 @@ class _SessionClockState extends ConsumerState<SessionTimer> {
         children: [
           /// SESSION TIMER
           if (state.openSession ||
-              state.sessionState == SessionState.inProgress) ...[
+              state.sessionState == SessionState.inProgress ||
+              state.sessionState == SessionState.paused) ...[
             if (state.totalTimeMinutes >= 60) ...[NumberBox(hours)],
             if (state.totalTimeMinutes >= 60) ...[const Colon()],
             NumberBox(minutes),

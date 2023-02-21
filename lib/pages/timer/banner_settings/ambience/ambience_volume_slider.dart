@@ -1,7 +1,6 @@
 import 'package:chime/state/database_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../../../../enums/ambience.dart';
 import '../../../../enums/prefs.dart';
 import '../../../../state/app_state.dart';
 

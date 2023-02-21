@@ -13,7 +13,7 @@ class CustomAppTheme {
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: Colors.white,
-          side: BorderSide(
+          side: const BorderSide(
             color: Colors.white
           )
         )
