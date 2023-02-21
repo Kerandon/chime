@@ -29,13 +29,12 @@ class LegendKey extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: size.width * 0.02,
-              height: size.width * 0.02,
+              width: size.width * 0.05,
+              height: size.width * 0.05,
               decoration: BoxDecoration(shape: BoxShape.circle, color: color),
             ),
             Text(txt,
 
-              style: Theme.of(context).textTheme.bodySmall,
             )
           ],
         ),

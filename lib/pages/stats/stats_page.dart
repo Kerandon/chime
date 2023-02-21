@@ -112,12 +112,12 @@ class _StatsPageState extends ConsumerState<StatsPage> {
                 ),
                 const StatsDivider(),
                 SizedBox(
-                  height: size.height * 0.30,
+                  height: size.height * 0.35,
                   child: const TimeStats(),
                 ),
                 const StatsDivider(),
                 Padding(
-                  padding: EdgeInsets.only(bottom: size.height * 0.10),
+                  padding: EdgeInsets.only(bottom: size.height * 0.18),
                   child: OutlinedButton(
                       onPressed: () {
                         Navigator.push(
@@ -125,9 +125,12 @@ class _StatsPageState extends ConsumerState<StatsPage> {
                             MaterialPageRoute(
                                 builder: (context) => const MeditationHistoryPage()));
                       },
-                      child: Text(
-                        'Meditation history',
-                        style: Theme.of(context).textTheme.bodySmall,
+                      child: Padding(
+                        padding: EdgeInsets.all(size.width * 0.05),
+                        child: Text(
+                          'Meditation history',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
                       )),
                 )
               ],

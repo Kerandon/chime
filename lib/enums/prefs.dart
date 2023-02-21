@@ -9,12 +9,15 @@ enum Prefs {
 
   colorTheme,
   countdownIsOn,
-  themeBrightness,
+
 
   hideClock,
+
+  isOpenSession,
 
   timeCountdown,
   timeTotal,
   timeUnlimited,
+  themeBrightness,
 
 }

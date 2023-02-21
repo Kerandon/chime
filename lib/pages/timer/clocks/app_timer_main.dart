@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quiver/async.dart';
 import '../../../configs/constants.dart';
 import '../../../state/app_state.dart';
+import '../../../state/database_manager.dart';
 import '../../completion_page/completion_page.dart';
 
 class AppTimerMain extends ConsumerStatefulWidget {
@@ -34,6 +35,10 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
         _timerIsSet = false;
         _endSessionNotified = false;
         _timer?.cancel();
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          notifier.resetSession();
+        });
+
 
         break;
       case SessionState.countdown:
@@ -61,7 +66,10 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
             if (state.pausedMilliseconds != 0) {
               time = state.pausedMilliseconds;
             }
-            var t = (time * 60000) + kAdditionalStartTime;
+            var t = (
+               time * 60000
+                //1000
+            ) + kAdditionalStartTime;
             if (state.pausedMilliseconds != 0) {
               t = state.pausedMilliseconds;
             }
@@ -71,13 +79,13 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
               ..listen((event) {
                 notifier
                     .setMillisecondsRemaining(event.remaining.inMilliseconds);
-
                 if (event.remaining.inSeconds == 0) {
                   if (!_endSessionNotified) {
+                    DatabaseManager().insertIntoStats(dateTime: DateTime.now(), minutes: state.totalTimeMinutes);
                     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                       showDialog(
                           context: context,
-                          builder: (context) => CompletionPage())
+                          builder: (context) => const CompletionPage())
                           .then((value) async {
                         WidgetsBinding.instance
                             .addPostFrameCallback((timeStamp) {
@@ -95,13 +103,12 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
             _timerIsSet = true;
           }
           else {
-            print('HERE');
 
             /// AFTER 23 HOURS, 59 MINUTES AND 59 SECONDS (MAX)
 
 
             _timer = CountdownTimer(
-                Duration(seconds: 86399000), const Duration(milliseconds: 1))
+                const Duration(seconds: 86399000), const Duration(milliseconds: 1))
               ..listen((event) {
                 notifier.setMillisecondsElapsed((event.elapsed.inMilliseconds + state.pausedMilliseconds));
               });
@@ -117,6 +124,7 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
         });
         break;
       case SessionState.ended:
+
         _timer?.cancel();
         break;
     }

@@ -9,6 +9,7 @@ import '../animation/slide_animation.dart';
 import '../enums/session_state.dart';
 import '../enums/slide_direction.dart';
 import '../state/app_state.dart';
+import '../state/database_manager.dart';
 
 class Home extends ConsumerStatefulWidget {
   const Home({
@@ -41,26 +42,26 @@ class _HomePageContentsState extends ConsumerState<Home> {
               body: Stack(
                 children: [
                   _pageOptions.elementAt(state.currentPage),
-                  // Align(
-                  //   alignment: const Alignment(-1, -0.80),
-                  //   child: ElevatedButton(
-                  //       onPressed: () async {
-                  //         await DatabaseManager().insertIntoStats(
-                  //             dateTime: DateTime.now()
-                  //                 .copyWith(year: 2021, month: 04, day: 10),
-                  //             minutes: 300);
-                  //       },
-                  //       child: const Text('Insert Stat')),
-                  // ),
-                  // Align(
-                  //   alignment: const Alignment(-0.80, -0.60),
-                  //   child: ElevatedButton(
-                  //     onPressed: () {
-                  //       DatabaseManager().removeAllPrefsAndStats();
-                  //     },
-                  //     child: const Text('delete'),
-                  //   ),
-                  // )
+                  Align(
+                    alignment: const Alignment(-1, -0.80),
+                    child: ElevatedButton(
+                        onPressed: () async {
+                          await DatabaseManager().insertIntoStats(
+                              dateTime: DateTime.now()
+                                  .copyWith(year: 2022, month: 06, day: 11),
+                              minutes: 180);
+                        },
+                        child: const Text('Insert Stat')),
+                  ),
+                  Align(
+                    alignment: const Alignment(-0.80, -0.60),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        DatabaseManager().removeAllPrefsAndStats();
+                      },
+                      child: const Text('delete'),
+                    ),
+                  )
                 ],
               ),
               // floatingActionButtonLocation:

@@ -12,7 +12,7 @@ class CustomAppTheme {
       secondaryHeaderColor: AppColors.grey,
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          foregroundColor: Colors.white,
+          // foregroundColor: Colors.white,
           side: const BorderSide(
             color: Colors.white
           )

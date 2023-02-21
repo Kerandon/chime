@@ -1,3 +1,4 @@
+import 'package:chime/state/database_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -15,7 +16,8 @@ class StopButton extends ConsumerWidget {
     final state = ref.watch(stateProvider);
     final notifier = ref.read(stateProvider.notifier);
     return PopAnimation(
-      animate: state.sessionState == SessionState.countdown || state.sessionState == SessionState.inProgress,
+      animate: state.sessionState == SessionState.countdown ||
+          state.sessionState == SessionState.inProgress,
       reset: state.sessionState == SessionState.notStarted,
       child: SizedBox(
         width: 50,
@@ -28,9 +30,25 @@ class StopButton extends ConsumerWidget {
               backgroundColor: Theme.of(context).splashColor.withOpacity(0.10),
             ),
             onPressed: () {
+
+              int elapsed = 0;
+              if (!state.openSession) {
+                elapsed = (state.totalTimeMinutes) -
+                    (state.millisecondsRemaining / 60000).round();
+                if (elapsed >= 1) {}
+              }
+              if (state.openSession) {
+                elapsed = (state.millisecondsElapsed / 60000).round();
+              }
+              if (elapsed >= 1) {
+                DatabaseManager().insertIntoStats(
+                    dateTime: DateTime.now(), minutes: elapsed);
+              }
+
+              notifier.setSessionState(SessionState.notStarted);
               WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                notifier.setSessionState(SessionState.notStarted);
-                notifier.resetSession();
+              // notifier.resetSession();
+
               });
             },
             icon: const Icon(Icons.stop_outlined)),

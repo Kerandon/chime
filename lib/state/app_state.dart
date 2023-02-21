@@ -12,7 +12,7 @@ import '../utils/vibration_method.dart';
 class AppState {
   //APP STATE
   final SessionState sessionState;
-  final bool sessionHasStarted;
+  //final bool sessionHasStarted;
 
   //final bool sessionStopped;
   final int currentPage;
@@ -63,7 +63,7 @@ class AppState {
 
   AppState({
     required this.sessionState,
-    required this.sessionHasStarted,
+    //required this.sessionHasStarted,
     //required this.sessionStopped,
     required this.currentPage,
     required this.totalTimeMinutes,
@@ -96,7 +96,7 @@ class AppState {
 
   AppState copyWith({
     SessionState? sessionState,
-    bool? sessionHasStarted,
+    //bool? sessionHasStarted,
     FocusState? focusState,
     int? currentPage,
     //bool? sessionStopped,
@@ -129,7 +129,7 @@ class AppState {
   }) {
     return AppState(
         sessionState: sessionState ?? this.sessionState,
-        sessionHasStarted: sessionHasStarted ?? this.sessionHasStarted,
+        //sessionHasStarted: sessionHasStarted ?? this.sessionHasStarted,
         //sessionStopped: sessionStopped ?? this.sessionStopped,
         currentPage: currentPage ?? this.currentPage,
         totalTimeMinutes: totalTimeMinutes ?? this.totalTimeMinutes,
@@ -215,16 +215,25 @@ class AppNotifier extends StateNotifier<AppState> {
     }
   }
 
-  void setSessionHasStarted(bool started) {
-    state = state.copyWith(sessionHasStarted: started);
-  }
 
   void resetSession() {
     state = state.copyWith(
+      initialTimeIsSet: false,
       pausedMilliseconds: 0,
       currentCountdownTime: 0,
       millisecondsRemaining: 0,
+      millisecondsElapsed: 0,
+
     );
+    // final int totalTimeMinutes;
+    // final bool initialTimeIsSet;
+    // final int millisecondsRemaining;
+    // final int millisecondsElapsed;
+    // final int pausedMilliseconds;
+    // final bool countdownIsOn;
+    // final int totalCountdownTime;
+    // final int currentCountdownTime;
+    // final bool openSession;
   }
 
   void setPage(int index) {
@@ -266,8 +275,8 @@ class AppNotifier extends StateNotifier<AppState> {
     state = state.copyWith(currentCountdownTime: time);
   }
 
-  void setOpenSession() {
-    state = state.copyWith(openSession: !state.openSession);
+  void setOpenSession(bool open) {
+    state = state.copyWith(openSession: open);
   }
 
   void setBellIntervalTime(int time) async {
@@ -359,7 +368,7 @@ class AppNotifier extends StateNotifier<AppState> {
 final stateProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
   return AppNotifier(AppState(
     sessionState: SessionState.notStarted,
-    sessionHasStarted: false,
+    //sessionHasStarted: false,
     //sessionStopped: false,
     colorTheme: AppColorTheme.turquoise,
     currentPage: 0,

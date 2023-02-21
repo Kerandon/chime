@@ -73,6 +73,7 @@ class _ChimeAppState extends ConsumerState<ChimeApp> {
           WidgetsBinding.instance.addPostFrameCallback(
             (timeStamp) {
               if (!_prefsUpdated) {
+                notifier.setOpenSession(prefsModel.isOpenSession);
                 notifier.setTotalTimeAfterRestart(prefsModel.totalTime);
                 notifier.setTotalCountdownTime(prefsModel.totalCountdown);
                 notifier.setCountdownIsOn(prefsModel.countdownIsOn);

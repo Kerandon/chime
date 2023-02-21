@@ -27,6 +27,8 @@ class _AllMeditationsListState extends ConsumerState<MeditationHistoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    String timeText = "";
+
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -41,7 +43,7 @@ class _AllMeditationsListState extends ConsumerState<MeditationHistoryPage> {
             Icons.arrow_back_outlined,
           ),
         ),
-        title: const Text('Meditiation history'),
+        title: const Text('Meditation history'),
       ),
       body: FutureBuilder(
           future: _allMeditationFuture,
@@ -52,6 +54,12 @@ class _AllMeditationsListState extends ConsumerState<MeditationHistoryPage> {
               if (snapshot.data!.isNotEmpty) {
                 stats.addAll(snapshot.data!);
               }
+
+              if (stats.length == 1) {
+                timeText = ' time';
+              } else {
+                timeText = ' times';
+              }
             }
 
             return Column(
@@ -60,20 +68,19 @@ class _AllMeditationsListState extends ConsumerState<MeditationHistoryPage> {
                   padding: EdgeInsets.symmetric(vertical: size.height * 0.03),
                   child: RichText(
                     text: TextSpan(
+                      style: Theme.of(context).textTheme.bodyLarge!,
                       text: 'You have meditated ',
-                      style: Theme.of(context).textTheme.bodySmall,
                       children: [
                         TextSpan(
                           text: stats.length.toString(),
                           style:
-                              Theme.of(context).textTheme.bodySmall!.copyWith(
+                              Theme.of(context).textTheme.bodyLarge!.copyWith(
                                     color: Theme.of(context).primaryColor,
                                     fontWeight: FontWeight.bold,
                                   ),
                         ),
                         TextSpan(
-                          text: stats.length == 1 ? ' time' : ' times',
-                          style: Theme.of(context).textTheme.bodySmall,
+                          text: timeText,
                         ),
                       ],
                     ),

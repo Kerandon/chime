@@ -1,7 +1,6 @@
 import 'package:chime/state/database_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
 import '../../../models/stats_model.dart';
 import '../../../state/chart_state.dart';
 import 'meditation_history_page.dart';
@@ -110,12 +109,12 @@ class SelectHistory extends ConsumerWidget {
                         builder: (context) =>
                             AlertDialog(
                               title: Text(
-                                  'Remove selected meditation records?\n', style: Theme.of(context).textTheme.bodySmall,),
+                                  'Remove selected meditation records?\n', textAlign: TextAlign.center,),
                               actionsAlignment: MainAxisAlignment.spaceAround,
                               actions: [
                                 OutlinedButton(
 
-                                    onPressed: () {
+                                    onPressed: () async {
 
 
 
@@ -128,7 +127,7 @@ class SelectHistory extends ConsumerWidget {
                                       notifier.selectMeditationEvents(
                                           items: items, unselect: true);
 
-                                      DatabaseManager()
+                                      await DatabaseManager()
                                           .removeStats(dateTimes);
 
 
@@ -138,13 +137,13 @@ class SelectHistory extends ConsumerWidget {
                                          MaterialPageRoute(builder: (context) => const MeditationHistoryPage())
                                       ));
                                     },
-                                    child: Text('Yes', style: Theme.of(context).textTheme.bodySmall,)),
+                                    child: Text('Yes')),
                                OutlinedButton(
                                     onPressed: () async {
                                       await Navigator.of(context)
                                           .maybePop();
                                     },
-                                    child: Text('Cancel', style: Theme.of(context).textTheme.bodySmall,))
+                                    child: Text('Cancel'))
                               ],
                             ));
                   },

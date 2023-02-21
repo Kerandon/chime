@@ -4,6 +4,7 @@ import '../enums/app_color_themes.dart';
 import '../enums/prefs.dart';
 
 class PrefsModel {
+  final bool isOpenSession;
 
   final int totalTime;
   final int totalCountdown;
@@ -23,6 +24,7 @@ class PrefsModel {
   final bool brightness;
 
   PrefsModel({
+    required this.isOpenSession,
     required this.totalTime,
     required this.totalCountdown,
     required this.countdownIsOn,
@@ -38,6 +40,7 @@ class PrefsModel {
   });
 
   factory PrefsModel.fromListMap(List<Map<String, dynamic>> listMap) {
+    bool isOpenSession = false;
     int totalTime = 60;
     int timeCountdown = 5;
     bool countdownIsOn = true;
@@ -54,6 +57,15 @@ class PrefsModel {
     for (int i = 0; i < listMap.length; i++) {
       String prefKey = listMap[i].entries.elementAt(0).value;
 
+      if (prefKey == Prefs.isOpenSession.name) {
+        final value = listMap[i].entries.elementAt(1).value;
+        if (value == 0) {
+          isOpenSession = false;
+        } else {
+          isOpenSession = true;
+        }
+      }
+
       if (prefKey == Prefs.timeTotal.name) {
         totalTime = listMap[i].entries.elementAt(1).value;
       }
@@ -62,14 +74,13 @@ class PrefsModel {
         timeCountdown = listMap[i].entries.elementAt(1).value;
       }
 
-      if(prefKey == Prefs.countdownIsOn.name){
+      if (prefKey == Prefs.countdownIsOn.name) {
         final value = listMap[i].entries.elementAt(1).value;
-        if(value == 0){
+        if (value == 0) {
           countdownIsOn = false;
-        }else{
+        } else {
           countdownIsOn = true;
         }
-
       }
 
       if (prefKey == Prefs.ambienceSelected.name) {
@@ -110,24 +121,24 @@ class PrefsModel {
             orElse: () => AppColorTheme.turquoise);
       }
 
-      if(prefKey == Prefs.themeBrightness.name){
+      if (prefKey == Prefs.themeBrightness.name) {
         brightness = listMap[i].entries.elementAt(1).value;
       }
     }
 
     return PrefsModel(
-      totalTime: totalTime,
-      totalCountdown: timeCountdown,
-      countdownIsOn: countdownIsOn,
-      bellSelected: bellSelected,
-      bellInterval: bellInterval,
-      bellVolume: bellVolume,
-      bellOnStart: bellOnStart,
-      ambienceSelected: ambienceSelected,
-      ambienceVolume: ambienceVolume,
-      hideClock: hideClock,
-      colorTheme: colorTheme,
-      brightness: brightness
-    );
+        isOpenSession: isOpenSession,
+        totalTime: totalTime,
+        totalCountdown: timeCountdown,
+        countdownIsOn: countdownIsOn,
+        bellSelected: bellSelected,
+        bellInterval: bellInterval,
+        bellVolume: bellVolume,
+        bellOnStart: bellOnStart,
+        ambienceSelected: ambienceSelected,
+        ambienceVolume: ambienceVolume,
+        hideClock: hideClock,
+        colorTheme: colorTheme,
+        brightness: brightness);
   }
 }

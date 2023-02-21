@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../../enums/prefs.dart';
+import '../../state/database_manager.dart';
 import 'banner_settings/ambience/ambience_page.dart';
 import 'banner_settings/bells/bell_dialog.dart';
 import 'banner_settings/custom_home_button.dart';
@@ -83,8 +85,9 @@ class _TimerPageState extends ConsumerState<TimerPageLayout> {
                   iconData: state.openSession
                       ? FontAwesomeIcons.infinity
                       : Icons.timer_outlined,
-                  onPressed: () {
-                    notifier.setOpenSession();
+                  onPressed: () async {
+                    notifier.setOpenSession(!state.openSession);
+                    await DatabaseManager().insertIntoPrefs(k: Prefs.isOpenSession.name, v: !state.openSession);
                   },
                   alignment: const Alignment(0.95, -0.98),
                 ),

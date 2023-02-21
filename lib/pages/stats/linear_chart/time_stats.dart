@@ -110,9 +110,9 @@ class _TimeStatsState extends ConsumerState<TimeStats> {
             children: [
               _animate
                   ? Text(
-                      'Your preferred times to meditate',
+                      'Your usual meditation time',
+                      style: Theme.of(context).textTheme.displaySmall,
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyLarge,
                     ).animate().fadeIn()
                   : const SizedBox.shrink(),
               _animate
