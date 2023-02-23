@@ -1,8 +1,8 @@
+import 'package:chime/state/audio_state.dart';
 import 'package:chime/state/database_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../enums/prefs.dart';
-import '../../../../state/app_state.dart';
 
 class AmbienceVolumeSlider extends ConsumerWidget {
   const AmbienceVolumeSlider({
@@ -13,8 +13,8 @@ class AmbienceVolumeSlider extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;
 
-    final state = ref.watch(stateProvider);
-    final notifier = ref.read(stateProvider.notifier);
+    final audioState = ref.watch(audioProvider);
+    final audioNotifier = ref.read(audioProvider.notifier);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -23,28 +23,28 @@ class AmbienceVolumeSlider extends ConsumerWidget {
             horizontal: size.width * 0.05,
           ),
           child: Icon(
-            state.ambienceVolume == 0.0 ||
-                    !state.ambienceIsOn
+            audioState.ambienceVolume == 0.0 ||
+                    !audioState.ambienceIsOn
                 ? Icons.volume_mute_outlined
                 : Icons.volume_up_outlined,
           ),
         ),
         Text(
-          !state.ambienceIsOn
+          !audioState.ambienceIsOn
               ? '0'
-              : (state.ambienceVolume * 10).round().toString(),
+              : (audioState.ambienceVolume * 10).round().toString(),
         ),
         Expanded(
           flex: 18,
           child: Slider(
-            value: !state.ambienceIsOn
+            value: !audioState.ambienceIsOn
                 ? 0
-                : state.ambienceVolume,
-            onChanged: !state.ambienceIsOn
+                : audioState.ambienceVolume,
+            onChanged: !audioState.ambienceIsOn
                 ? null
                 : (value) async {
                     double volume = value;
-                    notifier.setAmbienceVolume(volume);
+                    audioNotifier.setAmbienceVolume(volume);
                     await DatabaseManager().insertIntoPrefs(k: Prefs.ambienceVolume.name, v: value);
                   },
             min: 0.0,

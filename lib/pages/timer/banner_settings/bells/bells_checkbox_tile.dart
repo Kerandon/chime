@@ -1,9 +1,7 @@
-import 'package:chime/state/database_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../enums/bell.dart';
-import '../../../../enums/prefs.dart';
-import '../../../../state/app_state.dart';
+import '../../../../state/audio_state.dart';
 
 class BellsCheckBoxTile extends ConsumerWidget {
   const BellsCheckBoxTile({
@@ -17,8 +15,8 @@ class BellsCheckBoxTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;
 
-    final state = ref.watch(stateProvider);
-    final notifier = ref.read(stateProvider.notifier);
+    final audioState = ref.watch(audioProvider);
+    final audioNotifier = ref.read(audioProvider.notifier);
     return CheckboxListTile(
       title: Row(
         children: [
@@ -30,11 +28,9 @@ class BellsCheckBoxTile extends ConsumerWidget {
           ),
         ],
       ),
-      value: state.bellSelected == bell,
+      value: audioState.bellSelected == bell,
       onChanged: (value) async {
-        notifier.setBellSelected(bell);
-
-        await DatabaseManager().insertIntoPrefs(k: Prefs.bellSelected.name, v: bell.name);
+        audioNotifier.setBellSelected(bell);
       },
     );
   }

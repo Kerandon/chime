@@ -140,7 +140,6 @@ class _AnimatedLineChartState extends ConsumerState<AnimatedLineChart>
     /// NEED TO CREATE 2 POINTS IF THERE IS JUST ONE ENTRY
     if (seriesData.length == 1) {
       const posX = 1 / kNoOfXLabelsOnLineChart;
-      print('max range is $maxRangeY');
       final posY = seriesData.first.dataY / maxRangeY;
       data.addAll([
         SeriesPoint(0, posY),

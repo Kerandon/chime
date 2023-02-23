@@ -13,6 +13,7 @@ class BellListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SwitchListTile(
+      dense: true,
       inactiveTrackColor: AppColors.grey,
       inactiveThumbColor: AppColors.lightGrey,
       title: Row(

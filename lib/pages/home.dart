@@ -6,6 +6,7 @@ import 'package:chime/pages/timer/timer_page_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../animation/slide_animation.dart';
+import '../audio_manager.dart';
 import '../enums/session_state.dart';
 import '../enums/slide_direction.dart';
 import '../state/app_state.dart';
@@ -35,7 +36,7 @@ class _HomePageContentsState extends ConsumerState<Home> {
 
     return Stack(
       children: [
-
+        const AudioManager(),
         SafeArea(
           child: Scaffold(
               resizeToAvoidBottomInset: false,

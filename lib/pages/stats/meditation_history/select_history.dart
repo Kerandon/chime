@@ -15,9 +15,7 @@ class SelectHistory extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final size = MediaQuery
-        .of(context)
-        .size;
+    final size = MediaQuery.of(context).size;
     final state = ref.watch(chartStateProvider);
     final notifier = ref.read(chartStateProvider.notifier);
 
@@ -37,33 +35,23 @@ class SelectHistory extends ConsumerWidget {
             children: [
               OutlinedButton(
                 style: OutlinedButton.styleFrom(
-                    side: BorderSide(
-                        color: state.selectedMeditationEvents.isEmpty &&
+                  side: BorderSide(
+                    color: state.selectedMeditationEvents.isEmpty &&
                             stats.isNotEmpty
-                            ? Theme
-                            .of(context)
-                            .primaryColor
-                            : Theme
-                            .of(context)
-                            .secondaryHeaderColor,),),
+                        ? Theme.of(context).primaryColor
+                        : Theme.of(context).secondaryHeaderColor,
+                  ),
+                ),
                 onPressed: () {
                   notifier.selectMeditationEvents(items: items);
                 },
                 child: Text(
                   'Select all',
-                  style: Theme
-                      .of(context)
-                      .textTheme
-                      .bodySmall!
-                      .copyWith(
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
                       color: state.selectedMeditationEvents.isEmpty &&
-                          stats.isNotEmpty
-                          ? Theme
-                          .of(context)
-                          .primaryColor
-                          : Theme
-                          .of(context)
-                          .secondaryHeaderColor),
+                              stats.isNotEmpty
+                          ? Theme.of(context).primaryColor
+                          : Theme.of(context).secondaryHeaderColor),
                 ),
               ),
               Padding(
@@ -72,97 +60,86 @@ class SelectHistory extends ConsumerWidget {
                     style: OutlinedButton.styleFrom(
                         side: BorderSide(
                             color: state.selectedMeditationEvents.isNotEmpty
-                                ? Theme
-                                .of(context)
-                                .primaryColor
-                                : Theme
-                                .of(context)
-                                .secondaryHeaderColor)),
+                                ? Theme.of(context).primaryColor
+                                : Theme.of(context).secondaryHeaderColor)),
                     onPressed: state.selectedMeditationEvents.isNotEmpty
                         ? () {
-                      notifier.selectMeditationEvents(
-                          items: items, unselect: true);
-                    }
+                            notifier.selectMeditationEvents(
+                                items: items, unselect: true);
+                          }
                         : null,
                     child: Text('Unselect',
-                        style: Theme
-                            .of(context)
-                            .textTheme
-                            .bodySmall!
-                            .copyWith(
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
                             color: state.selectedMeditationEvents.isNotEmpty
-                                ? Theme
-                                .of(context)
-                                .primaryColor
-                                : Theme
-                                .of(context)
-                                .secondaryHeaderColor))),
+                                ? Theme.of(context).primaryColor
+                                : Theme.of(context).secondaryHeaderColor))),
               ),
             ],
           ),
           Row(
             children: [
-              if (state.selectedMeditationEvents.isNotEmpty) IconButton(
-                  onPressed: () {
-                    showDialog(
-                        context: context,
-                        builder: (context) =>
-                            AlertDialog(
-                              title: Text(
-                                  'Remove selected meditation records?\n', textAlign: TextAlign.center,),
-                              actionsAlignment: MainAxisAlignment.spaceAround,
-                              actions: [
-                                OutlinedButton(
+              if (state.selectedMeditationEvents.isNotEmpty)
+                IconButton(
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                                title: const Text(
+                                  'Remove selected meditation records?\n',
+                                  textAlign: TextAlign.center,
+                                ),
+                                actionsAlignment: MainAxisAlignment.spaceAround,
+                                actions: [
+                                  OutlinedButton(
+                                      onPressed: () async {
+                                        List<DateTime> dateTimes = [];
+                                        for (var i in state
+                                            .selectedMeditationEvents.values) {
+                                          dateTimes.add(i);
+                                        }
 
-                                    onPressed: () async {
+                                        notifier.selectMeditationEvents(
+                                            items: items, unselect: true);
 
+                                        await DatabaseManager()
+                                            .removeStats(dateTimes);
 
+                                        if(context.mounted) {
+                                          Navigator.of(context,
+                                              rootNavigator: true)
+                                              .pop('dialog');
 
-                                      List<DateTime> dateTimes = [];
-                                      for (var i in state.selectedMeditationEvents.values) {
-                                        dateTimes.add(i);
-                                      }
-
-
-                                      notifier.selectMeditationEvents(
-                                          items: items, unselect: true);
-
-                                      await DatabaseManager()
-                                          .removeStats(dateTimes);
-
-
-                                      Navigator.of(context, rootNavigator: true).pop('dialog');
-
-                                      Navigator.maybePop(context).then((value) => Navigator.push(context,
-                                         MaterialPageRoute(builder: (context) => const MeditationHistoryPage())
-                                      ));
-                                    },
-                                    child: Text('Yes')),
-                               OutlinedButton(
-                                    onPressed: () async {
-                                      await Navigator.of(context)
-                                          .maybePop();
-                                    },
-                                    child: Text('Cancel'))
-                              ],
-                            ));
-                  },
-                  icon: Icon(
-                    Icons.delete_outline_outlined,
-                    color: state.selectedMeditationEvents.isEmpty
-                        ? Theme
-                        .of(context)
-                        .secondaryHeaderColor
-                        : Colors.red,
-                  )) else const SizedBox.shrink(),
+                                          Navigator.maybePop(context).then(
+                                                  (value) =>
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                          const MeditationHistoryPage())));
+                                        }
+                                      },
+                                      child: const Text('Yes')),
+                                  OutlinedButton(
+                                      onPressed: () async {
+                                        await Navigator.of(context).maybePop();
+                                      },
+                                      child: const Text('Cancel'))
+                                ],
+                              ));
+                    },
+                    icon: Icon(
+                      Icons.delete_outline_outlined,
+                      color: state.selectedMeditationEvents.isEmpty
+                          ? Theme.of(context).secondaryHeaderColor
+                          : Colors.red,
+                    ))
+              else
+                const SizedBox.shrink(),
               state.selectedMeditationEvents.isNotEmpty
                   ? Text(
-                '(${state.selectedMeditationEvents.length.toString()})',
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .bodySmall,
-              )
+                      '(${state.selectedMeditationEvents.length.toString()})',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    )
                   : const SizedBox.shrink(),
             ],
           )

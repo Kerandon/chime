@@ -103,10 +103,6 @@ class _AnimatedLineChartMainState extends ConsumerState<AnimatedLineChartMain> {
       seriesData.add(SeriesPoint(x.toDouble(), runningTotalY.toDouble()));
     }
 
-    for(var s in seriesData){
-      print('${s.dataX} and nnn ${s.dataY}');
-    }
-
     return seriesData;
   }
 
@@ -177,7 +173,6 @@ class _AnimatedLineChartMainState extends ConsumerState<AnimatedLineChartMain> {
       labelsY.add((divided * i).formatToHourMin());
     }
     labelsY = labelsY.reversed.toList();
-    print('max range here is ${maxRangeY}');
     return Tuple2(labelsY, maxRangeY);
   }
 
@@ -189,10 +184,6 @@ class _AnimatedLineChartMainState extends ConsumerState<AnimatedLineChartMain> {
     for (int i = 0; i < seriesData.length - 1; i++) {
       stepChart.insert(
           i + i + 1, SeriesPoint(seriesData[i + 1].dataX, seriesData[i].dataY));
-    }
-
-    for(var s in stepChart){
-      print('stepchart ${s.dataX} and ${s.dataY}');
     }
 
     return stepChart;

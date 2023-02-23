@@ -1,0 +1,4 @@
+enum IntervalBell {
+  fixed,
+  random,
+}

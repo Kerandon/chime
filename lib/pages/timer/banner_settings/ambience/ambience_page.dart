@@ -1,10 +1,10 @@
 import 'package:chime/configs/constants.dart';
 import 'package:chime/data/ambience_data.dart';
 import 'package:chime/pages/timer/banner_settings/ambience/ambience_volume_slider.dart';
+import 'package:chime/state/audio_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../configs/app_colors.dart';
-import '../../../../state/app_state.dart';
 import 'ambience_image_box.dart';
 
 class AmbiencePage extends ConsumerWidget {
@@ -13,8 +13,8 @@ class AmbiencePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;
-    final state = ref.watch(stateProvider);
-    final notifier = ref.read(stateProvider.notifier);
+    final audioState = ref.watch(audioProvider);
+    final audioNotifier = ref.read(audioProvider.notifier);
     final spacing = size.width * 0.02;
     return Scaffold(
         appBar: AppBar(title: const Text('Ambience')),
@@ -28,9 +28,9 @@ class AmbiencePage extends ConsumerWidget {
                     inactiveTrackColor: AppColors.grey,
                     inactiveThumbColor: AppColors.lightGrey,
                     title: const Text('Add ambience'),
-                    value: state.ambienceIsOn,
+                    value: audioState.ambienceIsOn,
                     onChanged: (value) {
-                      notifier.setAmbienceIsOn(!state.ambienceIsOn);
+                      audioNotifier.setAmbienceIsOn(!audioState.ambienceIsOn);
                     }),
                 Padding(
                   padding: EdgeInsets.only(bottom: size.height * 0.03),

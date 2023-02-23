@@ -56,6 +56,7 @@ dependencies:
   material_color_utilities: ^0.2.0
   flutter_picker: ^2.1.0
   carousel_slider: ^4.2.1
+  just_audio: ^0.9.31
 
 flutter_native_splash:
   color: "#ffffff"

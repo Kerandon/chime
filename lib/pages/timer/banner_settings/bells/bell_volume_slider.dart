@@ -1,8 +1,6 @@
-import 'package:chime/state/database_manager.dart';
+import 'package:chime/state/audio_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../../../../enums/prefs.dart';
-import '../../../../state/app_state.dart';
 
 class BellVolumeSlider extends ConsumerWidget {
   const BellVolumeSlider({
@@ -13,8 +11,8 @@ class BellVolumeSlider extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;
 
-    final state = ref.watch(stateProvider);
-    final notifier = ref.read(stateProvider.notifier);
+    final audioState = ref.watch(audioProvider);
+    final audioNotifier = ref.read(audioProvider.notifier);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -23,13 +21,13 @@ class BellVolumeSlider extends ConsumerWidget {
             horizontal: size.width * 0.05,
           ),
           child: Icon(
-            state.bellVolume == 0.0
+            audioState.bellVolume == 0.0
                 ? Icons.volume_mute_outlined
                 : Icons.volume_up_outlined,
           ),
         ),
         Text(
-          (state.bellVolume * 10).round().toString(),
+          (audioState.bellVolume * 10).round().toString(),
           style: Theme.of(context)
               .textTheme
               .bodyMedium!
@@ -38,11 +36,11 @@ class BellVolumeSlider extends ConsumerWidget {
         Expanded(
           flex: 18,
           child: Slider(
-            value: state.bellVolume,
+            value: audioState.bellVolume,
             onChanged: (value) async {
               double volume = value;
-              notifier.setBellVolume(volume);
-              await DatabaseManager().insertIntoPrefs(k: Prefs.bellVolume.name, v: volume);
+              audioNotifier.setBellVolume(volume);
+
             },
             min: 0.0,
             max: 1.0,

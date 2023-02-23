@@ -1,6 +1,7 @@
 import 'package:chime/configs/constants.dart';
 import 'package:chime/enums/session_state.dart';
 import 'package:chime/pages/timer/start_button/start_circle_main.dart';
+import 'package:chime/state/audio_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -24,16 +25,18 @@ class _TimerPageState extends ConsumerState<TimerPageLayout> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final state = ref.watch(stateProvider);
-    final notifier = ref.read(stateProvider.notifier);
+    final appState = ref.watch(stateProvider);
+    final appNotifier = ref.read(stateProvider.notifier);
+    final audioState = ref.watch(audioProvider);
+    final audioNotifier = ref.read(audioProvider.notifier);
 
-    String bellText = _setBellText(state);
+    String bellText = _setBellText(audioState);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
-          if (state.sessionState == SessionState.countdown) ...[
+          if (appState.sessionState == SessionState.countdown) ...[
             Align(
                     alignment: const Alignment(0, -0.80),
                     child: Text(
@@ -67,9 +70,9 @@ class _TimerPageState extends ConsumerState<TimerPageLayout> {
               children: [
                 CustomHomeButton(
                   text: bellText,
-                  iconData: !state.bellOnSessionStart &&
-                          !state.bellOnSessionEnd &&
-                          state.selectedIntervalBellTime == 0
+                  iconData: !audioState.bellOnStart &&
+                          !audioState.bellOnEnd &&
+                      audioState.bellInterval == 0
                       ? FontAwesomeIcons.solidBellSlash
                       : FontAwesomeIcons.bell,
                   onPressed: () {
@@ -80,20 +83,20 @@ class _TimerPageState extends ConsumerState<TimerPageLayout> {
                   alignment: const Alignment(-0.95, -0.98),
                 ),
                 CustomHomeButton(
-                  text: state.openSession ? 'Open time' : 'Fixed time',
-                  increaseSpacing: state.openSession ? true : false,
-                  iconData: state.openSession
+                  text: appState.openSession ? 'Open time' : 'Fixed time',
+                  increaseSpacing: appState.openSession ? true : false,
+                  iconData: appState.openSession
                       ? FontAwesomeIcons.infinity
                       : Icons.timer_outlined,
                   onPressed: () async {
-                    notifier.setOpenSession(!state.openSession);
-                    await DatabaseManager().insertIntoPrefs(k: Prefs.isOpenSession.name, v: !state.openSession);
+                    appNotifier.setOpenSession(!appState.openSession);
+                    await DatabaseManager().insertIntoPrefs(k: Prefs.isOpenSession.name, v: !appState.openSession);
                   },
                   alignment: const Alignment(0.95, -0.98),
                 ),
                 CustomHomeButton(
                   text: 'Ambience',
-                  iconData: state.ambienceIsOn
+                  iconData: audioState.ambienceIsOn
                       ? Icons.piano_outlined
                       : Icons.piano_off_outlined,
                   onPressed: () {
@@ -104,25 +107,25 @@ class _TimerPageState extends ConsumerState<TimerPageLayout> {
                 ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
   }
 
-  String _setBellText(AppState state) {
-    String bellText = 'Every ${state.selectedIntervalBellTime.toString()}m';
-    if (state.selectedIntervalBellTime == 0) {
-      if (state.bellOnSessionStart && state.bellOnSessionEnd) {
+  String _setBellText(AudioState audioState) {
+    String bellText = 'Every ${audioState.bellInterval.toString()}m';
+    if (audioState.bellInterval == 0) {
+      if (audioState.bellOnStart && audioState.bellOnEnd) {
         bellText = 'Begin & end';
       }
-      if (state.bellOnSessionStart && !state.bellOnSessionEnd) {
+      if (audioState.bellOnStart && !audioState.bellOnEnd) {
         bellText = 'Begin only';
       }
-      if (!state.bellOnSessionStart && state.bellOnSessionEnd) {
+      if (!audioState.bellOnStart && audioState.bellOnEnd) {
         bellText = 'End only';
       }
-      if (!state.bellOnSessionStart && !state.bellOnSessionEnd) {
+      if (!audioState.bellOnStart && !audioState.bellOnEnd) {
         bellText = ' Interval bells';
       }
     }

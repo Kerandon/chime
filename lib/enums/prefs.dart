@@ -1,11 +1,15 @@
 enum Prefs {
   ambienceSelected,
   ambienceVolume,
+  ambienceIsOn,
 
   bellSelected,
   bellVolume,
+  bellIntervalIsOn,
+  bellType,
   bellInterval,
   bellOnStart,
+  bellOnEnd,
 
   colorTheme,
   countdownIsOn,

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:chime/enums/app_color_themes.dart';
 import 'package:chime/pages/home.dart';
+import 'package:chime/state/audio_state.dart';
 import 'package:chime/state/database_manager.dart';
 import 'package:chime/models/prefs_model.dart';
 import 'package:chime/state/app_state.dart';
@@ -55,8 +56,11 @@ class _ChimeAppState extends ConsumerState<ChimeApp> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(stateProvider);
-    final notifier = ref.read(stateProvider.notifier);
+    final appState = ref.watch(stateProvider);
+    final appNotifier = ref.read(stateProvider.notifier);
+
+    final audioNotifier = ref.read(audioProvider.notifier);
+
     AppColorTheme colorTheme = AppColorTheme.turquoise;
     return FutureBuilder<dynamic>(
       future: Future.wait(
@@ -68,24 +72,29 @@ class _ChimeAppState extends ConsumerState<ChimeApp> {
 
           colorTheme = AppColors.themeColors
               .firstWhere(
-                  (element) => element.color.name == state.colorTheme.name)
+                  (element) => element.color.name == appState.colorTheme.name)
               .color;
           WidgetsBinding.instance.addPostFrameCallback(
             (timeStamp) {
               if (!_prefsUpdated) {
-                notifier.setOpenSession(prefsModel.isOpenSession);
-                notifier.setTotalTimeAfterRestart(prefsModel.totalTime);
-                notifier.setTotalCountdownTime(prefsModel.totalCountdown);
-                notifier.setCountdownIsOn(prefsModel.countdownIsOn);
-                notifier.setBellSelected(prefsModel.bellSelected);
-                notifier.setBellIntervalTime(prefsModel.bellInterval);
-                notifier.setBellVolume(prefsModel.bellVolume);
-                notifier.setBellOnSessionStart(prefsModel.bellOnStart);
-                notifier.setAmbienceSelected(prefsModel.ambienceSelected);
-                notifier.setAmbienceVolume(prefsModel.ambienceVolume);
-                notifier.setColorTheme(prefsModel.colorTheme);
-                notifier.setBrightness(prefsModel.brightness);
-                notifier.setHideClock(prefsModel.hideClock);
+                //APP
+                appNotifier.setOpenSession(prefsModel.isOpenSession);
+                appNotifier.setTotalTimeAfterRestart(prefsModel.totalTime);
+                appNotifier.setTotalCountdownTime(prefsModel.totalCountdown);
+                appNotifier.setCountdownIsOn(prefsModel.countdownIsOn);
+                appNotifier.setColorTheme(prefsModel.colorTheme);
+                appNotifier.setBrightness(prefsModel.brightness);
+
+                //AUDIO
+                audioNotifier.setBellSelected(prefsModel.bellSelected);
+                audioNotifier.setBellVolume(prefsModel.bellVolume);
+                audioNotifier.setBellInterval(prefsModel.bellInterval);
+                audioNotifier.setIntervalBellsAreOn(prefsModel.intervalBellsAreOn);
+                audioNotifier.setBellOnStart(prefsModel.bellOnStart);
+                audioNotifier.setBellOnEnd(prefsModel.bellOnEnd);
+                audioNotifier.setAmbience(prefsModel.ambienceSelected);
+                audioNotifier.setAmbienceIsOn(prefsModel.ambienceIsOn);
+                audioNotifier.setAmbienceVolume(prefsModel.ambienceVolume);
 
                 _prefsUpdated = true;
                 Timer.periodic(
@@ -101,7 +110,8 @@ class _ChimeAppState extends ConsumerState<ChimeApp> {
 
         final appTheme = CustomAppTheme.getThemeData(
             theme: colorTheme,
-            brightness: state.isDarkTheme ? Brightness.dark : Brightness.light);
+            brightness:
+                appState.isDarkTheme ? Brightness.dark : Brightness.light);
 
         return MaterialApp(
           debugShowCheckedModeBanner: false,

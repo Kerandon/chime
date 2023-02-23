@@ -25,35 +25,37 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
   bool _endSessionNotified = false;
   CountdownTimer? _timer;
 
+
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(stateProvider);
-    final notifier = ref.read(stateProvider.notifier);
-    switch (state.sessionState) {
+    final appState = ref.watch(stateProvider);
+    final appNotifier = ref.read(stateProvider.notifier);
+
+    switch (appState.sessionState) {
       case SessionState.notStarted:
         _countDownHasFinished = false;
         _timerIsSet = false;
         _endSessionNotified = false;
         _timer?.cancel();
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-          notifier.resetSession();
+          appNotifier.resetSession();
         });
-
 
         break;
       case SessionState.countdown:
         if (!_timerIsSet) {
           _timer = CountdownTimer(
               Duration(
-                  milliseconds: ((state.totalCountdownTime * 1000) + 1000)),
+                  milliseconds: ((appState.totalCountdownTime * 1000) + 1000)),
               const Duration(milliseconds: 1))
             ..listen((event) {
               if (event.remaining.inSeconds == 0 && !_countDownHasFinished) {
-                notifier.setSessionState(SessionState.inProgress);
+                appNotifier.setSessionState(SessionState.inProgress);
                 _timerIsSet = false;
                 _countDownHasFinished = true;
               }
-              notifier.setCurrentCountdownTime(event.remaining.inSeconds);
+              appNotifier.setCurrentCountdownTime(event.remaining.inSeconds);
+
             });
 
           _timerIsSet = true;
@@ -61,56 +63,66 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
         break;
       case SessionState.inProgress:
         if (!_timerIsSet) {
-          if (!state.openSession) {
-            int time = state.totalTimeMinutes;
-            if (state.pausedMilliseconds != 0) {
-              time = state.pausedMilliseconds;
+          if (!appState.openSession) {
+            int time = appState.totalTimeMinutes;
+            if (appState.pausedMilliseconds != 0) {
+              time = appState.pausedMilliseconds;
             }
-            var t = (
-               time * 60000
-                //1000
-            ) + kAdditionalStartTime;
-            if (state.pausedMilliseconds != 0) {
-              t = state.pausedMilliseconds;
+            var t = (time * 60000
+                ) +
+                kAdditionalStartTime;
+            if (appState.pausedMilliseconds != 0) {
+              t = appState.pausedMilliseconds;
             }
 
             _timer = CountdownTimer(
                 Duration(milliseconds: t), const Duration(milliseconds: 1))
               ..listen((event) {
-                notifier
+
+
+                appNotifier
                     .setMillisecondsRemaining(event.remaining.inMilliseconds);
+                appNotifier.setMillisecondsElapsed(event.elapsed.inMilliseconds + appState.pausedMilliseconds);
                 if (event.remaining.inSeconds == 0) {
                   if (!_endSessionNotified) {
-                    DatabaseManager().insertIntoStats(dateTime: DateTime.now(), minutes: state.totalTimeMinutes);
+                    DatabaseManager().insertIntoStats(
+                        dateTime: DateTime.now(),
+                        minutes: appState.totalTimeMinutes);
                     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                       showDialog(
-                          context: context,
-                          builder: (context) => const CompletionPage())
+                              context: context,
+                              builder: (context) => const CompletionPage())
                           .then((value) async {
                         WidgetsBinding.instance
                             .addPostFrameCallback((timeStamp) {
-                          notifier.setSessionState(SessionState.notStarted);
-                          notifier.resetSession();
+                          appNotifier.setSessionState(SessionState.notStarted);
+                          appNotifier.resetSession();
                         });
                       });
 
-                      notifier.setSessionState(SessionState.ended);
+                      appNotifier.setSessionState(SessionState.ended);
                     });
                     _endSessionNotified = true;
                   }
                 }
               });
             _timerIsSet = true;
-          }
-          else {
-
+          } else {
             /// AFTER 23 HOURS, 59 MINUTES AND 59 SECONDS (MAX)
 
-
-            _timer = CountdownTimer(
-                const Duration(seconds: 86399000), const Duration(milliseconds: 1))
+            _timer = CountdownTimer(const Duration(seconds: 86399000),
+                const Duration(milliseconds: 1))
               ..listen((event) {
-                notifier.setMillisecondsElapsed((event.elapsed.inMilliseconds + state.pausedMilliseconds));
+
+                appNotifier.setMillisecondsRemaining(event.remaining.inMilliseconds);
+
+
+                appNotifier.setMillisecondsElapsed(
+                    (event.elapsed.inMilliseconds +
+                        appState.pausedMilliseconds));
+
+
+
               });
             _timerIsSet = true;
           }
@@ -124,20 +136,18 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
         });
         break;
       case SessionState.ended:
-
         _timer?.cancel();
         break;
     }
 
-    print('session state is ${state.sessionState}');
-
     bool showTimePicker = false;
     bool showSessionTimer = false;
 
-    if (state.sessionState == SessionState.notStarted && !state.openSession) {
+    if (appState.sessionState == SessionState.notStarted &&
+        !appState.openSession) {
       showTimePicker = true;
     }
-    if (!showTimePicker && state.sessionState != SessionState.countdown) {
+    if (!showTimePicker && appState.sessionState != SessionState.countdown) {
       showSessionTimer = true;
     }
 
@@ -148,7 +158,7 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
         if (showTimePicker) ...[
           const TimePickerMain(),
         ],
-        if (state.sessionState == SessionState.countdown) ...[
+        if (appState.sessionState == SessionState.countdown) ...[
           const CountDownTimer(),
         ],
         if (showSessionTimer) ...[

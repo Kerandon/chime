@@ -56,7 +56,7 @@ class _AudioTweenState extends ConsumerState<AudioTween>
             animation: _controller,
             builder: (context, child) {
               WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                notifier.setAmbienceVolume(_animation.value);
+                // notifier.setAmbienceVolume(_animation.value);
               });
 
               return const SizedBox.shrink();

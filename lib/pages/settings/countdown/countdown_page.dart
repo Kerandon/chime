@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../configs/app_colors.dart';
 import '../../../configs/constants.dart';
-import '../../../data/countdown_times.dart';
+import '../../../data/bell_times.dart';
 import '../../../enums/prefs.dart';
 import '../components/settings_title.dart';
 import '../warmup_countdown/countdown_checklist.dart';
