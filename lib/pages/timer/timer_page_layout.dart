@@ -2,6 +2,7 @@ import 'package:chime/configs/constants.dart';
 import 'package:chime/enums/session_state.dart';
 import 'package:chime/pages/timer/start_button/start_circle_main.dart';
 import 'package:chime/state/audio_state.dart';
+import 'package:chime/utils/methods/date_time_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -28,7 +29,6 @@ class _TimerPageState extends ConsumerState<TimerPageLayout> {
     final appState = ref.watch(stateProvider);
     final appNotifier = ref.read(stateProvider.notifier);
     final audioState = ref.watch(audioProvider);
-    final audioNotifier = ref.read(audioProvider.notifier);
 
     String bellText = _setBellText(audioState);
 
@@ -114,7 +114,7 @@ class _TimerPageState extends ConsumerState<TimerPageLayout> {
   }
 
   String _setBellText(AudioState audioState) {
-    String bellText = 'Every ${audioState.bellInterval.toString()}m';
+    String bellText = 'Every ${audioState.bellInterval.toInt().formatToHourMin()}';
     if (audioState.bellInterval == 0) {
       if (audioState.bellOnStart && audioState.bellOnEnd) {
         bellText = 'Begin & end';

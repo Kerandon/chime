@@ -6,7 +6,7 @@ import 'package:chime/pages/timer/timer_page_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../animation/slide_animation.dart';
-import '../audio_manager.dart';
+import '../audio/audio_manager.dart';
 import '../enums/session_state.dart';
 import '../enums/slide_direction.dart';
 import '../state/app_state.dart';
@@ -43,26 +43,26 @@ class _HomePageContentsState extends ConsumerState<Home> {
               body: Stack(
                 children: [
                   _pageOptions.elementAt(state.currentPage),
-                  Align(
-                    alignment: const Alignment(-1, -0.80),
-                    child: ElevatedButton(
-                        onPressed: () async {
-                          await DatabaseManager().insertIntoStats(
-                              dateTime: DateTime.now()
-                                  .copyWith(year: 2022, month: 06, day: 11),
-                              minutes: 180);
-                        },
-                        child: const Text('Insert Stat')),
-                  ),
-                  Align(
-                    alignment: const Alignment(-0.80, -0.60),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        DatabaseManager().removeAllPrefsAndStats();
-                      },
-                      child: const Text('delete'),
-                    ),
-                  )
+                  // Align(
+                  //   alignment: const Alignment(-1, -0.80),
+                  //   child: ElevatedButton(
+                  //       onPressed: () async {
+                  //         await DatabaseManager().insertIntoStats(
+                  //             dateTime: DateTime.now()
+                  //                 .copyWith(year: 2022, month: 06, day: 11),
+                  //             minutes: 180);
+                  //       },
+                  //       child: const Text('Insert Stat')),
+                  // ),
+                  // Align(
+                  //   alignment: const Alignment(-0.80, -0.60),
+                  //   child: ElevatedButton(
+                  //     onPressed: () {
+                  //       DatabaseManager().removeAllPrefsAndStats();
+                  //     },
+                  //     child: const Text('delete'),
+                  //   ),
+                  // )
                 ],
               ),
               // floatingActionButtonLocation:

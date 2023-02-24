@@ -26,7 +26,7 @@ class IntervalBellBox extends ConsumerWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: () {
-            audioNotifier.setBellInterval(time);
+            audioNotifier.setBellFixedInterval(time);
           },
           child: Container(
             decoration: BoxDecoration(

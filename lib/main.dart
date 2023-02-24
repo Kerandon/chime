@@ -88,10 +88,12 @@ class _ChimeAppState extends ConsumerState<ChimeApp> {
                 //AUDIO
                 audioNotifier.setBellSelected(prefsModel.bellSelected);
                 audioNotifier.setBellVolume(prefsModel.bellVolume);
-                audioNotifier.setBellInterval(prefsModel.bellInterval);
-                audioNotifier.setIntervalBellsAreOn(prefsModel.intervalBellsAreOn);
+                audioNotifier.setBellFixedInterval(prefsModel.bellIntervalFixedTime);
+                audioNotifier.setBellIntervalsAreOn(prefsModel.bellIntervalIsOn);
                 audioNotifier.setBellOnStart(prefsModel.bellOnStart);
                 audioNotifier.setBellOnEnd(prefsModel.bellOnEnd);
+                audioNotifier.setIntervalBellType(prefsModel.bellIntervalType);
+                audioNotifier.setMaxRandomRange(prefsModel.bellIntervalRandomMax);
                 audioNotifier.setAmbience(prefsModel.ambienceSelected);
                 audioNotifier.setAmbienceIsOn(prefsModel.ambienceIsOn);
                 audioNotifier.setAmbienceVolume(prefsModel.ambienceVolume);

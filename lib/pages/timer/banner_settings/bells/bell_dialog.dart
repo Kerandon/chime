@@ -1,7 +1,10 @@
 import 'package:chime/data/bell_times.dart';
+import 'package:chime/pages/timer/banner_settings/bells/random_slider_range.dart';
+import 'package:chime/utils/methods/date_time_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tuple/tuple.dart';
+import '../../../../configs/app_colors.dart';
 import '../../../../enums/interval_bell.dart';
 import '../../../../state/app_state.dart';
 import '../../../../state/audio_state.dart';
@@ -25,12 +28,30 @@ class BellDialog extends ConsumerWidget {
         .toList();
 
     final heights = setIntervalHeight(size, times);
+    String subtitle = '';
+    if(!appState.openSession){
+      subtitle = '\n\n(session time: ${appState.totalTimeMinutes.formatToHourMin()})';
+    }else{
+     subtitle = '\n\nOpen time\n';
+    }
 
     return AlertDialog(
-      title: Text(
-        ' Meditation bell options',
-        style: Theme.of(context).textTheme.bodyLarge,
+      title: RichText(
         textAlign: TextAlign.center,
+        text: TextSpan(
+          text: 'Meditation Bell Setup',
+          style: Theme.of(context).textTheme.displaySmall!.copyWith(
+              color: Theme.of(context).primaryColor,
+                  fontSize: 20
+          ),
+          children: [
+            TextSpan(text: subtitle,
+            style: Theme.of(context).textTheme.labelMedium!.copyWith(
+              color: AppColors.lightGrey
+            )
+            )
+          ],
+        ),
       ),
       content: SizedBox(
         width: size.width,
@@ -51,7 +72,7 @@ class BellDialog extends ConsumerWidget {
                 text: 'Play interval bells',
                 value: audioState.intervalBellsAreOn,
                 onChanged: (value) {
-                  audioNotifier.setIntervalBellsAreOn(value);
+                  audioNotifier.setBellIntervalsAreOn(value);
                 },
               ),
               Row(
@@ -62,25 +83,25 @@ class BellDialog extends ConsumerWidget {
                       style: OutlinedButton.styleFrom(
                           side: BorderSide(
                               color: audioState.intervalBellType ==
-                                      IntervalBell.fixed
+                                      BellIntervalTypeEnum.fixed
                                   ? Theme.of(context).primaryColor
                                   : Theme.of(context).secondaryHeaderColor)),
                       onPressed: () {
-                        audioNotifier.setIntervalBellType(IntervalBell.fixed);
+                        audioNotifier.setIntervalBellType(BellIntervalTypeEnum.fixed);
                       },
-                      child: Text('Fixed Time'),
+                      child: const Text('Fixed Bells'),
                     ),
                     OutlinedButton(
                       style: OutlinedButton.styleFrom(
                           side: BorderSide(
                               color: audioState.intervalBellType ==
-                                      IntervalBell.random
+                                      BellIntervalTypeEnum.random
                                   ? Theme.of(context).primaryColor
                                   : Theme.of(context).secondaryHeaderColor)),
                       onPressed: () {
-                        audioNotifier.setIntervalBellType(IntervalBell.random);
+                        audioNotifier.setIntervalBellType(BellIntervalTypeEnum.random);
                       },
-                      child: Text('Random Time'),
+                      child: const Text('Random Bells'),
                     ),
                   ],
                 ],
@@ -88,7 +109,7 @@ class BellDialog extends ConsumerWidget {
               Column(
                 children: [
                   if (audioState.intervalBellsAreOn &&
-                      audioState.intervalBellType == IntervalBell.fixed) ...[
+                      audioState.intervalBellType == BellIntervalTypeEnum.fixed) ...[
                     Padding(
                       padding: EdgeInsets.only(
                         top: size.height * 0.02,
@@ -117,6 +138,21 @@ class BellDialog extends ConsumerWidget {
                                   crossAxisSpacing: 6,
                                   mainAxisSpacing: 6)),
                     ),
+                  ],
+                  if (audioState.intervalBellsAreOn &&
+                      audioState.intervalBellType == BellIntervalTypeEnum.random) ...[
+                    Padding(
+                      padding: EdgeInsets.only(top: size.height * 0.03),
+                      child: SizedBox(
+                        width: size.width,
+                        child: Text(
+                          'Max range for random bell',
+                          style: Theme.of(context).textTheme.labelSmall,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                    const RandomSliderRange(),
                   ],
                 ],
               ),

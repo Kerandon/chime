@@ -62,45 +62,47 @@ class _AllMeditationsListState extends ConsumerState<MeditationHistoryPage> {
               }
             }
 
-            return Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: size.height * 0.03),
-                  child: RichText(
-                    text: TextSpan(
-                      style: Theme.of(context).textTheme.bodyLarge!,
-                      text: 'You have meditated ',
-                      children: [
-                        TextSpan(
-                          text: stats.length.toString(),
-                          style:
-                              Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                    color: Theme.of(context).primaryColor,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                        ),
-                        TextSpan(
-                          text: timeText,
-                        ),
-                      ],
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: size.height * 0.03),
+                    child: RichText(
+                      text: TextSpan(
+                        style: Theme.of(context).textTheme.bodyLarge!,
+                        text: 'You have meditated ',
+                        children: [
+                          TextSpan(
+                            text: stats.length.toString(),
+                            style:
+                                Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                      color: Theme.of(context).primaryColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                          ),
+                          TextSpan(
+                            text: timeText,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                if (stats.isNotEmpty) ...[
-                  SelectHistory(
-                    stats: stats,
+                  if (stats.isNotEmpty) ...[
+                    SelectHistory(
+                      stats: stats,
+                    ),
+                  ],
+                  ListView.builder(
+                    itemCount: stats.length,
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) => MeditationEventTile(
+                      stat: stats[index],
+                      index: index,
+                    ),
                   ),
                 ],
-                ListView.builder(
-                  itemCount: stats.length,
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) => MeditationEventTile(
-                    stat: stats[index],
-                    index: index,
-                  ),
-                ),
-              ],
+              ),
             );
           }),
     );

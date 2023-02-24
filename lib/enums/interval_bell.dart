@@ -1,4 +1,4 @@
-enum IntervalBell {
+enum BellIntervalTypeEnum {
   fixed,
   random,
 }

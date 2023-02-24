@@ -6,10 +6,12 @@ enum Prefs {
   bellSelected,
   bellVolume,
   bellIntervalIsOn,
-  bellType,
-  bellInterval,
+  bellIntervalType,
+  bellIntervalFixedTime,
+  bellIntervalRandomMax,
   bellOnStart,
   bellOnEnd,
+
 
   colorTheme,
   countdownIsOn,

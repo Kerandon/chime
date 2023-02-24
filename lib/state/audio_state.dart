@@ -9,13 +9,13 @@ class AudioState {
   final Bell bellSelected;
   final double bellVolume;
   final bool intervalBellsAreOn;
-  final IntervalBell intervalBellType;
+  final BellIntervalTypeEnum intervalBellType;
   final double bellInterval;
+  final double maxRandomBell;
   final bool bellOnStart;
   final bool bellOnEnd;
   final bool bellOnBeginHasPlayed;
   final bool bellOnEndHasPlayed;
-  final Map<int, bool> intervalAudio;
   final Ambience ambienceSelected;
   final bool ambienceIsOn;
   final double ambienceVolume;
@@ -28,11 +28,11 @@ class AudioState {
     required this.intervalBellsAreOn,
     required this.intervalBellType,
     required this.bellInterval,
+    required this.maxRandomBell,
     required this.bellOnStart,
     required this.bellOnEnd,
     required this.bellOnBeginHasPlayed,
     required this.bellOnEndHasPlayed,
-    required this.intervalAudio,
     required this.ambienceSelected,
     required this.ambienceIsOn,
     required this.ambienceVolume,
@@ -43,8 +43,9 @@ class AudioState {
     Bell? bellSelected,
     double? bellVolume,
     bool? intervalBellsAreOn,
-    IntervalBell? intervalBellType,
+    BellIntervalTypeEnum? intervalBellType,
     double? bellInterval,
+    double? maxRandomBell,
     bool? bellOnStart,
     bool? bellOnEnd,
     bool? bellOnBeginHasPlayed,
@@ -60,12 +61,12 @@ class AudioState {
       bellVolume: bellVolume ?? this.bellVolume,
       intervalBellsAreOn: intervalBellsAreOn ?? this.intervalBellsAreOn,
       intervalBellType: intervalBellType ?? this.intervalBellType,
+      maxRandomBell: maxRandomBell ?? this.maxRandomBell,
       bellInterval: bellInterval ?? this.bellInterval,
       bellOnStart: bellOnStart ?? this.bellOnStart,
       bellOnEnd: bellOnEnd ?? this.bellOnEnd,
       bellOnBeginHasPlayed: bellOnBeginHasPlayed ?? this.bellOnBeginHasPlayed,
       bellOnEndHasPlayed: bellOnEndHasPlayed ?? this.bellOnEndHasPlayed,
-      intervalAudio: intervalAudio ?? this.intervalAudio,
       ambienceSelected: ambienceSelected ?? this.ambienceSelected,
       ambienceIsOn: ambienceIsOn ?? this.ambienceIsOn,
       ambienceVolume: ambienceVolume ?? this.ambienceVolume,
@@ -79,44 +80,60 @@ class AudioNotifier extends StateNotifier<AudioState> {
 
   /// BELLS
 
-  void setBellSelected(Bell bell) async {
+  void setBellSelected(Bell bell, {bool insertInDatabase = true}) async {
     state = state.copyWith(bellSelected: bell);
     await DatabaseManager()
         .insertIntoPrefs(k: Prefs.bellSelected.name, v: bell.name);
   }
 
-  void setBellVolume(double volume) async {
+  void setBellVolume(double volume, {bool insertInDatabase = true}) async {
     state = state.copyWith(bellVolume: volume);
     await DatabaseManager()
         .insertIntoPrefs(k: Prefs.bellVolume.name, v: volume);
   }
 
-  void setIntervalBellsAreOn(bool on) async {
+  void setBellIntervalsAreOn(bool on, {bool insertInDatabase = true}) async {
     state = state.copyWith(intervalBellsAreOn: on);
     await DatabaseManager()
         .insertIntoPrefs(k: Prefs.bellIntervalIsOn.name, v: on);
   }
 
-  void setIntervalBellType(IntervalBell bell) async {
+  void setIntervalBellType(BellIntervalTypeEnum bell,
+      {bool insertInDatabase = true}) async {
     state = state.copyWith(intervalBellType: bell);
     await DatabaseManager()
-        .insertIntoPrefs(k: Prefs.bellType.name, v: bell.name);
+        .insertIntoPrefs(k: Prefs.bellIntervalType.name, v: bell.name);
   }
 
-  void setBellInterval(double interval) async {
+  void setBellFixedInterval(double interval, {bool insertInDatabase = true}) async {
     state = state.copyWith(bellInterval: interval);
-    await DatabaseManager()
-        .insertIntoPrefs(k: Prefs.bellInterval.name, v: interval);
+    if (insertInDatabase) {
+      await DatabaseManager()
+          .insertIntoPrefs(k: Prefs.bellIntervalFixedTime.name, v: interval);
+    }
   }
 
-  void setBellOnStart(bool on) async {
+  void setMaxRandomRange(double max, {bool insertInDatabase = true}) async {
+    state = state.copyWith(maxRandomBell: max);
+    if (insertInDatabase) {
+      await DatabaseManager()
+          .insertIntoPrefs(k: Prefs.bellIntervalRandomMax.name, v: max);
+    }
+  }
+
+
+  void setBellOnStart(bool on, {bool insertInDatabase = true}) async {
     state = state.copyWith(bellOnStart: on);
-    await DatabaseManager().insertIntoPrefs(k: Prefs.bellOnStart.name, v: on);
+    if (insertInDatabase) {
+      await DatabaseManager().insertIntoPrefs(k: Prefs.bellOnStart.name, v: on);
+    }
   }
 
-  void setBellOnEnd(bool on) async {
+  void setBellOnEnd(bool on, {bool insertInDatabase = true}) async {
     state = state.copyWith(bellOnEnd: on);
-    await DatabaseManager().insertIntoPrefs(k: Prefs.bellOnEnd.name, v: on);
+    if (insertInDatabase) {
+      await DatabaseManager().insertIntoPrefs(k: Prefs.bellOnEnd.name, v: on);
+    }
   }
 
   void setBellOnBeginHasPlayed(bool played) async {
@@ -127,27 +144,31 @@ class AudioNotifier extends StateNotifier<AudioState> {
     state = state.copyWith(bellOnEndHasPlayed: played);
   }
 
-  void setIntervalBellHasPlayed(int interval, bool played) {
-    state = state.copyWith(intervalAudio: {interval: played});
-  }
 
   /// AMBIENCE
 
-  void setAmbience(Ambience ambience) async {
+  void setAmbience(Ambience ambience, {bool insertInDatabase = true}) async {
     state = state.copyWith(ambienceSelected: ambience);
-    await DatabaseManager()
-        .insertIntoPrefs(k: Prefs.ambienceSelected.name, v: ambience.name);
+    if (insertInDatabase) {
+      await DatabaseManager()
+          .insertIntoPrefs(k: Prefs.ambienceSelected.name, v: ambience.name);
+    }
   }
 
-  void setAmbienceIsOn(bool on) async {
+  void setAmbienceIsOn(bool on, {bool insertInDatabase = true}) async {
     state = state.copyWith(ambienceIsOn: on);
-    await DatabaseManager().insertIntoPrefs(k: Prefs.ambienceIsOn.name, v: on);
+    if (insertInDatabase) {
+      await DatabaseManager()
+          .insertIntoPrefs(k: Prefs.ambienceIsOn.name, v: on);
+    }
   }
 
-  void setAmbienceVolume(double volume) async {
+  void setAmbienceVolume(double volume, {bool insertInDatabase = true}) async {
     state = state.copyWith(ambienceVolume: volume);
-    await DatabaseManager()
-        .insertIntoPrefs(k: Prefs.ambienceVolume.name, v: volume);
+    if (insertInDatabase) {
+      await DatabaseManager()
+          .insertIntoPrefs(k: Prefs.ambienceVolume.name, v: volume);
+    }
   }
 }
 
@@ -156,13 +177,13 @@ final audioProvider = StateNotifierProvider<AudioNotifier, AudioState>((ref) {
     bellSelected: Bell.chime,
     bellVolume: 1.0,
     intervalBellsAreOn: true,
-    intervalBellType: IntervalBell.fixed,
+    intervalBellType: BellIntervalTypeEnum.fixed,
+    maxRandomBell: 5,
     bellInterval: 2,
     bellOnStart: true,
     bellOnEnd: true,
     bellOnBeginHasPlayed: false,
     bellOnEndHasPlayed: false,
-    intervalAudio: {},
     ambienceSelected: Ambience.none,
     ambienceIsOn: false,
     ambienceVolume: 0.50,

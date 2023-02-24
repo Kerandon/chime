@@ -13,9 +13,10 @@ class PrefsModel {
 
   final Bell bellSelected;
   final double bellVolume;
-  final bool intervalBellsAreOn;
-  final IntervalBell bellType;
-  final double bellInterval;
+  final bool bellIntervalIsOn;
+  final BellIntervalTypeEnum bellIntervalType;
+  final double bellIntervalFixedTime;
+  final double bellIntervalRandomMax;
   final bool bellOnStart;
   final bool bellOnEnd;
 
@@ -35,11 +36,12 @@ class PrefsModel {
     required this.countdownIsOn,
     required this.bellSelected,
     required this.bellVolume,
-    required this.intervalBellsAreOn,
-    required this.bellType,
+    required this.bellIntervalIsOn,
+    required this.bellIntervalType,
+    required this.bellIntervalFixedTime,
+    required this.bellIntervalRandomMax,
     required this.bellOnStart,
     required this.bellOnEnd,
-    required this.bellInterval,
     required this.ambienceSelected,
     required this.ambienceIsOn,
     required this.ambienceVolume,
@@ -53,16 +55,20 @@ class PrefsModel {
     int totalTime = 60;
     int timeCountdown = 5;
     bool countdownIsOn = true;
-    Bell bellSelected = Bell.chime;
-    double bellVolume = 0.50;
-    bool intervalBellsAreOn = true;
-    IntervalBell bellType = IntervalBell.fixed;
-    double bellInterval = 1;
-    bool bellOnStart = true;
-    bool bellOnEnd = true;
+
     Ambience ambienceSelected = Ambience.none;
     double ambienceVolume = 0.5;
     bool ambienceIsOn = false;
+
+    Bell bellSelected = Bell.chime;
+    double bellVolume = 0.50;
+    bool bellIntervalIsOn = true;
+    BellIntervalTypeEnum bellIntervalType = BellIntervalTypeEnum.fixed;
+    double bellIntervalFixedTime = 1;
+    double bellIntervalRandomMax = 5;
+    bool bellOnStart = true;
+    bool bellOnEnd = true;
+
     bool hideClock = false;
     AppColorTheme colorTheme = AppColorTheme.turquoise;
     bool brightness = true;
@@ -109,22 +115,27 @@ class PrefsModel {
       if(prefKey == Prefs.bellIntervalIsOn.name){
         final value = listMap[i].entries.elementAt(1).value;
         if (value == 0) {
-          intervalBellsAreOn = false;
+          bellIntervalIsOn = false;
         } else {
-          intervalBellsAreOn = true;
+          bellIntervalIsOn = true;
         }
       }
-      //
-      if(prefKey == Prefs.bellType.name){
-        bellType = IntervalBell.values.firstWhere((element) {
+
+      if (prefKey == Prefs.bellIntervalType.name) {
+        bellIntervalType = BellIntervalTypeEnum.values.firstWhere((element) {
           return element.name == listMap[i].entries.elementAt(1).value;
-        }, orElse: () => IntervalBell.fixed);
-
+        }, orElse: () => BellIntervalTypeEnum.fixed);
       }
 
-      if (prefKey == Prefs.bellInterval.name) {
-        bellInterval = listMap[i].entries.elementAt(1).value;
+
+      if (prefKey == Prefs.bellIntervalFixedTime.name) {
+        bellIntervalFixedTime = listMap[i].entries.elementAt(1).value;
       }
+
+      if (prefKey == Prefs.bellIntervalRandomMax.name) {
+        bellIntervalRandomMax = listMap[i].entries.elementAt(1).value;
+      }
+
 
       if (prefKey == Prefs.bellOnStart.name) {
         final value = listMap[i].entries.elementAt(1).value;
@@ -143,6 +154,8 @@ class PrefsModel {
           bellOnEnd = true;
         }
       }
+
+
 
       if (prefKey == Prefs.ambienceSelected.name) {
         ambienceSelected = Ambience.values.firstWhere((element) {
@@ -185,12 +198,13 @@ class PrefsModel {
         totalCountdown: timeCountdown,
         countdownIsOn: countdownIsOn,
         bellSelected: bellSelected,
-        bellInterval: bellInterval,
-        intervalBellsAreOn: intervalBellsAreOn,
-        bellType: bellType,
+        bellIntervalFixedTime: bellIntervalFixedTime,
+        bellIntervalIsOn: bellIntervalIsOn,
+        bellIntervalType:  bellIntervalType,
         bellVolume: bellVolume,
         bellOnStart: bellOnStart,
         bellOnEnd: bellOnEnd,
+        bellIntervalRandomMax: bellIntervalRandomMax,
         ambienceSelected: ambienceSelected,
         ambienceVolume: ambienceVolume,
         ambienceIsOn: ambienceIsOn,
