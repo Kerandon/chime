@@ -10,7 +10,6 @@ import '../audio/audio_manager.dart';
 import '../enums/session_state.dart';
 import '../enums/slide_direction.dart';
 import '../state/app_state.dart';
-import '../state/database_manager.dart';
 
 class Home extends ConsumerStatefulWidget {
   const Home({
@@ -65,28 +64,6 @@ class _HomePageContentsState extends ConsumerState<Home> {
                   // )
                 ],
               ),
-              // floatingActionButtonLocation:
-              //     FloatingActionButtonLocation.centerDocked,
-              // floatingActionButton: PopAnimation(
-              //   animate: state.sessionState == SessionState.countdown,
-              //   reset: state.sessionState == SessionState.notStarted,
-              //   child: FloatingActionButton(
-              //       shape: RoundedRectangleBorder(
-              //           borderRadius: BorderRadius.circular(500)),
-              //       backgroundColor:
-              //           Theme.of(context).splashColor.withOpacity(0.10),
-              //       child: Icon(
-              //         Icons.stop_outlined,
-              //         color: Theme.of(context).secondaryHeaderColor,
-              //       ),
-              //       onPressed: () {
-              //         notifier.setSessionStopped(true);
-              //         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-              //           notifier.setSessionState(SessionState.notStarted);
-              //           notifier.resetSession();
-              //         });
-              //       }),
-              // ),
               bottomNavigationBar: SlideAnimation(
                 animate: state.sessionState == SessionState.countdown || state.sessionState == SessionState.inProgress,
                 reset: state.sessionState == SessionState.notStarted,

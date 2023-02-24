@@ -4,7 +4,6 @@ import 'package:chime/utils/methods/date_time_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tuple/tuple.dart';
-import '../../../../configs/app_colors.dart';
 import '../../../../enums/interval_bell.dart';
 import '../../../../state/app_state.dart';
 import '../../../../state/audio_state.dart';
@@ -29,27 +28,32 @@ class BellDialog extends ConsumerWidget {
 
     final heights = setIntervalHeight(size, times);
     String subtitle = '';
-    if(!appState.openSession){
-      subtitle = '\n\n(session time: ${appState.totalTimeMinutes.formatToHourMin()})';
-    }else{
-     subtitle = '\n\nOpen time\n';
+    if (!appState.openSession) {
+      subtitle =
+          '\n\nFixed session time: ${appState.totalTimeMinutes.formatToHourMin()}';
+    } else {
+      subtitle = '\n\nOpen time\n';
     }
 
     return AlertDialog(
+      contentPadding: EdgeInsets.all(size.width * 0.05),
+      actionsPadding: EdgeInsets.all(size.width * 0.02),
+      insetPadding: EdgeInsets.all(size.width * 0.08),
       title: RichText(
         textAlign: TextAlign.center,
         text: TextSpan(
           text: 'Meditation Bell Setup',
-          style: Theme.of(context).textTheme.displaySmall!.copyWith(
-              color: Theme.of(context).primaryColor,
-                  fontSize: 20
-          ),
+          style: Theme.of(context)
+              .textTheme
+              .displaySmall!
+              .copyWith(color: Theme.of(context).primaryColor, fontSize: 20),
           children: [
-            TextSpan(text: subtitle,
-            style: Theme.of(context).textTheme.labelMedium!.copyWith(
-              color: AppColors.lightGrey
-            )
-            )
+            // TextSpan(
+            //     text: subtitle,
+            //     style: Theme.of(context)
+            //         .textTheme
+            //         .labelMedium!
+            //         .copyWith(color: AppColors.lightGrey))
           ],
         ),
       ),
@@ -87,7 +91,8 @@ class BellDialog extends ConsumerWidget {
                                   ? Theme.of(context).primaryColor
                                   : Theme.of(context).secondaryHeaderColor)),
                       onPressed: () {
-                        audioNotifier.setIntervalBellType(BellIntervalTypeEnum.fixed);
+                        audioNotifier
+                            .setIntervalBellType(BellIntervalTypeEnum.fixed);
                       },
                       child: const Text('Fixed Bells'),
                     ),
@@ -99,7 +104,8 @@ class BellDialog extends ConsumerWidget {
                                   ? Theme.of(context).primaryColor
                                   : Theme.of(context).secondaryHeaderColor)),
                       onPressed: () {
-                        audioNotifier.setIntervalBellType(BellIntervalTypeEnum.random);
+                        audioNotifier
+                            .setIntervalBellType(BellIntervalTypeEnum.random);
                       },
                       child: const Text('Random Bells'),
                     ),
@@ -109,7 +115,8 @@ class BellDialog extends ConsumerWidget {
               Column(
                 children: [
                   if (audioState.intervalBellsAreOn &&
-                      audioState.intervalBellType == BellIntervalTypeEnum.fixed) ...[
+                      audioState.intervalBellType ==
+                          BellIntervalTypeEnum.fixed) ...[
                     Padding(
                       padding: EdgeInsets.only(
                         top: size.height * 0.02,
@@ -140,7 +147,8 @@ class BellDialog extends ConsumerWidget {
                     ),
                   ],
                   if (audioState.intervalBellsAreOn &&
-                      audioState.intervalBellType == BellIntervalTypeEnum.random) ...[
+                      audioState.intervalBellType ==
+                          BellIntervalTypeEnum.random) ...[
                     Padding(
                       padding: EdgeInsets.only(top: size.height * 0.03),
                       child: SizedBox(

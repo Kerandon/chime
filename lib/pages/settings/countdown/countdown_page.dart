@@ -6,7 +6,6 @@ import '../../../configs/app_colors.dart';
 import '../../../configs/constants.dart';
 import '../../../data/bell_times.dart';
 import '../../../enums/prefs.dart';
-import '../components/settings_title.dart';
 import '../warmup_countdown/countdown_checklist.dart';
 
 class CountdownPage extends ConsumerWidget {
@@ -19,8 +18,7 @@ class CountdownPage extends ConsumerWidget {
     final notifier = ref.read(stateProvider.notifier);
     return Scaffold(
       appBar: AppBar(
-        title: const SettingsTitle(
-            icon: Icon(Icons.timer_outlined), text: 'Warmup Countdown'),
+        title: const Text('Warmup Countdown'),
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(

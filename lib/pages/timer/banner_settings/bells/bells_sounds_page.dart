@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../../configs/constants.dart';
 import '../../../../../enums/bell.dart';
-import '../../../settings/components/settings_title.dart';
 import 'bell_volume_slider.dart';
 import 'bells_checkbox_tile.dart';
 
@@ -14,9 +13,7 @@ class BellsSoundsPage extends ConsumerWidget {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: const SettingsTitle(
-            icon: Icon(Icons.audiotrack_outlined), text: 'Bell Sound'),
-      ),
+        title: Text('Bell sound'),),
       body: SingleChildScrollView(
         child: Column(
           children: [

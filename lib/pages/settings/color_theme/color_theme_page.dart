@@ -1,29 +1,45 @@
+import 'package:chime/configs/constants.dart';
+import 'package:chime/pages/settings/color_theme/dark_mode_switch_button.dart';
 import 'package:flutter/material.dart';
-import '../components/settings_title.dart';
-import 'color_theme_checkbox.dart';
-import '../../../configs/constants.dart';
 import '../../../enums/app_color_themes.dart';
+import 'color_theme_box.dart';
 
-class ColorThemePage extends StatelessWidget {
-  const ColorThemePage({Key? key}) : super(key: key);
+
+class ColorTheme extends StatelessWidget {
+  const ColorTheme({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final spacing = size.width * 0.0;
     return Scaffold(
       appBar: AppBar(
-        title: const SettingsTitle(
-            icon: Icon(Icons.color_lens_outlined), text: 'Color theme'),
+        title: const Text('Color Theme'),
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: size.width * kPageIndentation,
-        ),
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: AppColorTheme.values.length,
-          itemBuilder: (context, index) => ColorThemeCheckbox(
-            colorTheme: AppColorTheme.values.elementAt(index),
+        padding:
+        EdgeInsets.symmetric(horizontal: size.width * kPageIndentation),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(
+                    top: size.height * 0.02, bottom: size.height * 0.03),
+                child: const DarkThemeSwitchButton(),
+              ),
+              GridView.builder(
+                  itemCount: AppColorTheme.values.length,
+                  shrinkWrap: true,
+                  physics: const ScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: spacing,
+                    mainAxisSpacing: spacing,
+                  ),
+                  itemBuilder: (context, index) => ColorThemeBox(
+                        colorTheme: AppColorTheme.values.elementAt(index),
+                      ))
+            ],
           ),
         ),
       ),

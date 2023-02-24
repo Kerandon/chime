@@ -1,6 +1,3 @@
-import 'dart:math';
-
-import 'package:chime/configs/constants.dart';
 import 'package:chime/enums/bell.dart';
 import 'package:chime/enums/session_state.dart';
 import 'package:chime/state/app_state.dart';

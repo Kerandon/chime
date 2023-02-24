@@ -33,10 +33,10 @@ class CustomHomeButton extends ConsumerWidget {
         child: Align(
           alignment: alignment,
           child: OutlinedButton(
-            style: OutlinedButton.styleFrom(
-              backgroundColor: Theme.of(context).splashColor.withOpacity(0.05),
-              side: BorderSide.none,
-            ),
+            // style: OutlinedButton.styleFrom(
+            //   backgroundColor: Theme.of(context).splashColor.withOpacity(0.05),
+            //   side: BorderSide.none,
+            // ),
             onPressed: onPressed,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
