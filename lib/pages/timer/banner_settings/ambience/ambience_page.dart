@@ -1,11 +1,12 @@
+import 'package:chime/app_components/custom_animated_grid_box.dart';
 import 'package:chime/configs/constants.dart';
 import 'package:chime/data/ambience_data.dart';
+import 'package:chime/enums/ambience.dart';
 import 'package:chime/pages/timer/banner_settings/ambience/ambience_volume_slider.dart';
 import 'package:chime/state/audio_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../configs/app_colors.dart';
-import 'ambience_image_box.dart';
 
 class AmbiencePage extends ConsumerWidget {
   const AmbiencePage({Key? key}) : super(key: key);
@@ -37,17 +38,38 @@ class AmbiencePage extends ConsumerWidget {
                   child: const AmbienceVolumeSlider(),
                 ),
                 GridView.builder(
-                    physics: const ScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: ambienceData.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: spacing,
-                      crossAxisSpacing: spacing,
+                  physics: const ScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: ambienceData.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: spacing,
+                    crossAxisSpacing: spacing,
+                  ),
+                  itemBuilder: (context, index) {
+                    final ambience = ambienceData.elementAt(index).ambience;
+                    return CustomAnimatedGridBox(
+                          labelText: ambience.toText(),
+                          onPressed: audioState.ambienceIsOn ?  (){
+                            audioNotifier.setAmbience(ambience);
+                          } : null,
+                          isSelected: ambience == audioState.ambienceSelected && audioState.ambienceIsOn,
+                          contents:Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: AssetImage(
+                            'assets/images/ambience/${ambience.name}.jpg'),
+                      ),
+                      borderRadius: BorderRadius.circular(kBorderRadius),
+                      border: Border.all(
+                        color: Theme.of(context).splashColor,
+                      ),
                     ),
-                    itemBuilder: (context, index) => AmbienceImageBox(
-                          ambienceData: ambienceData[index],
-                        )),
+                  ),
+                      );
+                  }
+                ),
               ],
             ),
           ),

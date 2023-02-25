@@ -2,6 +2,7 @@ import 'package:chime/state/database_manager.dart';
 import 'package:chime/enums/app_color_themes.dart';
 import 'package:chime/enums/session_state.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../enums/clock_design.dart';
 import '../enums/focus_state.dart';
 import '../enums/prefs.dart';
 import '../utils/vibration_method.dart';
@@ -10,6 +11,8 @@ class AppState {
   //APP STATE
   final SessionState sessionState;
   final int currentPage;
+  final bool animateHomePage;
+  final bool homePageTabsAreOpen;
 
   //TIME
   final int totalTimeMinutes;
@@ -30,6 +33,7 @@ class AppState {
   //THEME
   final AppColorTheme colorTheme;
   final bool isDarkTheme;
+  final ClockDesign clockDesign;
 
   //SPLASH
   final bool animateSplash;
@@ -38,6 +42,8 @@ class AppState {
     required this.sessionState,
     required this.currentPage,
     required this.totalTimeMinutes,
+    required this.animateHomePage,
+    required this.homePageTabsAreOpen,
     required this.millisecondsRemaining,
     required this.millisecondsElapsed,
     required this.pausedMilliseconds,
@@ -49,6 +55,7 @@ class AppState {
     required this.deviceIsMuted,
     required this.colorTheme,
     required this.isDarkTheme,
+    required this.clockDesign,
     required this.animateSplash,
   });
 
@@ -56,6 +63,8 @@ class AppState {
     SessionState? sessionState,
     FocusState? focusState,
     int? currentPage,
+    bool? animateHomePage,
+    bool? homePageTabsAreOpen,
     int? totalTimeMinutes,
     int? millisecondsRemaining,
     int? millisecondsElapsed,
@@ -68,25 +77,30 @@ class AppState {
     bool? deviceIsMuted,
     AppColorTheme? colorTheme,
     bool? isDarkTheme,
+    ClockDesign? clockDesign,
     bool? animateSplash,
   }) {
     return AppState(
-        sessionState: sessionState ?? this.sessionState,
-        currentPage: currentPage ?? this.currentPage,
-        totalTimeMinutes: totalTimeMinutes ?? this.totalTimeMinutes,
-        millisecondsRemaining:
-            millisecondsRemaining ?? this.millisecondsRemaining,
-        millisecondsElapsed: millisecondsElapsed ?? this.millisecondsElapsed,
-        pausedMilliseconds: pausedMilliseconds ?? this.pausedMilliseconds,
-        countdownIsOn: countdownIsOn ?? this.countdownIsOn,
-        totalCountdownTime: totalCountdownTime ?? this.totalCountdownTime,
-        currentCountdownTime: currentCountdownTime ?? this.currentCountdownTime,
-        openSession: openSession ?? this.openSession,
-        vibrateOnCompletion: vibrateOnCompletion ?? this.vibrateOnCompletion,
-        deviceIsMuted: deviceIsMuted ?? this.deviceIsMuted,
-        colorTheme: colorTheme ?? this.colorTheme,
-        isDarkTheme: isDarkTheme ?? this.isDarkTheme,
-        animateSplash: animateSplash ?? this.animateSplash);
+      sessionState: sessionState ?? this.sessionState,
+      currentPage: currentPage ?? this.currentPage,
+      totalTimeMinutes: totalTimeMinutes ?? this.totalTimeMinutes,
+      animateHomePage: animateHomePage ?? this.animateHomePage,
+      homePageTabsAreOpen: homePageTabsAreOpen ?? this.homePageTabsAreOpen,
+      millisecondsRemaining:
+          millisecondsRemaining ?? this.millisecondsRemaining,
+      millisecondsElapsed: millisecondsElapsed ?? this.millisecondsElapsed,
+      pausedMilliseconds: pausedMilliseconds ?? this.pausedMilliseconds,
+      countdownIsOn: countdownIsOn ?? this.countdownIsOn,
+      totalCountdownTime: totalCountdownTime ?? this.totalCountdownTime,
+      currentCountdownTime: currentCountdownTime ?? this.currentCountdownTime,
+      openSession: openSession ?? this.openSession,
+      vibrateOnCompletion: vibrateOnCompletion ?? this.vibrateOnCompletion,
+      deviceIsMuted: deviceIsMuted ?? this.deviceIsMuted,
+      colorTheme: colorTheme ?? this.colorTheme,
+      isDarkTheme: isDarkTheme ?? this.isDarkTheme,
+      clockDesign: clockDesign ?? this.clockDesign,
+      animateSplash: animateSplash ?? this.animateSplash,
+    );
   }
 }
 
@@ -107,7 +121,8 @@ class AppNotifier extends StateNotifier<AppState> {
 
     state = state.copyWith(totalTimeMinutes: updatedTotalTime);
 
-    DatabaseManager().insertIntoPrefs(k: Prefs.timeTotal.name, v: updatedTotalTime);
+    DatabaseManager()
+        .insertIntoPrefs(k: Prefs.timeTotal.name, v: updatedTotalTime);
   }
 
   void setTotalTimeAfterRestart(int total) {
@@ -138,6 +153,14 @@ class AppNotifier extends StateNotifier<AppState> {
     );
   }
 
+  void setAnimateHomePage(bool animate) {
+    state = state.copyWith(animateHomePage: animate);
+  }
+
+  void setHomePageTabsStatus(bool open) {
+    state = state.copyWith(homePageTabsAreOpen: open);
+  }
+
   void setPage(int index) {
     state = state.copyWith(currentPage: index);
   }
@@ -147,7 +170,6 @@ class AppNotifier extends StateNotifier<AppState> {
   }
 
   void setMillisecondsElapsed(int milliseconds) {
-
     state = state.copyWith(millisecondsElapsed: milliseconds);
   }
 
@@ -198,15 +220,21 @@ class AppNotifier extends StateNotifier<AppState> {
     state = state.copyWith(deviceIsMuted: muted);
   }
 
+  void setClockDesign(ClockDesign design) {
+    state = state.copyWith(clockDesign: design);
+  }
+
   void setAnimateSplash(bool animate) {
     state = state.copyWith(animateSplash: animate);
   }
 }
 
-final stateProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
+final appProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
   return AppNotifier(AppState(
     sessionState: SessionState.notStarted,
     colorTheme: AppColorTheme.turquoise,
+    animateHomePage: false,
+    homePageTabsAreOpen: false,
     currentPage: 0,
     totalTimeMinutes: 60,
     millisecondsRemaining: 0,
@@ -219,6 +247,7 @@ final stateProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
     vibrateOnCompletion: true,
     deviceIsMuted: true,
     isDarkTheme: true,
+    clockDesign: ClockDesign.clock,
     animateSplash: false,
   ));
 });

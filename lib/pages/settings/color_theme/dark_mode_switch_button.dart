@@ -13,8 +13,8 @@ class DarkThemeSwitchButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;
-    final state = ref.watch(stateProvider);
-    final notifier = ref.read(stateProvider.notifier);
+    final state = ref.watch(appProvider);
+    final notifier = ref.read(appProvider.notifier);
 
     return SwitchListTile(
         title: Row(

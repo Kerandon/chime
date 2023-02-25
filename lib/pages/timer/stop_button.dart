@@ -1,3 +1,4 @@
+import 'package:chime/configs/constants.dart';
 import 'package:chime/state/database_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -13,12 +14,13 @@ class StopButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(stateProvider);
-    final notifier = ref.read(stateProvider.notifier);
+    final state = ref.watch(appProvider);
+    final notifier = ref.read(appProvider.notifier);
     return PopAnimation(
       animate: state.sessionState == SessionState.countdown ||
           state.sessionState == SessionState.inProgress,
       reset: state.sessionState == SessionState.notStarted,
+      duration: kHomePageAnimationDuration,
       child: SizedBox(
         width: 50,
         height: 50,

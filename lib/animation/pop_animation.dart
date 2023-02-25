@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 
 class PopAnimation extends StatefulWidget {
   const PopAnimation({Key? key, required this.child, required this.animate, this.reverse = false,
-  this.reset= false,
+  this.reset= false, this.duration = 500,
   })
       : super(key: key);
 
   final Widget child;
   final bool animate, reset;
   final bool reverse;
+  final int duration;
 
   @override
   State<PopAnimation> createState() => _PopAnimationState();
@@ -22,7 +23,7 @@ class _PopAnimationState extends State<PopAnimation>
   @override
   void initState() {
     _controller =
-        AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
+        AnimationController(duration: Duration(milliseconds: widget.duration), vsync: this);
 
     double begin = 0.0, end = 1.0;
     if(widget.reverse){

@@ -1,17 +1,16 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import '../../../configs/app_colors.dart';
-import '../../../configs/constants.dart';
+import '../../../../configs/constants.dart';
 
-class CustomProgressCircle extends CustomPainter {
+class CustomClockDash extends CustomPainter {
   final double percentage;
   final Color dashColor;
-  final Color circleColor;
+  final Color backgroundColor;
   final double strokeWidthDash;
 
-  CustomProgressCircle(
+  CustomClockDash(
       {required this.percentage,
-      required this.circleColor,
+      required this.backgroundColor,
       required this.dashColor,
       this.strokeWidthDash = kSessionTimerStrokeWidth * 0.60,
       });
@@ -23,14 +22,14 @@ class CustomProgressCircle extends CustomPainter {
     double centerX = size.width;
     double centerY = size.height;
     Offset center = Offset(centerX / 2, centerY / 2);
-    double radius = math.min(centerX * 0.45, centerY * 0.45);
+    double radius = math.min(centerX * 0.50, centerY * 0.50);
     double dotBuffer = size.width * 0.03;
     int dotBufferMultiplier = 3;
     int numberOfDashesMultiplier = 12; /// 360 / 6 = 60;
 
     /// Dash Background
     var dashBrushBackground = Paint()
-      ..color = AppColors.darkGrey
+      ..color = backgroundColor
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
       ..strokeWidth = strokeWidthDash;

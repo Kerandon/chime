@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../configs/constants.dart';
 import 'center_button.dart';
-import 'custom_progress_circle.dart';
+import 'custom_clocks/custom_clock_dash.dart';
+import 'custom_clocks/custom_clock_line.dart';
 
 class StartButtonMain extends ConsumerStatefulWidget {
   const StartButtonMain({
@@ -39,7 +40,7 @@ class _CustomCircularIndicatorState
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final state = ref.read(stateProvider);
+    final state = ref.read(appProvider);
     double percent = 1.0;
 
     if (state.totalTimeMinutes != 0 && state.millisecondsRemaining != 0) {
@@ -62,10 +63,18 @@ class _CustomCircularIndicatorState
             child: SizedBox(
               height: size.height * 0.32,
               width: size.height * 0.32,
-              child: CustomPaint(
-                painter: CustomProgressCircle(
+              child:
+
+              CustomPaint(
+                painter:
+                    // CustomClockLine(
+                    //     percentage: percent,
+                    //     backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.50),
+                    //     dashColor: Theme.of(context).primaryColor,
+                    // ),
+                CustomClockDash(
                   percentage: percent,
-                  circleColor: Theme.of(context).primaryColorDark,
+                  backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.50),
                   dashColor: Theme.of(context).primaryColor,
                 ),
                 child: const CenterButton(),

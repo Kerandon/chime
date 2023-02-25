@@ -13,7 +13,7 @@ class BellsSoundsPage extends ConsumerWidget {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Bell sound'),),
+        title: const Text('Bell sound'),),
       body: SingleChildScrollView(
         child: Column(
           children: [

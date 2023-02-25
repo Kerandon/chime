@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:chime/enums/app_color_themes.dart';
-import 'package:chime/pages/home.dart';
+import 'package:chime/pages/home_page/home.dart';
 import 'package:chime/state/audio_state.dart';
 import 'package:chime/state/database_manager.dart';
 import 'package:chime/models/prefs_model.dart';
@@ -56,8 +56,8 @@ class _ChimeAppState extends ConsumerState<ChimeApp> {
 
   @override
   Widget build(BuildContext context) {
-    final appState = ref.watch(stateProvider);
-    final appNotifier = ref.read(stateProvider.notifier);
+    final appState = ref.watch(appProvider);
+    final appNotifier = ref.read(appProvider.notifier);
 
     final audioNotifier = ref.read(audioProvider.notifier);
 

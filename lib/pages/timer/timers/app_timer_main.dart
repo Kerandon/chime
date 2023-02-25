@@ -1,7 +1,6 @@
 import 'package:chime/enums/session_state.dart';
-import 'package:chime/pages/timer/clocks/session_countdown/countdown_timer.dart';
-import 'package:chime/pages/timer/clocks/session_countdown/session_timer.dart';
-import 'package:chime/pages/timer/clocks/number_picker/set_time_layout.dart';
+import 'package:chime/pages/timer/timers/session_countdown/countdown_timer.dart';
+import 'package:chime/pages/timer/timers/session_countdown/session_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quiver/async.dart';
@@ -9,6 +8,7 @@ import '../../../configs/constants.dart';
 import '../../../state/app_state.dart';
 import '../../../state/database_manager.dart';
 import '../../completion_page/completion_page.dart';
+import 'number_picker/set_time_layout.dart';
 
 class AppTimerMain extends ConsumerStatefulWidget {
   const AppTimerMain({
@@ -28,8 +28,8 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
 
   @override
   Widget build(BuildContext context) {
-    final appState = ref.watch(stateProvider);
-    final appNotifier = ref.read(stateProvider.notifier);
+    final appState = ref.watch(appProvider);
+    final appNotifier = ref.read(appProvider.notifier);
 
     switch (appState.sessionState) {
       case SessionState.notStarted:

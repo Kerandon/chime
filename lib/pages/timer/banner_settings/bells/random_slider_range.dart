@@ -12,7 +12,7 @@ class RandomSliderRange extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;
-    final appState = ref.watch(stateProvider);
+    final appState = ref.watch(appProvider);
     final audioState = ref.watch(audioProvider);
     final audioNotifier = ref.read(audioProvider.notifier);
 

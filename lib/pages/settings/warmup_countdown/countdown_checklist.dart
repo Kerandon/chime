@@ -23,8 +23,8 @@ class CountdownChecklist extends ConsumerWidget {
       title = '${countdownTime ~/ 60} minute';
     }
 
-    final state = ref.watch(stateProvider);
-    final notifier = ref.read(stateProvider.notifier);
+    final state = ref.watch(appProvider);
+    final notifier = ref.read(appProvider.notifier);
     return CheckboxListTile(
       enabled: state.countdownIsOn ,
       title: Text(

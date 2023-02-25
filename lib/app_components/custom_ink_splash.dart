@@ -26,8 +26,8 @@ class _CustomSplashState extends ConsumerState<CustomInkSplash>
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(stateProvider);
-    final notifier = ref.read(stateProvider.notifier);
+    final state = ref.watch(appProvider);
+    final notifier = ref.read(appProvider.notifier);
 
     if (state.animateSplash && !_controller.isAnimating) {
       _controller.reset();

@@ -1,4 +1,3 @@
-import 'package:chime/state/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -49,7 +48,6 @@ class _AudioTweenState extends ConsumerState<AudioTween>
 
   @override
   Widget build(BuildContext context) {
-    final notifier = ref.read(stateProvider.notifier);
 
     return _controller.isAnimating
         ? AnimatedBuilder(

@@ -30,18 +30,22 @@ class IntervalBellBox extends ConsumerWidget {
           },
           child: Container(
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(kBorderRadius),
-                border: Border.all(
-                  color: selected == time
-                      ? Theme.of(context).primaryColor
-                      : Theme.of(context).secondaryHeaderColor,
-                )),
+              borderRadius: BorderRadius.circular(kBorderRadius),
+              border: Border.all(
+                color: selected == time
+                    ? Theme.of(context).primaryColor
+                    : Theme.of(context).secondaryHeaderColor,
+              ),
+            ),
             child: Center(
               child: RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(
                   text: timeText,
-                  style: Theme.of(context).textTheme.labelMedium,
+                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                      color: selected == time ? Theme.of(context).colorScheme.secondary :
+                      Theme.of(context).secondaryHeaderColor
+                  )
                 ),
               ),
             ),
@@ -57,11 +61,9 @@ class IntervalBellBox extends ConsumerWidget {
       timeText = "None";
     } else if (time == 0.50) {
       timeText = "30s";
-    }
-    else if (time == 999){
+    } else if (time == 999) {
       timeText = 'Random';
-    }
-    else{
+    } else {
       timeText = time.toInt().formatToHourMin();
     }
     return timeText;

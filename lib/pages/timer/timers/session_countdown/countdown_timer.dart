@@ -16,7 +16,7 @@ class CountDownTimer extends ConsumerWidget {
     final size = MediaQuery
         .of(context)
         .size;
-    final state = ref.watch(stateProvider);
+    final state = ref.watch(appProvider);
 
     int minutes = 0;
     int seconds = 0;

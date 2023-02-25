@@ -13,7 +13,7 @@ class TimePickerMain extends StatelessWidget {
     return SizedBox(
       height: size.height * 0.20,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           const CustomNumberPicker(alignment: MainAxisAlignment.end, text: 'H',),
           Padding(

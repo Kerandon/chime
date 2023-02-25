@@ -49,7 +49,7 @@ class _AudioManagerState extends ConsumerState<AudioManager> {
 
   @override
   Widget build(BuildContext context) {
-    final appState = ref.watch(stateProvider);
+    final appState = ref.watch(appProvider);
     final audioState = ref.watch(audioProvider);
     final audioNotifier = ref.read(audioProvider.notifier);
 

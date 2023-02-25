@@ -3,7 +3,7 @@ import 'package:chime/state/database_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../models/stats_model.dart';
-import '../../home.dart';
+import '../../home_page/home.dart';
 import 'meditiation_event_tile.dart';
 
 class MeditationHistoryPage extends ConsumerStatefulWidget {

@@ -20,7 +20,7 @@ class SettingsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(stateProvider);
+    final state = ref.watch(appProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
@@ -67,7 +67,7 @@ class SettingsPage extends ConsumerWidget {
                 FontAwesomeIcons.clock
               ),
               title: 'Clock design',
-              subTitle: state.colorTheme.name.capitalize(),
+              subTitle: state.clockDesign.name.capitalize(),
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -96,8 +96,8 @@ class DarkThemeSwitchButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;
-    final state = ref.watch(stateProvider);
-    final notifier = ref.read(stateProvider.notifier);
+    final state = ref.watch(appProvider);
+    final notifier = ref.read(appProvider.notifier);
 
     return SwitchListTile(
         title: Row(

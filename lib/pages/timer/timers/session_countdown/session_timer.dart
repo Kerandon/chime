@@ -20,7 +20,7 @@ class _SessionClockState extends ConsumerState<SessionTimer> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final state = ref.watch(stateProvider);
+    final state = ref.watch(appProvider);
 
     int hours = 0;
     int minutes = 0;

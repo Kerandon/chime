@@ -24,4 +24,4 @@ const kSessionWillBeginShortly = "Your session will begin shortly...";
 const kNoOfXLabelsOnLineChart = 5;
 const kFadeInTimeMilliseconds = 200;
 const kAdditionalStartTime = 400;
-
+const kHomePageAnimationDuration = 400;

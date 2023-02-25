@@ -17,11 +17,11 @@ class CenterButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;
-    final state = ref.watch(stateProvider);
+    final state = ref.watch(appProvider);
 
     Widget button = setButtonIcon(context: context, state: state);
 
-    final notifier = ref.read(stateProvider.notifier);
+    final notifier = ref.read(appProvider.notifier);
     return Center(
       child: Stack(
         children: [
@@ -40,7 +40,7 @@ class CenterButton extends ConsumerWidget {
                         if (state.sessionState == SessionState.notStarted) {
                           if (state.countdownIsOn) {
                             notifier.setSessionState(SessionState.countdown);
-                          }else{
+                          } else {
                             notifier.setSessionState(SessionState.inProgress);
                           }
                         }
