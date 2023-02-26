@@ -1,6 +1,7 @@
 import '../enums/ambience.dart';
 import '../enums/bell.dart';
 import '../enums/app_color_themes.dart';
+import '../enums/clock_design.dart';
 import '../enums/interval_bell.dart';
 import '../enums/prefs.dart';
 
@@ -24,10 +25,11 @@ class PrefsModel {
   final bool ambienceIsOn;
   final double ambienceVolume;
 
-  final bool hideClock;
-
   final AppColorTheme colorTheme;
   final bool brightness;
+
+  final bool timerShow;
+  final TimerDesign timerDesign;
 
   PrefsModel({
     required this.isOpenSession,
@@ -45,9 +47,10 @@ class PrefsModel {
     required this.ambienceSelected,
     required this.ambienceIsOn,
     required this.ambienceVolume,
-    required this.hideClock,
     required this.colorTheme,
     required this.brightness,
+    required this.timerShow,
+    required this.timerDesign,
   });
 
   factory PrefsModel.fromListMap(List<Map<String, dynamic>> listMap) {
@@ -69,9 +72,11 @@ class PrefsModel {
     bool bellOnStart = true;
     bool bellOnEnd = true;
 
-    bool hideClock = false;
     AppColorTheme colorTheme = AppColorTheme.turquoise;
     bool brightness = true;
+
+    bool timerShow = true;
+    TimerDesign timerDesign = TimerDesign.solid;
 
     for (int i = 0; i < listMap.length; i++) {
       String prefKey = listMap[i].entries.elementAt(0).value;
@@ -112,7 +117,7 @@ class PrefsModel {
         bellVolume = listMap[i].entries.elementAt(1).value;
       }
 
-      if(prefKey == Prefs.bellIntervalIsOn.name){
+      if (prefKey == Prefs.bellIntervalIsOn.name) {
         final value = listMap[i].entries.elementAt(1).value;
         if (value == 0) {
           bellIntervalIsOn = false;
@@ -127,7 +132,6 @@ class PrefsModel {
         }, orElse: () => BellIntervalTypeEnum.fixed);
       }
 
-
       if (prefKey == Prefs.bellIntervalFixedTime.name) {
         bellIntervalFixedTime = listMap[i].entries.elementAt(1).value;
       }
@@ -135,7 +139,6 @@ class PrefsModel {
       if (prefKey == Prefs.bellIntervalRandomMax.name) {
         bellIntervalRandomMax = listMap[i].entries.elementAt(1).value;
       }
-
 
       if (prefKey == Prefs.bellOnStart.name) {
         final value = listMap[i].entries.elementAt(1).value;
@@ -154,8 +157,6 @@ class PrefsModel {
           bellOnEnd = true;
         }
       }
-
-
 
       if (prefKey == Prefs.ambienceSelected.name) {
         ambienceSelected = Ambience.values.firstWhere((element) {
@@ -176,11 +177,6 @@ class PrefsModel {
         }
       }
 
-
-      if (prefKey == Prefs.hideClock.name) {
-        hideClock = listMap[i].entries.elementAt(1).value;
-      }
-
       if (prefKey == Prefs.colorTheme.name) {
         colorTheme = AppColorTheme.values.firstWhere(
             (element) => element.name == listMap[i].entries.elementAt(1).value,
@@ -190,26 +186,43 @@ class PrefsModel {
       if (prefKey == Prefs.themeBrightness.name) {
         brightness = listMap[i].entries.elementAt(1).value;
       }
+
+      if (prefKey == Prefs.timerShow.name) {
+        final value = listMap[i].entries.elementAt(1).value;
+        if (value == 0) {
+          timerShow = false;
+        } else {
+          timerShow = true;
+        }
+      }
+
+      if (prefKey == Prefs.timerDesign.name) {
+        timerDesign = TimerDesign.values.firstWhere(
+            (element) => element.name == listMap[i].entries.elementAt(1).value,
+            orElse: () => TimerDesign.solid);
+      }
     }
 
     return PrefsModel(
-        isOpenSession: isOpenSession,
-        totalTime: totalTime,
-        totalCountdown: timeCountdown,
-        countdownIsOn: countdownIsOn,
-        bellSelected: bellSelected,
-        bellIntervalFixedTime: bellIntervalFixedTime,
-        bellIntervalIsOn: bellIntervalIsOn,
-        bellIntervalType:  bellIntervalType,
-        bellVolume: bellVolume,
-        bellOnStart: bellOnStart,
-        bellOnEnd: bellOnEnd,
-        bellIntervalRandomMax: bellIntervalRandomMax,
-        ambienceSelected: ambienceSelected,
-        ambienceVolume: ambienceVolume,
-        ambienceIsOn: ambienceIsOn,
-        hideClock: hideClock,
-        colorTheme: colorTheme,
-        brightness: brightness);
+      isOpenSession: isOpenSession,
+      totalTime: totalTime,
+      totalCountdown: timeCountdown,
+      countdownIsOn: countdownIsOn,
+      bellSelected: bellSelected,
+      bellIntervalFixedTime: bellIntervalFixedTime,
+      bellIntervalIsOn: bellIntervalIsOn,
+      bellIntervalType: bellIntervalType,
+      bellVolume: bellVolume,
+      bellOnStart: bellOnStart,
+      bellOnEnd: bellOnEnd,
+      bellIntervalRandomMax: bellIntervalRandomMax,
+      ambienceSelected: ambienceSelected,
+      ambienceVolume: ambienceVolume,
+      ambienceIsOn: ambienceIsOn,
+      colorTheme: colorTheme,
+      brightness: brightness,
+      timerShow: timerShow,
+      timerDesign: timerDesign,
+    );
   }
 }

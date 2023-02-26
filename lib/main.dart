@@ -84,19 +84,36 @@ class _ChimeAppState extends ConsumerState<ChimeApp> {
                 appNotifier.setCountdownIsOn(prefsModel.countdownIsOn);
                 appNotifier.setColorTheme(prefsModel.colorTheme);
                 appNotifier.setBrightness(prefsModel.brightness);
+                appNotifier.showTimerDesign(prefsModel.timerShow,
+                    insertInDatabase: false);
+                appNotifier.setTimerDesign(prefsModel.timerDesign,
+                    insertInDatabase: false);
 
                 //AUDIO
-                audioNotifier.setBellSelected(prefsModel.bellSelected);
-                audioNotifier.setBellVolume(prefsModel.bellVolume);
-                audioNotifier.setBellFixedInterval(prefsModel.bellIntervalFixedTime);
-                audioNotifier.setBellIntervalsAreOn(prefsModel.bellIntervalIsOn);
-                audioNotifier.setBellOnStart(prefsModel.bellOnStart);
-                audioNotifier.setBellOnEnd(prefsModel.bellOnEnd);
-                audioNotifier.setIntervalBellType(prefsModel.bellIntervalType);
-                audioNotifier.setMaxRandomRange(prefsModel.bellIntervalRandomMax);
-                audioNotifier.setAmbience(prefsModel.ambienceSelected);
-                audioNotifier.setAmbienceIsOn(prefsModel.ambienceIsOn);
-                audioNotifier.setAmbienceVolume(prefsModel.ambienceVolume);
+                audioNotifier.setBellSelected(prefsModel.bellSelected,
+                    insertInDatabase: false);
+                audioNotifier.setBellVolume(prefsModel.bellVolume,
+                    insertInDatabase: false);
+                audioNotifier.setBellFixedInterval(
+                    prefsModel.bellIntervalFixedTime,
+                    insertInDatabase: false);
+                audioNotifier.setBellIntervalsAreOn(prefsModel.bellIntervalIsOn,
+                    insertInDatabase: false);
+                audioNotifier.setBellOnStart(prefsModel.bellOnStart,
+                    insertInDatabase: false);
+                audioNotifier.setBellOnEnd(prefsModel.bellOnEnd,
+                    insertInDatabase: false);
+                audioNotifier.setIntervalBellType(prefsModel.bellIntervalType,
+                    insertInDatabase: false);
+                audioNotifier.setMaxRandomRange(
+                    prefsModel.bellIntervalRandomMax,
+                    insertInDatabase: false);
+                audioNotifier.setAmbience(prefsModel.ambienceSelected,
+                    insertInDatabase: false);
+                audioNotifier.setAmbienceIsOn(prefsModel.ambienceIsOn,
+                    insertInDatabase: false);
+                audioNotifier.setAmbienceVolume(prefsModel.ambienceVolume,
+                    insertInDatabase: false);
 
                 _prefsUpdated = true;
                 Timer.periodic(

@@ -11,6 +11,7 @@ class CustomAnimatedGridBox extends ConsumerWidget {
     required this.isSelected,
     required this.contents,
     this.selectedLabelColor,
+    this.alignment = const Alignment(-0.70,-0.85),
     super.key,
   });
 
@@ -19,6 +20,7 @@ class CustomAnimatedGridBox extends ConsumerWidget {
   final bool isSelected;
   final Widget contents;
   final Color? selectedLabelColor;
+  final Alignment alignment;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -53,8 +55,8 @@ class CustomAnimatedGridBox extends ConsumerWidget {
                   ),
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.all(size.width * 0.05),
+              Align(
+                alignment: alignment,
                 child: Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(kBorderRadius),

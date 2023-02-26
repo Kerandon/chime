@@ -2,7 +2,6 @@ enum Prefs {
   ambienceSelected,
   ambienceVolume,
   ambienceIsOn,
-
   bellSelected,
   bellVolume,
   bellIntervalIsOn,
@@ -11,19 +10,14 @@ enum Prefs {
   bellIntervalRandomMax,
   bellOnStart,
   bellOnEnd,
-
-
   colorTheme,
   countdownIsOn,
-
-
   hideClock,
-
   isOpenSession,
-
   timeCountdown,
   timeTotal,
   timeUnlimited,
   themeBrightness,
-
+  timerShow,
+  timerDesign,
 }

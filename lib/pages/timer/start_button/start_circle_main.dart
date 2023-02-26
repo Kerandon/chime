@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../configs/constants.dart';
 import 'center_button.dart';
+import 'custom_clocks/custom_clock_circle.dart';
+import 'custom_clocks/custom_clock_clock.dart';
 import 'custom_clocks/custom_clock_dash.dart';
-import 'custom_clocks/custom_clock_line.dart';
+import 'custom_clocks/custom_clock_solid.dart';
 
 class StartButtonMain extends ConsumerStatefulWidget {
   const StartButtonMain({
@@ -45,8 +47,8 @@ class _CustomCircularIndicatorState
 
     if (state.totalTimeMinutes != 0 && state.millisecondsRemaining != 0) {
       percent =
-          (((state.totalTimeMinutes * 60000)+ kAdditionalStartTime) - state.millisecondsRemaining) /
-              ((state.totalTimeMinutes * 60000) + kAdditionalStartTime);
+          (((state.totalTimeMinutes * 60000)) - state.millisecondsRemaining) /
+              ((state.totalTimeMinutes * 60000));
     }
 
     if (percent.isNegative) {
@@ -67,16 +69,28 @@ class _CustomCircularIndicatorState
 
               CustomPaint(
                 painter:
-                    // CustomClockLine(
-                    //     percentage: percent,
-                    //     backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.50),
-                    //     dashColor: Theme.of(context).primaryColor,
-                    // ),
-                CustomClockDash(
-                  percentage: percent,
-                  backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.50),
-                  dashColor: Theme.of(context).primaryColor,
-                ),
+                    CustomClockClock(
+                        percentage: percent,
+                        fillColor: Theme.of(context).primaryColor,
+                        borderColor: Theme.of(context).colorScheme.secondary,
+                        dashColor: Theme.of(context).colorScheme.tertiary,
+
+                    ),
+                // CustomClockCircle(
+                //   percentage: percent,
+                //   backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.50),
+                //   dashColor: Theme.of(context).primaryColor,
+                // ),
+                //     CustomClockLine(
+                //         percentage: percent,
+                //         backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.50),
+                //         dashColor: Theme.of(context).primaryColor,
+                //     ),
+                // CustomClockDash(
+                //   percentage: percent,
+                //   backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.50),
+                //   dashColor: Theme.of(context).primaryColor,
+                // ),
                 child: const CenterButton(),
               ),
             ),

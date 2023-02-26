@@ -90,11 +90,7 @@ class _BannerMainState extends ConsumerState<BannerMain> {
                         iconData: appState.openSession
                             ? FontAwesomeIcons.infinity
                             : Icons.timer_outlined,
-                        onPressed: () async {
-                          appNotifier.setOpenSession(!appState.openSession);
-                          await DatabaseManager().insertIntoPrefs(
-                              k: Prefs.isOpenSession.name, v: !appState.openSession);
-                        },
+                        onPressed: () async => appNotifier.setOpenSession(!appState.openSession),
                         alignment: const Alignment(0.95, -0.98),
                       ),
                       CustomHomeButton(

@@ -24,8 +24,8 @@ class CustomClockDash extends CustomPainter {
     Offset center = Offset(centerX / 2, centerY / 2);
     double radius = math.min(centerX * 0.50, centerY * 0.50);
     double dotBuffer = size.width * 0.03;
-    int dotBufferMultiplier = 3;
-    int numberOfDashesMultiplier = 12; /// 360 / 6 = 60;
+    int dotBufferMultiplier = 4;
+    int numberOfDashesMultiplier = 18; /// 360 / 6 = 60;
 
     /// Dash Background
     var dashBrushBackground = Paint()

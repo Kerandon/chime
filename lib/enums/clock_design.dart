@@ -1,7 +1,1 @@
-enum ClockDesign {
-  dash,
-  line,
-  pie,
-  clock
-
-}
+enum TimerDesign { solid, dash, circle, clock }

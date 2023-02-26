@@ -66,12 +66,12 @@ class SettingsPage extends ConsumerWidget {
               icon: const Icon(
                 FontAwesomeIcons.clock
               ),
-              title: 'Clock design',
-              subTitle: state.clockDesign.name.capitalize(),
+              title: 'Timer design',
+              subTitle: state.timerDesign.name.capitalize(),
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => const ClockDesignPage(),
+                    builder: (context) => const TimerDesignPage(),
                   ),
                 );
               },

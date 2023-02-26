@@ -2,6 +2,7 @@ import 'package:chime/state/app_state.dart';
 import 'package:chime/state/database_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../../../app_components/custom_slider_tile.dart';
 import '../../../configs/app_colors.dart';
 import '../../../configs/constants.dart';
 import '../../../data/bell_times.dart';
@@ -21,23 +22,16 @@ class CountdownPage extends ConsumerWidget {
         title: const Text('Warmup Countdown'),
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: size.width * kPageIndentation),
+        padding:
+            EdgeInsets.symmetric(horizontal: size.width * kPageIndentation),
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Padding(
-                padding: EdgeInsets.only(top: size.height * 0.02),
-                child: SwitchListTile(
-                    inactiveTrackColor: AppColors.grey,
-                    inactiveThumbColor: AppColors.lightGrey,
-                    title: const Text('Turn on countdown'),
-                    value: state.countdownIsOn, onChanged: (value) async {
-                      notifier.setCountdownIsOn(!state.countdownIsOn);
-
-                      await DatabaseManager().insertIntoPrefs(k: Prefs.countdownIsOn.name, v: value);
-
-                }),
+              CustomSwitchTile(
+                title: 'Turn on countdown',
+                icon: Icons.timer_outlined,
+                value: state.countdownIsOn,
+                onChanged: (value) => notifier.setCountdownIsOn(value),
               ),
               ListView.builder(
                 itemCount: countdownTimes.length,

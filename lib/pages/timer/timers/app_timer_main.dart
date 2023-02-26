@@ -4,7 +4,6 @@ import 'package:chime/pages/timer/timers/session_countdown/session_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quiver/async.dart';
-import '../../../configs/constants.dart';
 import '../../../state/app_state.dart';
 import '../../../state/database_manager.dart';
 import '../../completion_page/completion_page.dart';
@@ -69,8 +68,7 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
               time = appState.pausedMilliseconds;
             }
             var t = (time * 60000
-                ) +
-                kAdditionalStartTime;
+                );
             if (appState.pausedMilliseconds != 0) {
               t = appState.pausedMilliseconds;
             }

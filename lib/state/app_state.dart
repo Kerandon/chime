@@ -33,7 +33,8 @@ class AppState {
   //THEME
   final AppColorTheme colorTheme;
   final bool isDarkTheme;
-  final ClockDesign clockDesign;
+  final bool showTimerDesign;
+  final TimerDesign timerDesign;
 
   //SPLASH
   final bool animateSplash;
@@ -55,7 +56,8 @@ class AppState {
     required this.deviceIsMuted,
     required this.colorTheme,
     required this.isDarkTheme,
-    required this.clockDesign,
+    required this.showTimerDesign,
+    required this.timerDesign,
     required this.animateSplash,
   });
 
@@ -77,7 +79,8 @@ class AppState {
     bool? deviceIsMuted,
     AppColorTheme? colorTheme,
     bool? isDarkTheme,
-    ClockDesign? clockDesign,
+    bool? showTimerDesign,
+    TimerDesign? timerDesign,
     bool? animateSplash,
   }) {
     return AppState(
@@ -98,7 +101,8 @@ class AppState {
       deviceIsMuted: deviceIsMuted ?? this.deviceIsMuted,
       colorTheme: colorTheme ?? this.colorTheme,
       isDarkTheme: isDarkTheme ?? this.isDarkTheme,
-      clockDesign: clockDesign ?? this.clockDesign,
+      showTimerDesign: showTimerDesign ?? this.showTimerDesign,
+      timerDesign: timerDesign ?? this.timerDesign,
       animateSplash: animateSplash ?? this.animateSplash,
     );
   }
@@ -107,7 +111,7 @@ class AppState {
 class AppNotifier extends StateNotifier<AppState> {
   AppNotifier(state) : super(state);
 
-  void setTotalTime({int? minutes, int? hours, bool afterRestart = false}) {
+  void setTotalTime({int? minutes, int? hours, bool afterRestart = false, bool insertInDatabase = true}) async {
     int updatedTotalTime = 0;
     int currentTimeMinutes = state.totalTimeMinutes % 60;
     int currentTimeHours = state.totalTimeMinutes ~/ 60;
@@ -121,8 +125,10 @@ class AppNotifier extends StateNotifier<AppState> {
 
     state = state.copyWith(totalTimeMinutes: updatedTotalTime);
 
-    DatabaseManager()
-        .insertIntoPrefs(k: Prefs.timeTotal.name, v: updatedTotalTime);
+    if(insertInDatabase) {
+      await DatabaseManager()
+          .insertIntoPrefs(k: Prefs.timeTotal.name, v: updatedTotalTime);
+    }
   }
 
   void setTotalTimeAfterRestart(int total) {
@@ -188,40 +194,73 @@ class AppNotifier extends StateNotifier<AppState> {
     state = state.copyWith(pausedMilliseconds: time);
   }
 
-  void setCountdownIsOn(bool on) {
+  void setCountdownIsOn(bool on, {bool insertInDatabase = true}) async {
     state = state.copyWith(countdownIsOn: on);
+    if(insertInDatabase){
+      await DatabaseManager().insertIntoPrefs(k: Prefs.countdownIsOn.name, v: on);
+    }
   }
 
-  void setTotalCountdownTime(int time) {
+  void setTotalCountdownTime(int time, {bool insertInDatabase = true}) async {
     state = state.copyWith(totalCountdownTime: time);
+    if(insertInDatabase){
+      await DatabaseManager().insertIntoPrefs(k: Prefs.timeCountdown.name, v: time);
+    }
   }
 
   void setCurrentCountdownTime(int time) {
     state = state.copyWith(currentCountdownTime: time);
   }
 
-  void setOpenSession(bool open) {
+  void setOpenSession(bool open, {bool insertInDatabase = true}) async {
     state = state.copyWith(openSession: open);
+    if(insertInDatabase) {
+      await DatabaseManager().insertIntoPrefs(
+          k: Prefs.isOpenSession.name, v: !open);
+    }
   }
 
-  void setColorTheme(AppColorTheme colorTheme) {
+  void setColorTheme(AppColorTheme colorTheme, {bool insertInDatabase = true}) async {
     state = state.copyWith(colorTheme: colorTheme);
+    if(insertInDatabase) {
+      await DatabaseManager().insertIntoPrefs(
+          k: Prefs.colorTheme.name, v: colorTheme.name);
+    }
   }
 
-  void setBrightness(bool isDark) {
+  void setBrightness(bool isDark, {bool insertInDatabase = true}) async {
     state = state.copyWith(isDarkTheme: isDark);
+    if(insertInDatabase) {
+      await DatabaseManager()
+          .insertIntoPrefs(k: Prefs.themeBrightness.toString(), v: isDark);
+    }
   }
 
   void setVibrateOnCompletion(bool vibrate) {
     state = state.copyWith(vibrateOnCompletion: vibrate);
+
+    //TODO add to database
   }
 
   void setDeviceIsMuted(bool muted) {
     state = state.copyWith(deviceIsMuted: muted);
+    //TODO add to database
   }
 
-  void setClockDesign(ClockDesign design) {
-    state = state.copyWith(clockDesign: design);
+  void showTimerDesign(bool show, {bool insertInDatabase = true}) async {
+    state = state.copyWith(showTimerDesign: show);
+    if (insertInDatabase) {
+      await DatabaseManager().insertIntoPrefs(k: Prefs.timerShow.name, v: show);
+    }
+  }
+
+  void setTimerDesign(TimerDesign design,
+      {bool insertInDatabase = true}) async {
+    state = state.copyWith(timerDesign: design);
+    if (insertInDatabase) {
+      await DatabaseManager()
+          .insertIntoPrefs(k: Prefs.timerDesign.name, v: design.name);
+    }
   }
 
   void setAnimateSplash(bool animate) {
@@ -247,7 +286,8 @@ final appProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
     vibrateOnCompletion: true,
     deviceIsMuted: true,
     isDarkTheme: true,
-    clockDesign: ClockDesign.clock,
+    showTimerDesign: true,
+    timerDesign: TimerDesign.solid,
     animateSplash: false,
   ));
 });
