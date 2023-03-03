@@ -13,6 +13,7 @@ class AppState {
   final int currentPage;
   final bool animateHomePage;
   final bool homePageTabsAreOpen;
+  final bool appHasLoaded;
 
   //TIME
   final int totalTimeMinutes;
@@ -45,6 +46,7 @@ class AppState {
     required this.totalTimeMinutes,
     required this.animateHomePage,
     required this.homePageTabsAreOpen,
+    required this.appHasLoaded,
     required this.millisecondsRemaining,
     required this.millisecondsElapsed,
     required this.pausedMilliseconds,
@@ -67,6 +69,7 @@ class AppState {
     int? currentPage,
     bool? animateHomePage,
     bool? homePageTabsAreOpen,
+    bool? appHasLoaded,
     int? totalTimeMinutes,
     int? millisecondsRemaining,
     int? millisecondsElapsed,
@@ -89,6 +92,7 @@ class AppState {
       totalTimeMinutes: totalTimeMinutes ?? this.totalTimeMinutes,
       animateHomePage: animateHomePage ?? this.animateHomePage,
       homePageTabsAreOpen: homePageTabsAreOpen ?? this.homePageTabsAreOpen,
+      appHasLoaded: appHasLoaded ?? this.appHasLoaded,
       millisecondsRemaining:
           millisecondsRemaining ?? this.millisecondsRemaining,
       millisecondsElapsed: millisecondsElapsed ?? this.millisecondsElapsed,
@@ -110,6 +114,10 @@ class AppState {
 
 class AppNotifier extends StateNotifier<AppState> {
   AppNotifier(state) : super(state);
+
+  void setAppHasLoaded(bool loaded){
+    state = state.copyWith(appHasLoaded: loaded);
+  }
 
   void setTotalTime({int? minutes, int? hours, bool afterRestart = false, bool insertInDatabase = true}) async {
     int updatedTotalTime = 0;
@@ -163,7 +171,7 @@ class AppNotifier extends StateNotifier<AppState> {
     state = state.copyWith(animateHomePage: animate);
   }
 
-  void setHomePageTabsStatus(bool open) {
+  void setHomePageTabsOpen(bool open) {
     state = state.copyWith(homePageTabsAreOpen: open);
   }
 
@@ -216,7 +224,7 @@ class AppNotifier extends StateNotifier<AppState> {
     state = state.copyWith(openSession: open);
     if(insertInDatabase) {
       await DatabaseManager().insertIntoPrefs(
-          k: Prefs.isOpenSession.name, v: !open);
+          k: Prefs.isOpenSession.name, v: open);
     }
   }
 
@@ -274,6 +282,7 @@ final appProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
     colorTheme: AppColorTheme.turquoise,
     animateHomePage: false,
     homePageTabsAreOpen: false,
+    appHasLoaded: false,
     currentPage: 0,
     totalTimeMinutes: 60,
     millisecondsRemaining: 0,

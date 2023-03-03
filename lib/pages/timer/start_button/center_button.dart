@@ -17,9 +17,9 @@ class CenterButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;
-    final state = ref.watch(appProvider);
+    final appState = ref.watch(appProvider);
 
-    Widget button = setButtonIcon(context: context, state: state);
+    Widget button = setButtonIcon(context: context, state: appState);
 
     final notifier = ref.read(appProvider.notifier);
     return Center(
@@ -30,32 +30,41 @@ class CenterButton extends ConsumerWidget {
             height: size.width * 0.20,
             child: Material(
               child: GestureDetector(
-                onTap: state.sessionState == SessionState.countdown
+                onTap: appState.sessionState == SessionState.countdown
                     ? null
                     : () {
                         WidgetsBinding.instance
                             .addPostFrameCallback((timeStamp) {
                           notifier.setAnimateSplash(true);
                         });
-                        if (state.sessionState == SessionState.notStarted) {
-                          if (state.countdownIsOn) {
-                            notifier.setSessionState(SessionState.countdown);
+                        if (appState.sessionState == SessionState.notStarted) {
+                          if (appState.totalTimeMinutes == 0 &&
+                              !appState.openSession) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(kSetFixedTimeGreaterThanZero),
+                              ),
+                            );
                           } else {
-                            notifier.setSessionState(SessionState.inProgress);
+                            if (appState.countdownIsOn) {
+                              notifier.setSessionState(SessionState.countdown);
+                            } else {
+                              notifier.setSessionState(SessionState.inProgress);
+                            }
                           }
                         }
 
-                        if (state.sessionState == SessionState.inProgress) {
+                        if (appState.sessionState == SessionState.inProgress) {
                           notifier.setSessionState(SessionState.paused);
                           notifier.setPausedTimeMilliseconds();
                         }
-                        if (state.sessionState == SessionState.paused) {
+                        if (appState.sessionState == SessionState.paused) {
                           notifier.setSessionState(SessionState.inProgress);
                         }
                       },
                 child: BounceAnimation(
-                  animate: state.sessionState == SessionState.inProgress,
-                  stop: state.sessionState != SessionState.inProgress,
+                  animate: appState.sessionState == SessionState.inProgress,
+                  stop: appState.sessionState != SessionState.inProgress,
                   child: AnimatedSwitcher(
                     duration: const Duration(
                       milliseconds: 800,

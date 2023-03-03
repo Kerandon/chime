@@ -19,9 +19,15 @@ class _CustomSplashState extends ConsumerState<CustomInkSplash>
 
   @override
   void initState() {
-    _controller =
-        AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
+    _controller = AnimationController(
+        duration: const Duration(milliseconds: 300), vsync: this);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override

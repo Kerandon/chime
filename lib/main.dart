@@ -78,12 +78,20 @@ class _ChimeAppState extends ConsumerState<ChimeApp> {
             (timeStamp) {
               if (!_prefsUpdated) {
                 //APP
-                appNotifier.setOpenSession(prefsModel.isOpenSession);
-                appNotifier.setTotalTimeAfterRestart(prefsModel.totalTime);
-                appNotifier.setTotalCountdownTime(prefsModel.totalCountdown);
-                appNotifier.setCountdownIsOn(prefsModel.countdownIsOn);
-                appNotifier.setColorTheme(prefsModel.colorTheme);
-                appNotifier.setBrightness(prefsModel.brightness);
+                appNotifier.setOpenSession(prefsModel.isOpenSession,
+                    insertInDatabase: false);
+                appNotifier.setTotalTimeAfterRestart(
+                  prefsModel.totalTime,
+                );
+                appNotifier.setTotalCountdownTime(prefsModel.totalCountdown,
+                    insertInDatabase: false);
+                appNotifier.setCountdownIsOn(
+                  prefsModel.countdownIsOn,
+                );
+                appNotifier.setColorTheme(prefsModel.colorTheme,
+                    insertInDatabase: false);
+                appNotifier.setBrightness(prefsModel.brightness,
+                    insertInDatabase: false);
                 appNotifier.showTimerDesign(prefsModel.timerShow,
                     insertInDatabase: false);
                 appNotifier.setTimerDesign(prefsModel.timerDesign,
@@ -117,7 +125,7 @@ class _ChimeAppState extends ConsumerState<ChimeApp> {
 
                 _prefsUpdated = true;
                 Timer.periodic(
-                  const Duration(milliseconds: 500),
+                  const Duration(milliseconds: 800),
                   (timer) {
                     FlutterNativeSplash.remove();
                   },

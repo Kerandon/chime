@@ -7,37 +7,44 @@ class ChartState {
   final int totalMeditationTime;
   final bool toggleBarChart;
   final TimePeriod barChartTimePeriod;
+  final bool barChartFutureHasRun;
   final double pageScrollOffset;
   final List<StatsModel> barChartStats;
   final bool lineChartHasBeenDrawn;
   final bool linearChartHasAnimated;
   final Map<int, DateTime> selectedMeditationEvents;
+  final bool refreshStats;
 
   ChartState({
     required this.totalMeditationTime,
     required this.toggleBarChart,
     required this.barChartTimePeriod,
+    required this.barChartFutureHasRun,
     required this.pageScrollOffset,
     required this.barChartStats,
     required this.lineChartHasBeenDrawn,
     required this.linearChartHasAnimated,
     required this.selectedMeditationEvents,
+    required this.refreshStats,
   });
 
   ChartState copyWith({
     int? totalMeditationTime,
     bool? toggleBarChart,
     TimePeriod? barChartTimePeriod,
+    bool? barChartFutureHasRun,
     double? pageScrollOffset,
     List<StatsModel>? barChartStats,
     bool? lineChartHasBeenDrawn,
     bool? linearChartHasAnimated,
     Map<int, DateTime>? selectedMeditationEvents,
+    bool? refreshStats,
   }) {
     return ChartState(
       totalMeditationTime: totalMeditationTime ?? this.totalMeditationTime,
       toggleBarChart: toggleBarChart ?? this.toggleBarChart,
       barChartTimePeriod: barChartTimePeriod ?? this.barChartTimePeriod,
+      barChartFutureHasRun: barChartFutureHasRun ?? this.barChartFutureHasRun,
       pageScrollOffset: pageScrollOffset ?? this.pageScrollOffset,
       barChartStats: barChartStats ?? this.barChartStats,
       lineChartHasBeenDrawn:
@@ -46,6 +53,7 @@ class ChartState {
           linearChartHasAnimated ?? this.linearChartHasAnimated,
       selectedMeditationEvents:
           selectedMeditationEvents ?? this.selectedMeditationEvents,
+      refreshStats: refreshStats ?? this.refreshStats,
     );
   }
 }
@@ -63,6 +71,10 @@ class ChartNotifier extends StateNotifier<ChartState> {
 
   void setBarChartStats(List<StatsModel> stats) {
     state = state.copyWith(barChartStats: stats);
+  }
+
+  void setBarChartFutureHasRun(bool hasRun){
+    state = state.copyWith(barChartFutureHasRun: hasRun);
   }
 
   void setTotalMeditationTime(int time) {
@@ -94,6 +106,11 @@ class ChartNotifier extends StateNotifier<ChartState> {
 
     state = state.copyWith(selectedMeditationEvents: events);
   }
+
+  void setRefreshStats(bool refresh){
+    state = state.copyWith(refreshStats: refresh);
+  }
+
 }
 
 final chartStateProvider =
@@ -102,10 +119,12 @@ final chartStateProvider =
     totalMeditationTime: 0,
     toggleBarChart: false,
     barChartTimePeriod: TimePeriod.week,
+    barChartFutureHasRun: false,
     pageScrollOffset: 0,
     barChartStats: [],
     lineChartHasBeenDrawn: false,
     linearChartHasAnimated: false,
     selectedMeditationEvents: {},
+    refreshStats: false,
   ));
 });

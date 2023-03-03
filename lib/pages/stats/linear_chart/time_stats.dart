@@ -19,14 +19,14 @@ class TimeStats extends ConsumerStatefulWidget {
 }
 
 class _TimeStatsState extends ConsumerState<TimeStats> {
-  late final Future<List<StatsModel>> _statsFuture;
+  // late final Future<List<StatsModel>> _statsFuture;
   bool _animate = false;
 
-  @override
-  void initState() {
-    _statsFuture = DatabaseManager().getAllStats();
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   _statsFuture =
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +42,7 @@ class _TimeStatsState extends ConsumerState<TimeStats> {
     }
 
     return FutureBuilder<List<StatsModel>>(
-      future: _statsFuture,
+      future: DatabaseManager().getAllStats(),
       builder: (context, snapshot) {
         List<Color> colors = [
           const Color.fromARGB(255, 140, 255, 240),

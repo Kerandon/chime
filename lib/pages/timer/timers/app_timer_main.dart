@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:chime/enums/session_state.dart';
 import 'package:chime/pages/timer/timers/session_countdown/countdown_timer.dart';
 import 'package:chime/pages/timer/timers/session_countdown/session_timer.dart';
@@ -24,7 +26,6 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
   bool _endSessionNotified = false;
   CountdownTimer? _timer;
 
-
   @override
   Widget build(BuildContext context) {
     final appState = ref.watch(appProvider);
@@ -45,7 +46,7 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
         if (!_timerIsSet) {
           _timer = CountdownTimer(
               Duration(
-                  milliseconds: ((appState.totalCountdownTime * 1000) + 1000)),
+                  milliseconds: ((appState.totalCountdownTime * 1000))),
               const Duration(milliseconds: 1))
             ..listen((event) {
               if (event.remaining.inSeconds == 0 && !_countDownHasFinished) {
@@ -54,7 +55,6 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
                 _countDownHasFinished = true;
               }
               appNotifier.setCurrentCountdownTime(event.remaining.inSeconds);
-
             });
 
           _timerIsSet = true;
@@ -67,8 +67,7 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
             if (appState.pausedMilliseconds != 0) {
               time = appState.pausedMilliseconds;
             }
-            var t = (time * 60000
-                );
+            var t = (time * 60000);
             if (appState.pausedMilliseconds != 0) {
               t = appState.pausedMilliseconds;
             }
@@ -76,30 +75,32 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
             _timer = CountdownTimer(
                 Duration(milliseconds: t), const Duration(milliseconds: 1))
               ..listen((event) {
-
-
                 appNotifier
                     .setMillisecondsRemaining(event.remaining.inMilliseconds);
-                appNotifier.setMillisecondsElapsed(event.elapsed.inMilliseconds + appState.pausedMilliseconds);
+                appNotifier.setMillisecondsElapsed(
+                    event.elapsed.inMilliseconds + appState.pausedMilliseconds);
                 if (event.remaining.inSeconds == 0) {
                   if (!_endSessionNotified) {
-                    DatabaseManager().insertIntoStats(
-                        dateTime: DateTime.now(),
-                        minutes: appState.totalTimeMinutes);
-                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                      showDialog(
-                              context: context,
-                              builder: (context) => const CompletionPage())
-                          .then((value) async {
-                        WidgetsBinding.instance
-                            .addPostFrameCallback((timeStamp) {
-                          appNotifier.setSessionState(SessionState.notStarted);
-                          appNotifier.resetSession();
+                    Timer(const Duration(seconds: 2), () {
+                      DatabaseManager().insertIntoStats(
+                          dateTime: DateTime.now(),
+                          minutes: appState.totalTimeMinutes);
+                      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                        showDialog(
+                            context: context,
+                            builder: (context) => const CompletionPage())
+                            .then((value) async {
+                          WidgetsBinding.instance
+                              .addPostFrameCallback((timeStamp) {
+                            appNotifier.setSessionState(SessionState.notStarted);
+                            appNotifier.resetSession();
+                          });
                         });
-                      });
 
-                      appNotifier.setSessionState(SessionState.ended);
+                        appNotifier.setSessionState(SessionState.ended);
+                      });
                     });
+
                     _endSessionNotified = true;
                   }
                 }
@@ -111,16 +112,12 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
             _timer = CountdownTimer(const Duration(seconds: 86399000),
                 const Duration(milliseconds: 1))
               ..listen((event) {
-
-                appNotifier.setMillisecondsRemaining(event.remaining.inMilliseconds);
-
+                appNotifier
+                    .setMillisecondsRemaining(event.remaining.inMilliseconds);
 
                 appNotifier.setMillisecondsElapsed(
                     (event.elapsed.inMilliseconds +
                         appState.pausedMilliseconds));
-
-
-
               });
             _timerIsSet = true;
           }

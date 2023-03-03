@@ -6,7 +6,6 @@ import '../../../../configs/constants.dart';
 class CustomClockClock extends CustomPainter {
   final double percentage;
   final Color fillColor;
-  final Color dashColor;
   final Color borderColor;
   final double strokeWidthDash;
 
@@ -14,7 +13,6 @@ class CustomClockClock extends CustomPainter {
     required this.percentage,
     required this.fillColor,
     required this.borderColor,
-    required this.dashColor,
     this.strokeWidthDash = kSessionTimerStrokeWidth * 0.60,
   });
 
@@ -30,7 +28,7 @@ class CustomClockClock extends CustomPainter {
     /// DASHES SMALL
 
     var dashBrushSmall = Paint()
-      ..color = dashColor
+      ..color = borderColor
       ..style = PaintingStyle.fill
       ..strokeWidth = 2;
 
@@ -75,12 +73,6 @@ class CustomClockClock extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidthDash / 10;
 
-    // final innerLinePath = Path()
-    //   ..addArc(Rect.fromCircle(center: center, radius: radius * 0.81),
-    //       -math.pi / 2, math.pi * 2);
-
-    //canvas.drawPath(innerLinePath, borderCirclePaint);
-
     final outerLinePath = Path()
       ..addArc(Rect.fromCircle(center: center, radius: radius * 0.98),
           -math.pi / 2, math.pi * 2);
@@ -90,6 +82,6 @@ class CustomClockClock extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
+    return true;
   }
 }

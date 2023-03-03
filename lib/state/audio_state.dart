@@ -19,8 +19,8 @@ class AudioState {
   final Ambience ambienceSelected;
   final bool ambienceIsOn;
   final double ambienceVolume;
-
-  final bool playIntervalBell;
+  final bool ambiencePageOpen;
+  final bool ambienceIsPlaying;
 
   AudioState({
     required this.bellSelected,
@@ -36,7 +36,8 @@ class AudioState {
     required this.ambienceSelected,
     required this.ambienceIsOn,
     required this.ambienceVolume,
-    required this.playIntervalBell,
+    required this.ambiencePageOpen,
+    required this.ambienceIsPlaying,
   });
 
   AudioState copyWith({
@@ -55,6 +56,8 @@ class AudioState {
     bool? ambienceIsOn,
     double? ambienceVolume,
     bool? playIntervalBell,
+    bool? ambiencePageOpen,
+    bool? ambienceIsPlaying,
   }) {
     return AudioState(
       bellSelected: bellSelected ?? this.bellSelected,
@@ -70,7 +73,8 @@ class AudioState {
       ambienceSelected: ambienceSelected ?? this.ambienceSelected,
       ambienceIsOn: ambienceIsOn ?? this.ambienceIsOn,
       ambienceVolume: ambienceVolume ?? this.ambienceVolume,
-      playIntervalBell: playIntervalBell ?? this.playIntervalBell,
+      ambiencePageOpen: ambiencePageOpen ?? this.ambiencePageOpen,
+      ambienceIsPlaying: ambienceIsPlaying ?? this.ambienceIsPlaying,
     );
   }
 }
@@ -153,6 +157,7 @@ class AudioNotifier extends StateNotifier<AudioState> {
       await DatabaseManager()
           .insertIntoPrefs(k: Prefs.ambienceSelected.name, v: ambience.name);
     }
+    print('ambience set to ${state.ambienceSelected}');
   }
 
   void setAmbienceIsOn(bool on, {bool insertInDatabase = true}) async {
@@ -170,6 +175,16 @@ class AudioNotifier extends StateNotifier<AudioState> {
           .insertIntoPrefs(k: Prefs.ambienceVolume.name, v: volume);
     }
   }
+
+  void setAmbiencePageOpen(bool open){
+    state = state.copyWith(ambiencePageOpen: open);
+  }
+
+  void setAmbienceIsPlaying(bool playing){
+    state = state.copyWith(ambienceIsPlaying: playing);
+  }
+
+
 }
 
 final audioProvider = StateNotifierProvider<AudioNotifier, AudioState>((ref) {
@@ -187,6 +202,7 @@ final audioProvider = StateNotifierProvider<AudioNotifier, AudioState>((ref) {
     ambienceSelected: Ambience.none,
     ambienceIsOn: false,
     ambienceVolume: 0.50,
-    playIntervalBell: false,
+    ambiencePageOpen: false,
+    ambienceIsPlaying: false,
   ));
 });

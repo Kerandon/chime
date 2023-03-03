@@ -37,9 +37,14 @@ class CustomHomeButton extends ConsumerWidget {
             child: Icon(iconData),
           ),
           if (text != null) ...[
-            Text(
-              text!,
-              style: Theme.of(context).textTheme.bodySmall,
+            SizedBox(
+              width: size.width * 0.18,
+              child: Text(
+                text!,
+                style: Theme.of(context).textTheme.bodySmall,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             )
           ],
         ],

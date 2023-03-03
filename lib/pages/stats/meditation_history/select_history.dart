@@ -101,21 +101,25 @@ class SelectHistory extends ConsumerWidget {
                                         notifier.selectMeditationEvents(
                                             items: items, unselect: true);
 
+                                        notifier.setRefreshStats(true);
+
                                         await DatabaseManager()
                                             .removeStats(dateTimes);
 
-                                        if(context.mounted) {
+                                        if (context.mounted) {
                                           Navigator.of(context,
-                                              rootNavigator: true)
+                                                  rootNavigator: true)
                                               .pop('dialog');
 
                                           Navigator.maybePop(context).then(
-                                                  (value) =>
-                                                  Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                          const MeditationHistoryPage())));
+                                            (value) => Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const MeditationHistoryPage(),
+                                              ),
+                                            ),
+                                          );
                                         }
                                       },
                                       child: const Text('Yes')),

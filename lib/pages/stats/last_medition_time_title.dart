@@ -1,32 +1,29 @@
+import 'package:chime/configs/constants.dart';
 import 'package:chime/utils/methods/date_time_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../models/stats_model.dart';
 import '../../state/database_manager.dart';
 
-class LastMeditationTimeTitle extends StatefulWidget {
+class LastMeditationTimeTitle extends ConsumerStatefulWidget {
   const LastMeditationTimeTitle({
     super.key,
   });
 
   @override
-  State<LastMeditationTimeTitle> createState() =>
+  ConsumerState<LastMeditationTimeTitle> createState() =>
       _LastMeditationTimeTitleState();
 }
 
-class _LastMeditationTimeTitleState extends State<LastMeditationTimeTitle> {
-  late final Future<StatsModel> _lastEntryFuture;
-
-  @override
-  void initState() {
-    _lastEntryFuture = DatabaseManager().getLastEntry();
-    super.initState();
-  }
+class _LastMeditationTimeTitleState extends ConsumerState<LastMeditationTimeTitle> {
 
   @override
   Widget build(BuildContext context) {
+
     return FutureBuilder<StatsModel>(
-      future: _lastEntryFuture,
+
+      future: DatabaseManager().getLastEntry(),
       builder: (context, snapshot) {
         String lastMeditation = '';
         String lastMeditationDays = '';
@@ -47,7 +44,10 @@ class _LastMeditationTimeTitleState extends State<LastMeditationTimeTitle> {
           } else {
             lastMeditationDays = '$daysSinceLastMeditation days ago';
           }
-        }
+        }else{
+          lastMeditationDays = '0 days ago';
+          lastMeditation = '0 minutes';
+                  }
 
           return RichText(
             textAlign: TextAlign.center,
@@ -72,7 +72,7 @@ class _LastMeditationTimeTitleState extends State<LastMeditationTimeTitle> {
                 ),
               ],
             ),
-          ).animate().fadeIn();
+          ).animate().fadeIn(delay: 500.milliseconds, duration: kFadeInTimeMilliseconds.milliseconds);
       },
     );
   }

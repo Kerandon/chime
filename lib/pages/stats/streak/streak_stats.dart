@@ -1,5 +1,6 @@
 import 'package:chime/enums/time_period.dart';
 import 'package:chime/pages/stats/streak/streak_stats_box.dart';
+import 'package:chime/state/chart_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../models/stats_model.dart';
@@ -16,25 +17,36 @@ class StreakStats extends ConsumerStatefulWidget {
 }
 
 class _StreakStatsState extends ConsumerState<StreakStats> {
-  late final Future<List<StatsModel>> _allGroupedFuture;
+
+
+  bool _futureHasRun = false;
 
   @override
   void initState() {
-    _allGroupedFuture = DatabaseManager().getStatsByTimePeriod(
-        allTimeGroupedByDay: true, period: TimePeriod.allTime);
+
     super.initState();
   }
 
+
+
   @override
   Widget build(BuildContext context) {
+    Future<List<StatsModel>>? _allGroupedFuture;
+
+    final chartState = ref.watch(chartStateProvider);
+    // final chartNotifier = ref.read(chartStateProvider.notifier);
+
     return FutureBuilder(
-      future: _allGroupedFuture,
+      //future: _allGroupedFuture,
+      future: DatabaseManager().getStatsByTimePeriod(
+          allTimeGroupedByDay: true, period: TimePeriod.allTime),
       builder: (context, snapshot) {
+        List<StatsModel> stats = [];
         String currentStreakString = '0';
         String bestStreak = '0';
         if (snapshot.hasData) {
           if (snapshot.data!.isNotEmpty) {
-            List<StatsModel> stats = snapshot.data!;
+            stats = snapshot.data!;
             currentStreakString = getCurrentStreak(stats).toString();
             bestStreak = getBestStreak(stats).toString();
           }

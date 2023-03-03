@@ -83,6 +83,7 @@ class LinePainter extends CustomPainter {
       double labelSpacingX = adjustedWidth / kNoOfXLabelsOnLineChart;
       var markerPaint = Paint()
         ..strokeWidth = 1
+        ..color = axisColor
         ..style = PaintingStyle.fill;
 
       Path labelMarks = Path();

@@ -17,13 +17,28 @@ class CountDownTimer extends ConsumerWidget {
         .of(context)
         .size;
     final state = ref.watch(appProvider);
-
-    int minutes = 0;
+    String mins = '0';
+    String secR = '0';
+    String secL = '0';
     int seconds = 0;
+
 
     if (state.sessionState == SessionState.countdown) {
       seconds = (state.currentCountdownTime);
     }
+
+    if(seconds == 60){
+      mins = '1';
+    }else {
+      if (seconds > 9) {
+        secR = seconds.toString()[1];
+        secL = seconds.toString()[0];
+      }
+      if (seconds <= 9) {
+        secR = seconds.toString()[0];
+      }
+    }
+
     return SizedBox(
       height: size.height * 0.20,
       child: Row(
@@ -31,10 +46,12 @@ class CountDownTimer extends ConsumerWidget {
         children: [
           if (state.sessionState == SessionState.countdown) ...[
             if (state.totalCountdownTime == 60) ...[
-              NumberBox(minutes),
+              NumberBox(0.toString()),
+              NumberBox(mins),
               const Colon(),
             ],
-            NumberBox(seconds),
+             NumberBox(secL),
+            NumberBox(secR),
           ],
         ],
       ),

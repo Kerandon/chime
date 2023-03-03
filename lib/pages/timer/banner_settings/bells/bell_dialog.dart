@@ -22,22 +22,28 @@ class BellDialog extends ConsumerWidget {
 
     final size = MediaQuery.of(context).size;
 
-    List<double> times = possibleBellTimes
-        .takeWhile((value) => value < appState.totalTimeMinutes)
-        .toList();
+    List<double> times = [];
+
+    if(!appState.openSession) {
+      times = possibleBellTimes
+          .takeWhile((value) => value < appState.totalTimeMinutes)
+          .toList();
+    }else{
+      times = possibleBellTimes.toList();
+    }
 
     final heights = setIntervalHeight(size, times);
     return AlertDialog(
       contentPadding: EdgeInsets.all(size.width * 0.05),
-      actionsPadding: EdgeInsets.all(size.width * 0.03),
-      insetPadding: EdgeInsets.all(size.width * 0.08),
+      actionsPadding: EdgeInsets.all(size.width * 0.05),
+      insetPadding: EdgeInsets.all(size.width * 0.10),
       title: Text(
         'Meditation Bell Setup',
         textAlign: TextAlign.center,
         style: Theme.of(context)
             .textTheme
             .displaySmall!
-            .copyWith(color: Theme.of(context).primaryColor, fontSize: 20),
+            .copyWith(fontSize: 20),
       ),
       content: SizedBox(
         width: size.width,

@@ -9,15 +9,15 @@ import 'package:just_audio/just_audio.dart';
 
 import '../enums/interval_bell.dart';
 
-class AudioManager extends ConsumerStatefulWidget {
-  const AudioManager({Key? key}) : super(key: key);
+class AudioManagerBells extends ConsumerStatefulWidget {
+  const AudioManagerBells({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<AudioManager> createState() => _AudioManagerState();
+  ConsumerState<AudioManagerBells> createState() => _AudioManagerState();
 }
 
-class _AudioManagerState extends ConsumerState<AudioManager> {
-  final AudioPlayer _playerBell = AudioPlayer();
+class _AudioManagerState extends ConsumerState<AudioManagerBells> {
+  final AudioPlayer _player = AudioPlayer();
   Bell _selectedBell = Bell.chime;
   bool _playerBellIsSetOnInit = false;
   bool _setInitialInterval = false;
@@ -25,25 +25,21 @@ class _AudioManagerState extends ConsumerState<AudioManager> {
   int _currentBellIndex = 0;
   int _maxBells = 0;
 
-  @override
-  initState() {
-    super.initState();
-  }
 
   Future<void> _setBell(Bell bell) async {
-    await _playerBell.setAsset('assets/audio/bells/${bell.name}.mp3',
+    await _player.setAsset('assets/audio/bells/${bell.name}.mp3',
         preload: true);
     _selectedBell = bell;
   }
 
   Future<void> _playAudio() async {
-    await _playerBell.seek(Duration.zero);
-    await _playerBell.play();
+    await _player.seek(Duration.zero);
+    await _player.play();
   }
 
   @override
   void dispose() {
-    _playerBell.dispose();
+    _player.dispose();
     super.dispose();
   }
 

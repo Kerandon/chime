@@ -1,12 +1,9 @@
 import 'package:chime/state/app_state.dart';
-import 'package:chime/state/database_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../app_components/custom_slider_tile.dart';
-import '../../../configs/app_colors.dart';
 import '../../../configs/constants.dart';
 import '../../../data/bell_times.dart';
-import '../../../enums/prefs.dart';
 import '../warmup_countdown/countdown_checklist.dart';
 
 class CountdownPage extends ConsumerWidget {

@@ -24,12 +24,12 @@ class AnimatedLineChartMain extends ConsumerStatefulWidget {
 }
 
 class _AnimatedLineChartMainState extends ConsumerState<AnimatedLineChartMain> {
-  late final Future<List<StatsModel>> _statsFuture;
+ // late final Future<List<StatsModel>> _statsFuture;
 
   @override
   void initState() {
-    _statsFuture = DatabaseManager().getStatsByTimePeriod(
-        period: TimePeriod.allTime, allTimeGroupedByDay: true);
+    // _statsFuture = DatabaseManager().getStatsByTimePeriod(
+    //     period: TimePeriod.allTime, allTimeGroupedByDay: true);
     super.initState();
   }
 
@@ -47,7 +47,8 @@ class _AnimatedLineChartMainState extends ConsumerState<AnimatedLineChartMain> {
     }
 
     return FutureBuilder(
-        future: _statsFuture,
+        future: DatabaseManager().getStatsByTimePeriod(
+            period: TimePeriod.allTime, allTimeGroupedByDay: true),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List<StatsModel> stats = [];
@@ -71,9 +72,9 @@ class _AnimatedLineChartMainState extends ConsumerState<AnimatedLineChartMain> {
 
             return Column(
               children: [
-                const Expanded(
-                    flex: 3,
-                    child: LastMeditationTimeTitle()),
+                SizedBox(
+                    height: size.height * 0.15,
+                    child: const LastMeditationTimeTitle()),
                 Expanded(
                   flex: 5,
                   child: AnimatedLineChart(

@@ -22,25 +22,30 @@ class BarChartHistory extends ConsumerStatefulWidget {
 
 class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
   List<StatsModel> stats = [];
-  bool _futureHasRun = false;
-  Future<List<StatsModel>>? _statsFuture;
 
   bool _animate = false;
   bool _showLabels = false;
-  List<BarChartGroupData> bars = [];
   bool displayNoData = false;
-
+  bool _futureHasRun = false;
+  Future<List<StatsModel>>? _statsFuture;
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final widthPadding = size.width * kPageIndentation;
-    final state = ref.watch(chartStateProvider);
-    final notifier = ref.read(chartStateProvider.notifier);
+    final chartState = ref.watch(chartStateProvider);
+    final chartNotifier = ref.read(chartStateProvider.notifier);
 
     if (_futureHasRun == false) {
       _statsFuture = DatabaseManager()
-          .getStatsByTimePeriod(period: state.barChartTimePeriod);
+          .getStatsByTimePeriod(period: chartState.barChartTimePeriod);
       _futureHasRun = true;
+    }
+
+    if(chartState.refreshStats){
+      _futureHasRun = false;
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        chartNotifier.setRefreshStats(false);
+      });
     }
 
     return Padding(
@@ -49,15 +54,16 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
       child: FutureBuilder<List<StatsModel>>(
         future: _statsFuture,
         builder: (context, snapshot) {
+          List<BarChartGroupData> bars = [];
           if (snapshot.hasData) {
             WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-              notifier.setBarChartStats(stats);
+              chartNotifier.setBarChartStats(stats);
             });
             if (!_animate) {
               _runAnimation();
             }
             if (snapshot.data!.isNotEmpty) {
-              bars = _getBarData(snapshot.data!, state.barChartTimePeriod)
+              bars = _getBarData(snapshot.data!, chartState.barChartTimePeriod)
                   .toList();
             } else {
               WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -70,10 +76,10 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
             children: [
               displayNoData
                   ? Center(
-                      child: Text(
-                      kNoBarChartDataMsg,
-                      style: Theme.of(context).textTheme.bodySmall
-                    )).animate().fadeIn()
+                          child: Text(kNoBarChartDataMsg,
+                              style: Theme.of(context).textTheme.bodySmall))
+                      .animate()
+                      .fadeIn()
                   : const SizedBox.shrink(),
               BarChart(
                 BarChartData(
@@ -146,7 +152,7 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
         show: true,
         border: Border(
           bottom: BorderSide(
-              color: Theme.of(context).secondaryHeaderColor, width: 0.50),
+              color: Theme.of(context).colorScheme.secondary, width: 0.50),
         ),
       );
 

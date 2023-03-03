@@ -33,11 +33,14 @@ class BarChartPeriodButton extends ConsumerWidget {
               .secondaryHeaderColor
         )),
         child: Text(timePeriod.toText(),
-            style: Theme.of(context).textTheme.bodySmall!.copyWith(
-              color:  state.barChartTimePeriod == timePeriod ?
-                  Theme.of(context).primaryColor : Theme.of(context).primaryColorLight
-            ))
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: state.barChartTimePeriod == timePeriod ? Theme.of(context).textTheme.bodyMedium!.color :
+                Theme.of(context).secondaryHeaderColor
+            ),)
       ),
     ).animate().scaleXY(begin: 0.90).fadeIn();
   }
 }
+
+
+

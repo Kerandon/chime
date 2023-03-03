@@ -97,7 +97,7 @@ class _AnimatedLineChartState extends ConsumerState<AnimatedLineChart>
                     labelsY: widget.labelsY,
                     percent: _controller.value,
                     lineColor: Theme.of(context).primaryColor,
-                    axisColor: Theme.of(context).secondaryHeaderColor,
+                    axisColor: Theme.of(context).colorScheme.secondary,
                     textStyle: Theme.of(context).textTheme.bodySmall!.copyWith(
                           fontSize: 10,
                         ),

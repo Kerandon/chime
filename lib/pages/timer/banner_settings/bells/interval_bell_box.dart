@@ -43,7 +43,7 @@ class IntervalBellBox extends ConsumerWidget {
                 text: TextSpan(
                   text: timeText,
                   style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                      color: selected == time ? Theme.of(context).colorScheme.secondary :
+                      color: selected == time ? Theme.of(context).textTheme.labelMedium!.color :
                       Theme.of(context).secondaryHeaderColor
                   )
                 ),

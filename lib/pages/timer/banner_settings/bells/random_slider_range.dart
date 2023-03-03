@@ -19,8 +19,13 @@ class RandomSliderRange extends ConsumerWidget {
     String num =
         '${audioState.maxRandomBell > appState.totalTimeMinutes.toInt() ? appState.totalTimeMinutes.toInt() : audioState.maxRandomBell.toInt()}m';
 
+    double max = appState.totalTimeMinutes.toDouble();
+    if(max >= 60){
+      max = 60;
+    }
+
     return SizedBox(
-      width: size.width * 0.65,
+      width: size.width * 0.60,
       height: size.height * 0.10,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -34,7 +39,7 @@ class RandomSliderRange extends ConsumerWidget {
             flex: 6,
             child: Slider(
               min: 1,
-              max: appState.totalTimeMinutes.toDouble(),
+              max: max,
               value: audioState.maxRandomBell >
                       appState.totalTimeMinutes.toDouble()
                   ? appState.totalTimeMinutes.toDouble()

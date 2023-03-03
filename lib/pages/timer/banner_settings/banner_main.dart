@@ -1,14 +1,13 @@
 import 'package:chime/animation/slide_animation.dart';
 import 'package:chime/configs/constants.dart';
+import 'package:chime/enums/ambience.dart';
 import 'package:chime/enums/session_state.dart';
 import 'package:chime/utils/methods/date_time_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../../../enums/prefs.dart';
 import '../../../state/app_state.dart';
 import '../../../state/audio_state.dart';
-import '../../../state/database_manager.dart';
 import 'ambience/ambience_page.dart';
 import 'bells/bell_dialog.dart';
 import 'custom_home_button.dart';
@@ -23,7 +22,6 @@ class BannerMain extends ConsumerStatefulWidget {
 }
 
 class _BannerMainState extends ConsumerState<BannerMain> {
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -35,12 +33,10 @@ class _BannerMainState extends ConsumerState<BannerMain> {
 
     bool sessionUnderWay = false;
     if (appState.sessionState != SessionState.notStarted) {
-
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        appNotifier.setHomePageTabsStatus(false);
+       appNotifier.setHomePageTabsOpen(false);
         appNotifier.setAnimateHomePage(false);
       });
-
 
       sessionUnderWay = true;
     }
@@ -48,15 +44,22 @@ class _BannerMainState extends ConsumerState<BannerMain> {
     return Stack(
       children: [
         Align(
-          alignment: appState.currentPage != 0 ? const Alignment(0, -2) : Alignment.topCenter,
+          alignment: appState.currentPage != 0
+              ? const Alignment(0, -2)
+              : Alignment.topCenter,
           child: IgnorePointer(
-            ignoring: appState.sessionState != SessionState.notStarted ,
+            ignoring: appState.sessionState != SessionState.notStarted,
             child: SafeArea(
               child: SlideAnimation(
-                animate: !appState.homePageTabsAreOpen && appState.animateHomePage || sessionUnderWay,
-                reverse: appState.homePageTabsAreOpen && appState.animateHomePage || sessionUnderWay,
+                animate:
+                    !appState.homePageTabsAreOpen && appState.animateHomePage ||
+                        sessionUnderWay,
+                reverse:
+                   appState.homePageTabsAreOpen && appState.animateHomePage ||
+                        sessionUnderWay,
                 duration: kHomePageAnimationDuration,
-                customTween: Tween<Offset>(begin: const Offset(0,-1), end: const Offset(0,-0)),
+                customTween: Tween<Offset>(
+                    begin: const Offset(0, -1), end: const Offset(0, -0)),
                 child: Container(
                   decoration: BoxDecoration(
                       border: Border(
@@ -78,9 +81,16 @@ class _BannerMainState extends ConsumerState<BannerMain> {
                             ? FontAwesomeIcons.solidBellSlash
                             : FontAwesomeIcons.bell,
                         onPressed: () {
-                          showDialog(
-                              context: context,
-                              builder: (context) => const BellDialog());
+
+                                if (appState.totalTimeMinutes == 0 &&
+                                    !appState.openSession) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text(kSetFixedTimeGreaterThanZero))
+                                  );
+                                } else {
+                                  showDialog(context: context, builder: (context) => const BellDialog());
+                                }
+
                         },
                         alignment: const Alignment(-0.95, -0.98),
                       ),
@@ -90,11 +100,14 @@ class _BannerMainState extends ConsumerState<BannerMain> {
                         iconData: appState.openSession
                             ? FontAwesomeIcons.infinity
                             : Icons.timer_outlined,
-                        onPressed: () async => appNotifier.setOpenSession(!appState.openSession),
+                        onPressed: () async =>
+                            appNotifier.setOpenSession(!appState.openSession),
                         alignment: const Alignment(0.95, -0.98),
                       ),
                       CustomHomeButton(
-                        text: 'Ambience',
+                        text: audioState.ambienceIsOn
+                            ? audioState.ambienceSelected.toText()
+                            : 'Ambience',
                         iconData: audioState.ambienceIsOn
                             ? Icons.piano_outlined
                             : Icons.piano_off_outlined,

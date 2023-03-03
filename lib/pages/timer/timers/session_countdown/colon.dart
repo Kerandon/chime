@@ -8,13 +8,16 @@ class Colon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     return SizedBox(
-      width: size.width * 0.03,
-      child: Text(
-        ':',
-        textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.displaySmall,
+
+      width: 10,
+      height: 60,
+      child: Center(
+        child: Text(
+          ':',
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.displaySmall,
+        ),
       ),
     );
   }

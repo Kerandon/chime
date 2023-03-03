@@ -24,7 +24,7 @@ class ChipOutlinedButton extends StatelessWidget {
       onPressed: onPressed,
       child: Text(text,
         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-            color: isSelected ? Theme.of(context).colorScheme.secondary :
+            color: isSelected ? Theme.of(context).textTheme.bodyMedium!.color :
             Theme.of(context).secondaryHeaderColor
         ),
       ),

@@ -8,6 +8,11 @@ class CustomAppTheme {
         required Color primaryColor,
       required Brightness brightness}) {
     return ThemeData(
+      textTheme: const TextTheme(
+        displaySmall: TextStyle(
+          fontSize:
+        30)
+      ),
       brightness: brightness,
       secondaryHeaderColor: AppColors.grey,
       outlinedButtonTheme: OutlinedButtonThemeData(
@@ -34,6 +39,7 @@ class CustomAppTheme {
         thumbColor: MaterialStateProperty.all<Color>(Colors.white),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        elevation: 0,
         selectedItemColor: primaryColor
       ),
       appBarTheme: const AppBarTheme(

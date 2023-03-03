@@ -1,7 +1,5 @@
-const kAppName = 'Zense Meditation Timer';
 const kLongPressDurationMilliseconds = 1200;
 const kBorderRadius = 12.0;
-const kOnTimeUpOnlyText = 'on time up only';
 const kHomePageLineWidth = 0.70;
 const kHomePageLineThickness = 2.0;
 const kStartButtonIconSize = 70.0;
@@ -17,10 +15,14 @@ const kChartAxisFontSize = 10.0;
 const kClocksHeight = 0.25;
 const kChartBarLineWidth = 2.0;
 const kChartLabelsFontSize = 10.0;
-const kNoBarChartDataMsg = 'No meditation stats in this time period yet...';
-const kNoChartDataMsg = 'No meditation stats yet...';
-const kNoMeditationHistoryMsg = 'No meditation history yet...';
+const kAppName = 'Zense Meditation Timer';
+const kOnTimeUpOnlyText = 'on time up only';
+const kNoBarChartDataMsg = 'No meditation stats to display yet...';
+const kNoChartDataMsg = 'No meditation stats to display yet...';
+const kNoMeditationHistoryMsg = 'No meditation history to display yet...';
 const kSessionWillBeginShortly = "Your session will begin shortly...";
+const kSetFixedTimeGreaterThanZero =
+    'Fixed time needs to be greater than zero (or change to open time)';
 const kNoOfXLabelsOnLineChart = 5;
-const kFadeInTimeMilliseconds = 200;
+const kFadeInTimeMilliseconds = 500;
 const kHomePageAnimationDuration = 400;

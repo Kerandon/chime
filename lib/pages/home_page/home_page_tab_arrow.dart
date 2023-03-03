@@ -14,30 +14,32 @@ class HomePageTabArrow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(appProvider);
-    final notifier = ref.read(appProvider.notifier);
+    final appState = ref.watch(appProvider);
+    final appNotifier = ref.read(appProvider.notifier);
+    // final tabState = ref.read(tabProvider);
+    // final tabNotifier = ref.watch(tabProvider.notifier);
     bool sessionUnderWay = false;
-    if (state.sessionState != SessionState.notStarted) {
+    if (appState.sessionState != SessionState.notStarted) {
       sessionUnderWay = true;
     }
     return sessionUnderWay ? const SizedBox.shrink() : Align(
-      alignment:  state.currentPage != 0 ?
+      alignment:  appState.currentPage != 0 ?
         const Alignment(0, 2) :  const Alignment(0, 0.85),
       child: SlideAnimation(
-        animate: !state.homePageTabsAreOpen && state.animateHomePage,
-        reverse: state.homePageTabsAreOpen && state.animateHomePage,
+        animate: !appState.homePageTabsAreOpen && appState.animateHomePage,
+        reverse: appState.homePageTabsAreOpen && appState.animateHomePage,
         direction: SlideDirection.upIn,
         duration: 220,
         customTween: Tween<Offset>(
             begin: const Offset(0, 0.80), end: const Offset(0, 0)),
         animationCompleted: (open) {
-          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-            notifier.setHomePageTabsStatus(open);
-          });
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        appNotifier.setHomePageTabsOpen(open);
+      });
         },
         child: AnimatedRotation(
           duration: const Duration(milliseconds: 220),
-          turns: state.homePageTabsAreOpen ? 0.50 : 0,
+          turns:appState.homePageTabsAreOpen ? 0.50 : 0,
           child: IconButton(
             style: OutlinedButton.styleFrom(
               shape: RoundedRectangleBorder(
@@ -49,11 +51,11 @@ class HomePageTabArrow extends ConsumerWidget {
               size: 30,
             ),
             onPressed: () {
-              notifier.setAnimateHomePage(true);
-              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                notifier.setAnimateHomePage(false);
-              });
-            },
+                appNotifier.setAnimateHomePage(true);
+                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                  appNotifier.setAnimateHomePage(false);
+                });
+            }
           ),
         ),
       ),

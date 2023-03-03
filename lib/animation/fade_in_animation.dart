@@ -9,6 +9,7 @@ class FadeInAnimation extends StatefulWidget {
     this.beginScale = 0.90,
     this.beginOpacity = 0.0,
     this.animateOnDemand = false,
+    this.animationCompleted,
   }) : super(key: key);
 
   final Widget child;
@@ -17,6 +18,7 @@ class FadeInAnimation extends StatefulWidget {
   final double beginScale;
   final double beginOpacity;
   final bool animateOnDemand;
+  final VoidCallback? animationCompleted;
 
   @override
   State<FadeInAnimation> createState() => _FadeInAnimationState();
@@ -32,15 +34,20 @@ class _FadeInAnimationState extends State<FadeInAnimation>
     super.initState();
     _controller = AnimationController(
         duration: Duration(milliseconds: widget.durationMilliseconds),
-        vsync: this);
+        vsync: this)
+      ..addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          widget.animationCompleted?.call();
+        }
+      });
 
     _scale = Tween<double>(begin: widget.beginScale, end: 1.0)
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
-    _opacity = Tween<double>(begin: widget.beginScale, end: 1.0)
+    _opacity = Tween<double>(begin: widget.beginOpacity, end: 1.0)
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
-    if(!widget.animateOnDemand) {
+    if (!widget.animateOnDemand) {
       Future.delayed(Duration(milliseconds: widget.delayMilliseconds), () {
         if (mounted) {
           _controller.forward();
@@ -57,9 +64,9 @@ class _FadeInAnimationState extends State<FadeInAnimation>
 
   @override
   void didUpdateWidget(covariant FadeInAnimation oldWidget) {
-    if(widget.animateOnDemand){
+    if (widget.animateOnDemand && !_controller.isAnimating) {
+      _controller.reset();
       _controller.forward();
-
     }
     super.didUpdateWidget(oldWidget);
   }

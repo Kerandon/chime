@@ -3,7 +3,6 @@ import 'package:chime/state/database_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../models/stats_model.dart';
-import '../../home_page/home.dart';
 import 'meditiation_event_tile.dart';
 
 class MeditationHistoryPage extends ConsumerStatefulWidget {
@@ -22,6 +21,7 @@ class _AllMeditationsListState extends ConsumerState<MeditationHistoryPage> {
   @override
   void initState() {
     _allMeditationFuture = DatabaseManager().getAllStats();
+
     super.initState();
   }
 
@@ -30,14 +30,12 @@ class _AllMeditationsListState extends ConsumerState<MeditationHistoryPage> {
     String timeText = "";
 
     final size = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () {
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => const Home()),
-                (route) => false);
+          onPressed: () async {
+            await Navigator.maybePop(context);
           },
           icon: const Icon(
             Icons.arrow_back_outlined,
@@ -53,6 +51,7 @@ class _AllMeditationsListState extends ConsumerState<MeditationHistoryPage> {
             if (snapshot.hasData) {
               if (snapshot.data!.isNotEmpty) {
                 stats.addAll(snapshot.data!);
+                stats = stats.reversed.toList();
               }
 
               if (stats.length == 1) {
@@ -60,6 +59,10 @@ class _AllMeditationsListState extends ConsumerState<MeditationHistoryPage> {
               } else {
                 timeText = ' times';
               }
+            }
+
+            if(snapshot.connectionState == ConnectionState.waiting){
+              return const Center(child: CircularProgressIndicator());
             }
 
             return SingleChildScrollView(
