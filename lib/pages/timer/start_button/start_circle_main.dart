@@ -26,6 +26,7 @@ class _CustomCircularIndicatorState extends ConsumerState<StartButtonMain>
   late AnimationController _controllerScale;
   late Animation<double> _scaleAnimation;
   double _percent = 1.0;
+  bool _pausePercentConfirmed = false;
   double _scale = 1.0;
 
   @override
@@ -64,6 +65,8 @@ class _CustomCircularIndicatorState extends ConsumerState<StartButtonMain>
     final size = MediaQuery.of(context).size;
     final appState = ref.watch(appProvider);
 
+
+
       if (!appState.openSession) {
         if (appState.totalTimeMinutes != 0 &&
             appState.millisecondsRemaining != 0) {
@@ -90,16 +93,24 @@ class _CustomCircularIndicatorState extends ConsumerState<StartButtonMain>
       if (_percent.isNegative) {
         _percent = 0;
       }
+    if(appState.openSession && appState.sessionState == SessionState.paused && !_pausePercentConfirmed) {
+      // _percent += 0.01;
+      _pausePercentConfirmed = true;
+      print('paused position is $_percent');
+    }
 
-      if(appState.sessionState == SessionState.countdown || appState.sessionState ==
-          SessionState.inProgress) {
-        _percent += 0.01;
-      }
+
+
+
+
+
 
 
 
     final primaryColor = Theme.of(context).primaryColor;
     final secondaryColor = Theme.of(context).colorScheme.secondary;
+
+
 
     return SizedBox(
       width: size.width * 0.90,

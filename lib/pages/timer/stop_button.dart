@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../animation/pop_animation.dart';
+import '../../audio/audio_manager_new.dart';
 import '../../enums/session_state.dart';
 import '../../state/app_state.dart';
 import '../completion_page/completion_page.dart';
@@ -33,7 +34,7 @@ class StopButton extends ConsumerWidget {
               backgroundColor: Theme.of(context).splashColor.withOpacity(0.10),
             ),
             onPressed: () {
-
+              AudioManagerNew().stopAmbience();
               if(appState.sessionState == SessionState.countdown){
                 appNotifier.setSessionState(SessionState.notStarted);
               }else {

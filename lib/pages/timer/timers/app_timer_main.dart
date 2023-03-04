@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:chime/audio/audio_manager_new.dart';
 import 'package:chime/enums/session_state.dart';
 import 'package:chime/pages/timer/timers/session_countdown/countdown_timer.dart';
 import 'package:chime/pages/timer/timers/session_countdown/session_timer.dart';
+import 'package:chime/state/audio_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quiver/async.dart';
@@ -24,19 +26,24 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
   bool _timerIsSet = false;
   bool _countDownHasFinished = false;
   bool _endSessionNotified = false;
+  bool _initialAmbienceSet = false;
   CountdownTimer? _timer;
 
   @override
   Widget build(BuildContext context) {
     final appState = ref.watch(appProvider);
     final appNotifier = ref.read(appProvider.notifier);
+    final audioState = ref.watch(audioProvider);
+    final audioNotifier = ref.read(audioProvider.notifier);
 
     switch (appState.sessionState) {
       case SessionState.notStarted:
         _countDownHasFinished = false;
         _timerIsSet = false;
         _endSessionNotified = false;
+        _initialAmbienceSet = false;
         _timer?.cancel();
+
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
           appNotifier.resetSession();
         });
@@ -45,8 +52,7 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
       case SessionState.countdown:
         if (!_timerIsSet) {
           _timer = CountdownTimer(
-              Duration(
-                  milliseconds: ((appState.totalCountdownTime * 1000))),
+              Duration(milliseconds: ((appState.totalCountdownTime * 1000))),
               const Duration(milliseconds: 1))
             ..listen((event) {
               if (event.remaining.inSeconds == 0 && !_countDownHasFinished) {
@@ -61,6 +67,15 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
         }
         break;
       case SessionState.inProgress:
+        if (!_initialAmbienceSet) {
+          AudioManagerNew().playAmbience(
+              ambience: audioState.ambienceSelected,
+              volume: audioState.ambienceVolume);
+          _initialAmbienceSet = true;
+        } else {
+          AudioManagerNew().resumeAmbience();
+        }
+
         if (!_timerIsSet) {
           if (!appState.openSession) {
             int time = appState.totalTimeMinutes;
@@ -87,12 +102,13 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
                           minutes: appState.totalTimeMinutes);
                       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                         showDialog(
-                            context: context,
-                            builder: (context) => const CompletionPage())
+                                context: context,
+                                builder: (context) => const CompletionPage())
                             .then((value) async {
                           WidgetsBinding.instance
                               .addPostFrameCallback((timeStamp) {
-                            appNotifier.setSessionState(SessionState.notStarted);
+                            appNotifier
+                                .setSessionState(SessionState.notStarted);
                             appNotifier.resetSession();
                           });
                         });
@@ -125,12 +141,14 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
 
         break;
       case SessionState.paused:
+        AudioManagerNew().pauseAmbience();
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
           _timer?.cancel();
           _timerIsSet = false;
         });
         break;
       case SessionState.ended:
+        AudioManagerNew().stopAmbience();
         _timer?.cancel();
         break;
     }

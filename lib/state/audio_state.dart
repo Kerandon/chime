@@ -1,6 +1,7 @@
 import 'package:chime/enums/ambience.dart';
 import 'package:chime/enums/interval_bell.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../audio/audio_manager_new.dart';
 import '../enums/bell.dart';
 import '../enums/prefs.dart';
 import 'database_manager.dart';
@@ -170,6 +171,8 @@ class AudioNotifier extends StateNotifier<AudioState> {
 
   void setAmbienceVolume(double volume, {bool insertInDatabase = true}) async {
     state = state.copyWith(ambienceVolume: volume);
+    print('current volume is ${volume}');
+    AudioManagerNew().setVolume(volume);
     if (insertInDatabase) {
       await DatabaseManager()
           .insertIntoPrefs(k: Prefs.ambienceVolume.name, v: volume);

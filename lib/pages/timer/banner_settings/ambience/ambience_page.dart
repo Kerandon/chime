@@ -8,27 +8,36 @@ import 'package:chime/state/audio_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class AmbiencePage extends ConsumerWidget {
+import '../../../../audio/audio_manager_new.dart';
+
+class AmbiencePage extends ConsumerStatefulWidget {
   const AmbiencePage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AmbiencePage> createState() => _AmbiencePageState();
+}
+
+class _AmbiencePageState extends ConsumerState<AmbiencePage> {
+
+  bool _audioPlayedOnInit = false;
+
+  @override
+  Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final audioState = ref.watch(audioProvider);
     final audioNotifier = ref.read(audioProvider.notifier);
     final spacing = size.width * 0.02;
-
-    if (audioState.ambienceIsOn) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        audioNotifier.setAmbiencePageOpen(true);
-      });
+    if(audioState.ambienceIsOn && !_audioPlayedOnInit){
+      AudioManagerNew().playAmbience(ambience: audioState.ambienceSelected, volume: audioState.ambienceVolume);
+      _audioPlayedOnInit = true;
     }
 
     return Scaffold(
         appBar: AppBar(
             leading: IconButton(
               onPressed: () {
-                audioNotifier.setAmbiencePageOpen(false);
+                AudioManagerNew().stopAmbience();
+                //AudioManagerNew().fadeOutStopAmbience(startVolume: audioState.ambienceVolume);
                 Navigator.of(context).maybePop();
               },
               icon: const Icon(Icons.arrow_back_outlined),
@@ -46,8 +55,13 @@ class AmbiencePage extends ConsumerWidget {
                         ? Icons.piano_outlined
                         : Icons.piano_off_outlined,
                     value: audioState.ambienceIsOn,
-                    onChanged: (value) => audioNotifier
-                        .setAmbienceIsOn(!audioState.ambienceIsOn)),
+                    onChanged: (value) {
+                      if(!value){
+                        AudioManagerNew().stopAmbience();
+                      }
+                      audioNotifier
+                        .setAmbienceIsOn(!audioState.ambienceIsOn);
+                    }),
                 Padding(
                   padding: EdgeInsets.only(bottom: size.height * 0.03),
                   child: const AmbienceVolumeSlider(),
@@ -66,8 +80,10 @@ class AmbiencePage extends ConsumerWidget {
                       return CustomAnimatedGridBox(
                         labelText: ambience.toText(),
                         onPressed: audioState.ambienceIsOn
-                            ? () {
+                            ? () async {
                                 audioNotifier.setAmbience(ambience);
+                                await AudioManagerNew().playAmbience(ambience: ambience, volume: audioState.ambienceVolume);
+
                               }
                             : null,
                         isSelected: ambience == audioState.ambienceSelected &&

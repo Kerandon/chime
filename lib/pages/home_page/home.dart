@@ -95,8 +95,6 @@ class _HomePageContentsState extends ConsumerState<Home> {
             ),
           ),
         ),
-        const AudioManagerBells(),
-        const AudioManagerAmbience(),
         const Align(
           alignment: Alignment(0, 0.96),
           child: StopButton(),

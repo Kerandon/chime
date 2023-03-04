@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'audio/audio_manager_new.dart';
 import 'configs/app_colors.dart';
 import 'configs/themes/custom_app_theme.dart';
 
@@ -52,6 +53,11 @@ class _ChimeAppState extends ConsumerState<ChimeApp> {
     _cacheImagesFuture =
         cacheImage(context: context, url: 'assets/images/meditation.png');
     super.initState();
+  }
+  @override
+  void dispose() {
+   AudioManagerNew().dispose();
+    super.dispose();
   }
 
   @override
