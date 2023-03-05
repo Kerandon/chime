@@ -16,8 +16,6 @@ class HomePageTabArrow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final appState = ref.watch(appProvider);
     final appNotifier = ref.read(appProvider.notifier);
-    // final tabState = ref.read(tabProvider);
-    // final tabNotifier = ref.watch(tabProvider.notifier);
     bool sessionUnderWay = false;
     if (appState.sessionState != SessionState.notStarted) {
       sessionUnderWay = true;

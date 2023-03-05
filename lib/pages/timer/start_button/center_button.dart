@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../animation/bounce_animation.dart';
 import '../../../app_components/custom_ink_splash.dart';
 import '../../../app_components/lotus_icon.dart';
+import '../../../app_components/popup.dart';
 import '../../../configs/constants.dart';
 import '../../../enums/session_state.dart';
 import '../../../state/app_state.dart';
@@ -40,11 +41,9 @@ class CenterButton extends ConsumerWidget {
                         if (appState.sessionState == SessionState.notStarted) {
                           if (appState.totalTimeMinutes == 0 &&
                               !appState.openSession) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(kSetFixedTimeGreaterThanZero),
-                              ),
-                            );
+                            showPopup(
+                                context: context,
+                                text: kSetFixedTimeGreaterThanZero);
                           } else {
                             if (appState.countdownIsOn) {
                               notifier.setSessionState(SessionState.countdown);

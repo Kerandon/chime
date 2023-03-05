@@ -4,26 +4,41 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../state/app_state.dart';
 import '../../../../state/audio_state.dart';
 
-class RandomSliderRange extends ConsumerWidget {
+class RandomSliderRange extends ConsumerStatefulWidget {
   const RandomSliderRange({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<RandomSliderRange> createState() => _RandomSliderRangeState();
+}
+
+class _RandomSliderRangeState extends ConsumerState<RandomSliderRange> {
+  @override
+  Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final appState = ref.watch(appProvider);
     final audioState = ref.watch(audioProvider);
     final audioNotifier = ref.read(audioProvider.notifier);
 
-    String num =
-        '${audioState.maxRandomBell > appState.totalTimeMinutes.toInt() ? appState.totalTimeMinutes.toInt() : audioState.maxRandomBell.toInt()}m';
+    double value = 1;
 
     double max = appState.totalTimeMinutes.toDouble();
-    if(max >= 60){
+    value = audioState.maxRandomBell;
+    if (!appState.openSession) {
+
+
+      if (max >= 60) {
+        max = 60;
+      }
+      if (value > max) {
+        value = max;
+      }
+    } else {
       max = 60;
     }
 
+    final num = '${(value).toInt()}m';
     return SizedBox(
       width: size.width * 0.60,
       height: size.height * 0.10,
@@ -40,10 +55,7 @@ class RandomSliderRange extends ConsumerWidget {
             child: Slider(
               min: 1,
               max: max,
-              value: audioState.maxRandomBell >
-                      appState.totalTimeMinutes.toDouble()
-                  ? appState.totalTimeMinutes.toDouble()
-                  : audioState.maxRandomBell,
+              value: value,
               onChanged: (value) {
                 audioNotifier.setMaxRandomRange(value);
               },

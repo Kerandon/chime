@@ -3,6 +3,7 @@ import 'package:chime/utils/methods/date_time_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../../app_components/custom_circular_progress.dart';
 import '../../models/stats_model.dart';
 import '../../state/database_manager.dart';
 
@@ -18,13 +19,27 @@ class LastMeditationTimeTitle extends ConsumerStatefulWidget {
 
 class _LastMeditationTimeTitleState extends ConsumerState<LastMeditationTimeTitle> {
 
+  late final Future<StatsModel> _lastEntryFuture;
+
+  @override
+  void initState() {
+    _lastEntryFuture = DatabaseManager().getLastEntry();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
 
     return FutureBuilder<StatsModel>(
 
-      future: DatabaseManager().getLastEntry(),
+      future: _lastEntryFuture,
       builder: (context, snapshot) {
+        if(snapshot.connectionState == ConnectionState.waiting){
+          return CustomLoadingIndicator();
+
+        }
+
+
         String lastMeditation = '';
         String lastMeditationDays = '';
         if (snapshot.hasData) {

@@ -3,6 +3,7 @@ import 'package:chime/state/database_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../models/stats_model.dart';
+import '../../home_page/home.dart';
 import 'meditiation_event_tile.dart';
 
 class MeditationHistoryPage extends ConsumerStatefulWidget {
@@ -35,7 +36,8 @@ class _AllMeditationsListState extends ConsumerState<MeditationHistoryPage> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () async {
-            await Navigator.maybePop(context);
+            await Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                builder: (context) => const Home()), (route) => false);
           },
           icon: const Icon(
             Icons.arrow_back_outlined,

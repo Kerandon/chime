@@ -34,12 +34,29 @@ class _HomePageContentsState extends ConsumerState<Home> {
     GuidePage(),
   ];
 
+  late bool _animateBottomBarAfterMeditationPageClose;
+
+  @override
+  void initState() {
+    _animateBottomBarAfterMeditationPageClose = false;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final appState = ref.watch(appProvider);
     final appNotifier = ref.read(appProvider.notifier);
-    // final tabState = ref.read(tabProvider);
-    // final tabNotifier = ref.read(tabProvider.notifier);
+
+    if(!_animateBottomBarAfterMeditationPageClose && appState.currentPage == 2){
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        appNotifier.setHomePageTabsOpen(false);
+        appNotifier.setAnimateHomePage(true);
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          appNotifier.setAnimateHomePage(false);
+        });
+      });
+      _animateBottomBarAfterMeditationPageClose = true;
+    }
 
     bool sessionUnderWay = false;
     if (appState.sessionState == SessionState.countdown ||
@@ -106,7 +123,7 @@ class _HomePageContentsState extends ConsumerState<Home> {
           child: ElevatedButton(
               onPressed: () async {
                 await DatabaseManager().insertIntoStats(
-                    dateTime: DateTime(2023, 03, 02), minutes: 80);
+                    dateTime: DateTime(2021, 02, 15), minutes: 80);
               },
               child: const Text('Insert into DB')),
         ),

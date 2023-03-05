@@ -1,6 +1,7 @@
 import 'package:chime/animation/fade_in_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../../app_components/custom_circular_progress.dart';
 import '../../enums/time_period.dart';
 import '../../models/stats_model.dart';
 import '../../state/chart_state.dart';
@@ -54,6 +55,7 @@ class _TotalMeditationTimeTitleState extends ConsumerState<TotalMeditationTimeTi
       future: DatabaseManager()
           .getStatsByTimePeriod(period: chartState.barChartTimePeriod),
       builder: (context, snapshot) {
+
 
 
         List<StatsModel> statsData = [];

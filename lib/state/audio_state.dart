@@ -120,6 +120,7 @@ class AudioNotifier extends StateNotifier<AudioState> {
 
   void setMaxRandomRange(double max, {bool insertInDatabase = true}) async {
     state = state.copyWith(maxRandomBell: max);
+    print('max range set to $max');
     if (insertInDatabase) {
       await DatabaseManager()
           .insertIntoPrefs(k: Prefs.bellIntervalRandomMax.name, v: max);

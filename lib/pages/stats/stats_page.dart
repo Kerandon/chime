@@ -74,7 +74,7 @@ class _StatsPageState extends ConsumerState<StatsPage> {
               child: Column(
                 children: [
                   SizedBox(
-                      height: size.height * 0.40, child: const StreakStats()),
+                      height: size.height * 0.30, child: const StreakStats()),
                   const StatsDivider(),
                   SizedBox(
                     height: size.height * 0.15,
@@ -120,12 +120,12 @@ class _StatsPageState extends ConsumerState<StatsPage> {
                     padding: EdgeInsets.only(
                         top: size.height * 0.01, bottom: size.height * 0.05),
                     child: SizedBox(
-                        height: size.height * 0.70,
+                        height: size.height * 0.60,
                         child: const AnimatedLineChartMain()),
                   ),
                   const StatsDivider(),
                   SizedBox(
-                    height: size.height * 0.35,
+                    height: size.height * 0.30,
                     child: const TimeStats(),
                   ),
                   const StatsDivider(),
@@ -153,7 +153,6 @@ class _StatsPageState extends ConsumerState<StatsPage> {
             ),
           ),
         ).animate().fade(
-            delay: 150.milliseconds,
             duration: kFadeInTimeMilliseconds.milliseconds),
       ),
     );

@@ -15,6 +15,9 @@ const kChartAxisFontSize = 10.0;
 const kClocksHeight = 0.25;
 const kChartBarLineWidth = 2.0;
 const kChartLabelsFontSize = 10.0;
+const kNoOfXLabelsOnLineChart = 5;
+const kFadeInTimeMilliseconds = 500;
+const kHomePageAnimationDuration = 400;
 const kAppName = 'Zense Meditation Timer';
 const kOnTimeUpOnlyText = 'on time up only';
 const kNoBarChartDataMsg = 'No meditation stats to display yet...';
@@ -22,7 +25,5 @@ const kNoChartDataMsg = 'No meditation stats to display yet...';
 const kNoMeditationHistoryMsg = 'No meditation history to display yet...';
 const kSessionWillBeginShortly = "Your session will begin shortly...";
 const kSetFixedTimeGreaterThanZero =
-    'Fixed time needs to be greater than zero (or change to open time)';
-const kNoOfXLabelsOnLineChart = 5;
-const kFadeInTimeMilliseconds = 500;
-const kHomePageAnimationDuration = 400;
+    'Set fixed time to greater than zero';
+

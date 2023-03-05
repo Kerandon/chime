@@ -8,7 +8,7 @@ class AudioManagerNew {
 
   factory AudioManagerNew() => _internal;
 
-  static AudioPlayer ambiencePlayer = AudioPlayer();
+  AudioPlayer ambiencePlayer = AudioPlayer();
 
   int position = 0;
 

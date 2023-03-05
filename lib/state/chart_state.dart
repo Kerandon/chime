@@ -13,7 +13,6 @@ class ChartState {
   final bool lineChartHasBeenDrawn;
   final bool linearChartHasAnimated;
   final Map<int, DateTime> selectedMeditationEvents;
-  final bool refreshStats;
 
   ChartState({
     required this.totalMeditationTime,
@@ -25,7 +24,6 @@ class ChartState {
     required this.lineChartHasBeenDrawn,
     required this.linearChartHasAnimated,
     required this.selectedMeditationEvents,
-    required this.refreshStats,
   });
 
   ChartState copyWith({
@@ -38,7 +36,6 @@ class ChartState {
     bool? lineChartHasBeenDrawn,
     bool? linearChartHasAnimated,
     Map<int, DateTime>? selectedMeditationEvents,
-    bool? refreshStats,
   }) {
     return ChartState(
       totalMeditationTime: totalMeditationTime ?? this.totalMeditationTime,
@@ -53,7 +50,6 @@ class ChartState {
           linearChartHasAnimated ?? this.linearChartHasAnimated,
       selectedMeditationEvents:
           selectedMeditationEvents ?? this.selectedMeditationEvents,
-      refreshStats: refreshStats ?? this.refreshStats,
     );
   }
 }
@@ -107,10 +103,6 @@ class ChartNotifier extends StateNotifier<ChartState> {
     state = state.copyWith(selectedMeditationEvents: events);
   }
 
-  void setRefreshStats(bool refresh){
-    state = state.copyWith(refreshStats: refresh);
-  }
-
 }
 
 final chartStateProvider =
@@ -125,6 +117,5 @@ final chartStateProvider =
     lineChartHasBeenDrawn: false,
     linearChartHasAnimated: false,
     selectedMeditationEvents: {},
-    refreshStats: false,
   ));
 });

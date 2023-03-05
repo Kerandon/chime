@@ -1,6 +1,7 @@
 import 'package:chime/state/database_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../../../app_components/custom_circular_progress.dart';
 import '../../../models/stats_model.dart';
 import '../../../state/chart_state.dart';
 import 'meditation_history_page.dart';
@@ -100,27 +101,53 @@ class SelectHistory extends ConsumerWidget {
 
                                         notifier.selectMeditationEvents(
                                             items: items, unselect: true);
+                                        Navigator.of(context,
+                                                rootNavigator: true)
+                                            .pop('dialog');
+                                        showDialog(
+                                            barrierDismissible: false,
+                                            context: context,
+                                            builder: (context) => LoadingHelper(
+                                                  future: DatabaseManager()
+                                                      .removeStats(dateTimes),
+                                              onFutureComplete: (){
+                                                if (context.mounted) {
+                                                  // Navigator.of(context,
+                                                  //         rootNavigator: true)
+                                                  //     .pop('dialog');
 
-                                        notifier.setRefreshStats(true);
+                                                  Navigator.maybePop(context).then(
+                                                    (value) => Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            const MeditationHistoryPage(),
+                                                      ),
+                                                    ),
+                                                  );
+                                                }
+                                              },
+                                                ));
+                                        // Navigator.of(context).push(MaterialPageRoute(
+                                        //     builder: (context) =>
+                                        // LoadingHelper()
+                                        // ));
 
-                                        await DatabaseManager()
-                                            .removeStats(dateTimes);
-
-                                        if (context.mounted) {
-                                          Navigator.of(context,
-                                                  rootNavigator: true)
-                                              .pop('dialog');
-
-                                          Navigator.maybePop(context).then(
-                                            (value) => Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const MeditationHistoryPage(),
-                                              ),
-                                            ),
-                                          );
-                                        }
+                                        // if (context.mounted) {
+                                        //   Navigator.of(context,
+                                        //           rootNavigator: true)
+                                        //       .pop('dialog');
+                                        //
+                                        //   Navigator.maybePop(context).then(
+                                        //     (value) => Navigator.push(
+                                        //       context,
+                                        //       MaterialPageRoute(
+                                        //         builder: (context) =>
+                                        //             const MeditationHistoryPage(),
+                                        //       ),
+                                        //     ),
+                                        //   );
+                                        // }
                                       },
                                       child: const Text('Yes')),
                                   OutlinedButton(
@@ -150,5 +177,25 @@ class SelectHistory extends ConsumerWidget {
         ],
       ),
     );
+  }
+}
+
+class LoadingHelper extends StatelessWidget {
+  const LoadingHelper({Key? key, required this.future, this.onFutureComplete}) : super(key: key);
+
+  final Future<dynamic> future;
+  final VoidCallback? onFutureComplete;
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<dynamic>(
+        future: future,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CustomLoadingIndicator();
+          }
+          onFutureComplete?.call();
+          return SizedBox();
+        });
   }
 }

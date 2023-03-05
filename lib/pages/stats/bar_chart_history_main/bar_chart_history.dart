@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
+import '../../../animation/fade_in_animation.dart';
+import '../../../app_components/custom_circular_progress.dart';
 import 'bar_touch_data.dart';
 
 class BarChartHistory extends ConsumerStatefulWidget {
@@ -41,19 +43,22 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
       _futureHasRun = true;
     }
 
-    if(chartState.refreshStats){
-      _futureHasRun = false;
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        chartNotifier.setRefreshStats(false);
-      });
-    }
-
-    return Padding(
+   return Padding(
       padding: EdgeInsets.fromLTRB(
           widthPadding, size.height * 0.01, widthPadding, size.height * 0.01),
       child: FutureBuilder<List<StatsModel>>(
         future: _statsFuture,
         builder: (context, snapshot) {
+          if(snapshot.connectionState == ConnectionState.waiting){
+              return FadeInAnimation(
+                  delayMilliseconds: 500,
+                  beginScale: 1,
+                  beginOpacity: 0,
+                  child: CustomLoadingIndicator());
+
+          }
+
+
           List<BarChartGroupData> bars = [];
           if (snapshot.hasData) {
             WidgetsBinding.instance.addPostFrameCallback((timeStamp) {

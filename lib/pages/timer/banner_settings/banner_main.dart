@@ -6,6 +6,8 @@ import 'package:chime/utils/methods/date_time_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../../../app_components/popup.dart';
+import '../../../enums/interval_bell.dart';
 import '../../../state/app_state.dart';
 import '../../../state/audio_state.dart';
 import 'ambience/ambience_page.dart';
@@ -34,7 +36,7 @@ class _BannerMainState extends ConsumerState<BannerMain> {
     bool sessionUnderWay = false;
     if (appState.sessionState != SessionState.notStarted) {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-       appNotifier.setHomePageTabsOpen(false);
+        appNotifier.setHomePageTabsOpen(false);
         appNotifier.setAnimateHomePage(false);
       });
 
@@ -55,7 +57,7 @@ class _BannerMainState extends ConsumerState<BannerMain> {
                     !appState.homePageTabsAreOpen && appState.animateHomePage ||
                         sessionUnderWay,
                 reverse:
-                   appState.homePageTabsAreOpen && appState.animateHomePage ||
+                    appState.homePageTabsAreOpen && appState.animateHomePage ||
                         sessionUnderWay,
                 duration: kHomePageAnimationDuration,
                 customTween: Tween<Offset>(
@@ -81,16 +83,16 @@ class _BannerMainState extends ConsumerState<BannerMain> {
                             ? FontAwesomeIcons.solidBellSlash
                             : FontAwesomeIcons.bell,
                         onPressed: () {
-
-                                if (appState.totalTimeMinutes == 0 &&
-                                    !appState.openSession) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text(kSetFixedTimeGreaterThanZero))
-                                  );
-                                } else {
-                                  showDialog(context: context, builder: (context) => const BellDialog());
-                                }
-
+                          if (appState.totalTimeMinutes == 0 &&
+                              !appState.openSession) {
+                            showPopup(
+                                context: context,
+                                text: kSetFixedTimeGreaterThanZero);
+                          } else {
+                            showDialog(
+                                context: context,
+                                builder: (context) => const BellDialog());
+                          }
                         },
                         alignment: const Alignment(-0.95, -0.98),
                       ),
@@ -138,23 +140,27 @@ class _BannerMainState extends ConsumerState<BannerMain> {
   String _setBellText(AudioState audioState) {
     String bellText = "";
 
-    if (audioState.bellInterval == 0.50) {
-      bellText = 'every 30s';
-    } else if (audioState.bellInterval == 0) {
-      if (audioState.bellOnStart && audioState.bellOnEnd) {
-        bellText = 'Begin & end';
+    if(audioState.intervalBellType == BellIntervalTypeEnum.fixed) {
+      if (audioState.bellInterval == 0.50) {
+        bellText = 'every 30s';
+      } else if (audioState.bellInterval == 0) {
+        if (audioState.bellOnStart && audioState.bellOnEnd) {
+          bellText = 'Begin & end';
+        }
+        if (audioState.bellOnStart && !audioState.bellOnEnd) {
+          bellText = 'Begin only';
+        }
+        if (!audioState.bellOnStart && audioState.bellOnEnd) {
+          bellText = 'End only';
+        }
+        if (!audioState.bellOnStart && !audioState.bellOnEnd) {
+          bellText = ' Interval bells';
+        }
+      } else {
+        bellText = 'Every ${audioState.bellInterval.toInt().formatToHourMin()}';
       }
-      if (audioState.bellOnStart && !audioState.bellOnEnd) {
-        bellText = 'Begin only';
-      }
-      if (!audioState.bellOnStart && audioState.bellOnEnd) {
-        bellText = 'End only';
-      }
-      if (!audioState.bellOnStart && !audioState.bellOnEnd) {
-        bellText = ' Interval bells';
-      }
-    } else {
-      bellText = 'Every ${audioState.bellInterval.toInt().formatToHourMin()}';
+    }else{
+      bellText = 'Random';
     }
     return bellText;
   }

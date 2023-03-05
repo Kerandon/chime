@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:tuple/tuple.dart';
 
+import '../../../app_components/custom_circular_progress.dart';
 import '../../../configs/constants.dart';
 import '../../../enums/time_period.dart';
 import '../../../models/data_point.dart';
@@ -24,12 +25,12 @@ class AnimatedLineChartMain extends ConsumerStatefulWidget {
 }
 
 class _AnimatedLineChartMainState extends ConsumerState<AnimatedLineChartMain> {
- // late final Future<List<StatsModel>> _statsFuture;
+ late final Future<List<StatsModel>> _statsFuture;
 
   @override
   void initState() {
-    // _statsFuture = DatabaseManager().getStatsByTimePeriod(
-    //     period: TimePeriod.allTime, allTimeGroupedByDay: true);
+    _statsFuture = DatabaseManager().getStatsByTimePeriod(
+        period: TimePeriod.allTime, allTimeGroupedByDay: true);
     super.initState();
   }
 
@@ -47,9 +48,12 @@ class _AnimatedLineChartMainState extends ConsumerState<AnimatedLineChartMain> {
     }
 
     return FutureBuilder(
-        future: DatabaseManager().getStatsByTimePeriod(
-            period: TimePeriod.allTime, allTimeGroupedByDay: true),
+        future: _statsFuture,
         builder: (context, snapshot) {
+          if(snapshot.connectionState == ConnectionState.waiting){
+            return const CustomLoadingIndicator();
+          }
+
           if (snapshot.hasData) {
             List<StatsModel> stats = [];
             List<SeriesPoint> seriesData = [], stepChart = [];
