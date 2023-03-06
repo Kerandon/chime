@@ -1,4 +1,4 @@
-const kLongPressDurationMilliseconds = 1200;
+
 const kBorderRadius = 12.0;
 const kHomePageLineWidth = 0.70;
 const kHomePageLineThickness = 2.0;
@@ -18,6 +18,9 @@ const kChartLabelsFontSize = 10.0;
 const kNoOfXLabelsOnLineChart = 5;
 const kFadeInTimeMilliseconds = 500;
 const kHomePageAnimationDuration = 400;
+const double kTimerOpacityShade = 0.02;
+const kIntroAnimationDuration = 3500;
+const kStartAnimationOpacity = 0.80;
 const kAppName = 'Zense Meditation Timer';
 const kOnTimeUpOnlyText = 'on time up only';
 const kNoBarChartDataMsg = 'No meditation stats to display yet...';

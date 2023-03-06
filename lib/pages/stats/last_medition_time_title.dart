@@ -35,7 +35,7 @@ class _LastMeditationTimeTitleState extends ConsumerState<LastMeditationTimeTitl
       future: _lastEntryFuture,
       builder: (context, snapshot) {
         if(snapshot.connectionState == ConnectionState.waiting){
-          return CustomLoadingIndicator();
+          return const CustomLoadingIndicator();
 
         }
 

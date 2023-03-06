@@ -18,8 +18,8 @@ class TimerDesignPage extends ConsumerStatefulWidget {
   ConsumerState<TimerDesignPage> createState() => _TimerDesignPageState();
 }
 
-class _TimerDesignPageState extends ConsumerState<TimerDesignPage> with SingleTickerProviderStateMixin {
-
+class _TimerDesignPageState extends ConsumerState<TimerDesignPage>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controllerPercent;
   double _percent = 0.0;
 
@@ -29,9 +29,9 @@ class _TimerDesignPageState extends ConsumerState<TimerDesignPage> with SingleTi
       duration: const Duration(seconds: 60),
       vsync: this,
     )..addListener(() {
-      _percent = _controllerPercent.value;
-      setState(() {});
-    });
+        _percent = _controllerPercent.value;
+        setState(() {});
+      });
     _controllerPercent.repeat();
     super.initState();
   }
@@ -50,10 +50,10 @@ class _TimerDesignPageState extends ConsumerState<TimerDesignPage> with SingleTi
     final primaryColor = Theme.of(context).primaryColor;
     final secondaryColor = Theme.of(context).colorScheme.secondary;
 
-    if(!state.showTimerDesign){
+    if (!state.showTimerDesign) {
       _controllerPercent.stop();
     }
-    if(state.showTimerDesign){
+    if (state.showTimerDesign) {
       _controllerPercent.repeat();
     }
 
@@ -89,14 +89,14 @@ class _TimerDesignPageState extends ConsumerState<TimerDesignPage> with SingleTi
                           percentage: _percent,
                           dashColor: primaryColor,
                           backgroundColor:
-                              secondaryColor,
+                              secondaryColor.withOpacity(kTimerOpacityShade),
                         );
                         break;
                       case TimerDesign.dash:
                         customPainter = CustomClockDash(
                           percentage: _percent,
                           backgroundColor:
-                              Theme.of(context).colorScheme.tertiary,
+                              secondaryColor.withOpacity(kTimerOpacityShade),
                           dashColor: Theme.of(context).primaryColor,
                         );
                         break;
@@ -104,7 +104,7 @@ class _TimerDesignPageState extends ConsumerState<TimerDesignPage> with SingleTi
                         customPainter = CustomClockCircle(
                           percentage: _percent,
                           backgroundColor:
-                              Theme.of(context).colorScheme.tertiary,
+                              secondaryColor.withOpacity(kTimerOpacityShade),
                           circlesColor: Theme.of(context).primaryColor,
                         );
                         break;
@@ -112,17 +112,20 @@ class _TimerDesignPageState extends ConsumerState<TimerDesignPage> with SingleTi
                         customPainter = CustomClockClock(
                           percentage: _percent,
                           fillColor: Theme.of(context).primaryColor,
-                          borderColor: Theme.of(context).colorScheme.tertiary,
+                          borderColor: secondaryColor,
                         );
                         break;
                     }
 
                     return CustomAnimatedGridBox(
                       labelText: design.name,
-                      onPressed: state.showTimerDesign ? () {
-                        notifier.setTimerDesign(design);
-                      } : null,
-                      isSelected: design == state.timerDesign && state.showTimerDesign,
+                      onPressed: state.showTimerDesign
+                          ? () {
+                              notifier.setTimerDesign(design);
+                            }
+                          : null,
+                      isSelected:
+                          design == state.timerDesign && state.showTimerDesign,
                       contents: SizedBox(
                         width: size.width,
                         height: size.height,

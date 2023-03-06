@@ -28,7 +28,7 @@ class _AmbiencePageState extends ConsumerState<AmbiencePage> {
     final audioNotifier = ref.read(audioProvider.notifier);
     final spacing = size.width * 0.02;
     if(audioState.ambienceIsOn && !_audioPlayedOnInit){
-      AudioManagerNew().playAmbience(ambience: audioState.ambienceSelected, volume: audioState.ambienceVolume);
+      AudioManagerAmbience().playAmbience(ambience: audioState.ambienceSelected, volume: audioState.ambienceVolume);
       _audioPlayedOnInit = true;
     }
 
@@ -36,7 +36,7 @@ class _AmbiencePageState extends ConsumerState<AmbiencePage> {
         appBar: AppBar(
             leading: IconButton(
               onPressed: () {
-                AudioManagerNew().stopAmbience();
+                AudioManagerAmbience().stopAmbience();
                 //AudioManagerNew().fadeOutStopAmbience(startVolume: audioState.ambienceVolume);
                 Navigator.of(context).maybePop();
               },
@@ -57,7 +57,7 @@ class _AmbiencePageState extends ConsumerState<AmbiencePage> {
                     value: audioState.ambienceIsOn,
                     onChanged: (value) {
                       if(!value){
-                        AudioManagerNew().stopAmbience();
+                        AudioManagerAmbience().stopAmbience();
                       }
                       audioNotifier
                         .setAmbienceIsOn(!audioState.ambienceIsOn);
@@ -82,7 +82,7 @@ class _AmbiencePageState extends ConsumerState<AmbiencePage> {
                         onPressed: audioState.ambienceIsOn
                             ? () async {
                                 audioNotifier.setAmbience(ambience);
-                                await AudioManagerNew().playAmbience(ambience: ambience, volume: audioState.ambienceVolume);
+                                await AudioManagerAmbience().playAmbience(ambience: ambience, volume: audioState.ambienceVolume);
 
                               }
                             : null,

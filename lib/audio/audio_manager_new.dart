@@ -1,49 +1,43 @@
 import 'package:just_audio/just_audio.dart';
 import '../enums/ambience.dart';
 
-class AudioManagerNew {
-  AudioManagerNew._private();
+class AudioManagerAmbience {
+  AudioManagerAmbience._private();
 
-  static final _internal = AudioManagerNew._private();
+  static final _internal = AudioManagerAmbience._private();
 
-  factory AudioManagerNew() => _internal;
+  factory AudioManagerAmbience() => _internal;
 
-  AudioPlayer ambiencePlayer = AudioPlayer();
+  final AudioPlayer _player = AudioPlayer();
 
   int position = 0;
 
 
   Future<void> playAmbience({required Ambience ambience, required volume}) async {
-    ambiencePlayer
+    _player
         .setAsset('assets/audio/ambience/${ambience.name}.mp3')
         .then((value) async {
-      await ambiencePlayer.seek(Duration.zero);
-      await ambiencePlayer.setVolume(volume);
-      await ambiencePlayer.play();
+      await _player.seek(Duration.zero);
+      await _player.setVolume(volume);
+      await _player.play();
     });
 
-    print(ambiencePlayer.positionStream.listen((event) {
-      print(event.inMilliseconds);
-      position = event.inMilliseconds;
-    }));
-
-    print(ambiencePlayer.position);
 
   }
 
   Future<void> pauseAmbience() async {
-    await ambiencePlayer.pause();
+    await _player.pause();
   }
 
   Future<void> resumeAmbience() async {
 
-    if(!ambiencePlayer.playing) {
-      await ambiencePlayer.play();
+    if(!_player.playing) {
+      await _player.play();
     }
   }
 
   Future<void> stopAmbience() async {
-    await ambiencePlayer.stop();
+    await _player.stop();
   }
 
   // Future<void> fadeOutStopAmbience({required double startVolume, duration = 3000}) async {
@@ -58,11 +52,11 @@ class AudioManagerNew {
   // }
 
   Future<void> setVolume(double volume) async {
-    await ambiencePlayer.setVolume(volume);
+    await _player.setVolume(volume);
   }
 
   Future<void> dispose() async {
-    await ambiencePlayer.dispose();
+    await _player.dispose();
   }
 
 }

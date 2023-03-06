@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:chime/animation/fade_in_animation.dart';
 import 'package:chime/audio/audio_manager_new.dart';
 import 'package:chime/enums/session_state.dart';
 import 'package:chime/pages/timer/timers/session_countdown/countdown_timer.dart';
@@ -8,6 +9,7 @@ import 'package:chime/state/audio_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quiver/async.dart';
+import '../../../configs/constants.dart';
 import '../../../state/app_state.dart';
 import '../../../state/database_manager.dart';
 import '../../completion_page/completion_page.dart';
@@ -34,7 +36,6 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
     final appState = ref.watch(appProvider);
     final appNotifier = ref.read(appProvider.notifier);
     final audioState = ref.watch(audioProvider);
-    final audioNotifier = ref.read(audioProvider.notifier);
 
     switch (appState.sessionState) {
       case SessionState.notStarted:
@@ -52,7 +53,7 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
       case SessionState.countdown:
         if (!_timerIsSet) {
           _timer = CountdownTimer(
-              Duration(milliseconds: ((appState.totalCountdownTime * 1000))),
+              Duration(milliseconds: ((appState.totalCountdownTime * 1000) + 1000)),
               const Duration(milliseconds: 1))
             ..listen((event) {
               if (event.remaining.inSeconds == 0 && !_countDownHasFinished) {
@@ -67,36 +68,38 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
         }
         break;
       case SessionState.inProgress:
-        if (!_initialAmbienceSet) {
-          AudioManagerNew().playAmbience(
-              ambience: audioState.ambienceSelected,
-              volume: audioState.ambienceVolume);
-          _initialAmbienceSet = true;
-        } else {
-          AudioManagerNew().resumeAmbience();
+        if(audioState.ambienceIsOn) {
+          if (!_initialAmbienceSet) {
+            AudioManagerAmbience().playAmbience(
+                ambience: audioState.ambienceSelected,
+                volume: audioState.ambienceVolume);
+            _initialAmbienceSet = true;
+          } else {
+            AudioManagerAmbience().resumeAmbience();
+          }
         }
 
         if (!_timerIsSet) {
           if (!appState.openSession) {
+
+            //////////// FIXED TIME
+
             int time = appState.totalTimeMinutes;
-            if (appState.pausedMilliseconds != 0) {
-              time = appState.pausedMilliseconds;
-            }
             var t = (time * 60000);
-            if (appState.pausedMilliseconds != 0) {
-              t = appState.pausedMilliseconds;
+            if (appState.pausedMillisecondsElapsed != 0) {
+              t = appState.pausedMillisecondsElapsed;
             }
 
             _timer = CountdownTimer(
                 Duration(milliseconds: t), const Duration(milliseconds: 1))
               ..listen((event) {
-                appNotifier
-                    .setMillisecondsRemaining(event.remaining.inMilliseconds);
                 appNotifier.setMillisecondsElapsed(
-                    event.elapsed.inMilliseconds + appState.pausedMilliseconds);
-                if (event.remaining.inSeconds == 0) {
+                    event.elapsed.inMilliseconds
+                        + appState.pausedMillisecondsElapsed
+                    );
+                if (event.elapsed.inSeconds == (appState.totalTimeMinutes * 60)) {
                   if (!_endSessionNotified) {
-                    Timer(const Duration(seconds: 2), () {
+                    Timer(const Duration(milliseconds: 1500), () {
                       DatabaseManager().insertIntoStats(
                           dateTime: DateTime.now(),
                           minutes: appState.totalTimeMinutes);
@@ -123,17 +126,16 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
               });
             _timerIsSet = true;
           } else {
-            /// AFTER 23 HOURS, 59 MINUTES AND 59 SECONDS (MAX)
+            //////// AFTER 23 HOURS, 59 MINUTES AND 59 SECONDS (MAX)
 
             _timer = CountdownTimer(const Duration(seconds: 86399000),
                 const Duration(milliseconds: 1))
               ..listen((event) {
-                appNotifier
-                    .setMillisecondsRemaining(event.remaining.inMilliseconds);
 
                 appNotifier.setMillisecondsElapsed(
-                    (event.elapsed.inMilliseconds +
-                        appState.pausedMilliseconds));
+                    (event.elapsed.inMilliseconds
+                        + appState.pausedMillisecondsElapsed
+                    ));
               });
             _timerIsSet = true;
           }
@@ -141,14 +143,14 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
 
         break;
       case SessionState.paused:
-        AudioManagerNew().pauseAmbience();
+        AudioManagerAmbience().pauseAmbience();
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
           _timer?.cancel();
           _timerIsSet = false;
         });
         break;
       case SessionState.ended:
-        AudioManagerNew().stopAmbience();
+        AudioManagerAmbience().stopAmbience();
         _timer?.cancel();
         break;
     }
@@ -164,20 +166,26 @@ class _CustomNumberFieldState extends ConsumerState<AppTimerMain> {
       showSessionTimer = true;
     }
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        if (showTimePicker) ...[
-          const TimePickerMain(),
+    return FadeInAnimation(
+      durationMilliseconds:  kIntroAnimationDuration,
+      animateOnDemand: appState.appHasLoaded,
+      beginScale: appState.introAnimationHasRun ? 1 : 0.90,
+      beginOpacity: appState.introAnimationHasRun ? 1 : 0,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          if (showTimePicker) ...[
+            const TimePickerMain(),
+          ],
+          if (appState.sessionState == SessionState.countdown) ...[
+            const CountDownTimer(),
+          ],
+          if (showSessionTimer) ...[
+            const SessionTimer(),
+          ]
         ],
-        if (appState.sessionState == SessionState.countdown) ...[
-          const CountDownTimer(),
-        ],
-        if (showSessionTimer) ...[
-          const SessionTimer(),
-        ]
-      ],
+      ),
     );
   }
 }

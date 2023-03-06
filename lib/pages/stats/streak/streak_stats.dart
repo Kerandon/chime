@@ -1,6 +1,5 @@
 import 'package:chime/enums/time_period.dart';
 import 'package:chime/pages/stats/streak/streak_stats_box.dart';
-import 'package:chime/state/chart_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../app_components/custom_circular_progress.dart';

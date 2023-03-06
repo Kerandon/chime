@@ -1,4 +1,3 @@
-import 'package:chime/audio/audio_manager_ambience.dart';
 import 'package:chime/enums/time_period.dart';
 import 'package:chime/pages/guide_page.dart';
 import 'package:chime/pages/settings/settings_page.dart';
@@ -47,7 +46,8 @@ class _HomePageContentsState extends ConsumerState<Home> {
     final appState = ref.watch(appProvider);
     final appNotifier = ref.read(appProvider.notifier);
 
-    if(!_animateBottomBarAfterMeditationPageClose && appState.currentPage == 2){
+    if (!_animateBottomBarAfterMeditationPageClose &&
+        appState.currentPage == 2) {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         appNotifier.setHomePageTabsOpen(false);
         appNotifier.setAnimateHomePage(true);
@@ -77,7 +77,8 @@ class _HomePageContentsState extends ConsumerState<Home> {
           bottomNavigationBar: IgnorePointer(
             ignoring: appState.sessionState != SessionState.notStarted,
             child: SlideAnimation(
-              animate: ((!appState.homePageTabsAreOpen && appState.animateHomePage) ||
+              animate: ((!appState.homePageTabsAreOpen &&
+                      appState.animateHomePage) ||
                   sessionUnderWay),
               reverse:
                   (appState.homePageTabsAreOpen && appState.animateHomePage) ||
@@ -118,6 +119,7 @@ class _HomePageContentsState extends ConsumerState<Home> {
         ),
         const BannerMain(),
         const HomePageTabArrow(),
+        const AudioManagerBells(),
         Align(
           alignment: const Alignment(0, 0.50),
           child: ElevatedButton(
@@ -129,7 +131,7 @@ class _HomePageContentsState extends ConsumerState<Home> {
         ),
         ElevatedButton(
           onPressed: () async {
-            final stats = await DatabaseManager()
+            await DatabaseManager()
                 .getStatsByTimePeriod(period: TimePeriod.week);
           },
           child: const SizedBox(
@@ -137,7 +139,12 @@ class _HomePageContentsState extends ConsumerState<Home> {
             child: Text('get'),
           ),
         ),
-
+        Align(
+            alignment: const Alignment(0.80,0.80),
+            child: Material(child: Text(' elapsed ${appState.millisecondsElapsed.toString()}'))),
+        Align(
+            alignment: const Alignment(0.80,0.60),
+            child: Material(child: Text(' paused elapsed ${appState.pausedMillisecondsElapsed.toString()}'))),
       ],
     );
   }

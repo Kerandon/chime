@@ -71,7 +71,7 @@ class _BannerMainState extends ConsumerState<BannerMain> {
                     ),
                   )),
                   width: size.width,
-                  height: kToolbarHeight * 0.80,
+                  height: kToolbarHeight,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [

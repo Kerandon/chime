@@ -4,6 +4,7 @@ import 'package:chime/enums/session_state.dart';
 import 'package:chime/state/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../../../configs/constants.dart';
 import 'center_button.dart';
 import 'custom_clocks/custom_clock_circle.dart';
 import 'custom_clocks/custom_clock_clock.dart';
@@ -23,11 +24,8 @@ class StartButtonMain extends ConsumerStatefulWidget {
 class _CustomCircularIndicatorState extends ConsumerState<StartButtonMain>
     with TickerProviderStateMixin {
   late AnimationController _controllerPercent;
-  late AnimationController _controllerScale;
-  late Animation<double> _scaleAnimation;
   double _percent = 1.0;
   bool _pausePercentConfirmed = false;
-  double _scale = 1.0;
 
   @override
   void initState() {
@@ -37,26 +35,13 @@ class _CustomCircularIndicatorState extends ConsumerState<StartButtonMain>
       vsync: this,
     )..addListener(() {
         _percent = _controllerPercent.value;
-           setState(() {});
+        setState(() {});
       });
-
-    _controllerScale = AnimationController(
-        duration: const Duration(milliseconds: 10000),
-        vsync: this)..addListener(() {
-    });
-
-    _scaleAnimation = Tween<double>(begin: 0.90, end: 1.0)
-    .animate(CurvedAnimation(parent: _controllerScale, curve: Curves.easeInOutSine));
-
-    _controllerScale.forward();
   }
-
-
 
   @override
   void dispose() {
     _controllerPercent.dispose();
-    _controllerScale.dispose();
     super.dispose();
   }
 
@@ -64,53 +49,39 @@ class _CustomCircularIndicatorState extends ConsumerState<StartButtonMain>
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final appState = ref.watch(appProvider);
+    final appNotifier = ref.read(appProvider.notifier);
 
-
-
-      if (!appState.openSession) {
-        if (appState.totalTimeMinutes != 0 &&
-            appState.millisecondsRemaining != 0) {
-          _percent = (((appState.totalTimeMinutes * 60000)) -
-              appState.millisecondsRemaining) /
-              ((appState.totalTimeMinutes * 60000));
-        }
-      } else {
-        if (appState.sessionState == SessionState.inProgress) {
-          if (!_controllerPercent.isAnimating) {
-            _controllerPercent.repeat();
-          }
-        }
-        if (appState.sessionState == SessionState.paused) {
-          _controllerPercent.stop();
-        }
-
+    if (!appState.openSession) {
+      if (appState.sessionState == SessionState.inProgress) {
+        _percent =
+            appState.millisecondsElapsed / (appState.totalTimeMinutes * 60000);
       }
+    } else {
+      if (appState.sessionState == SessionState.inProgress) {
+        if (!_controllerPercent.isAnimating) {
+          _controllerPercent.repeat();
+        }
+      }
+      if (appState.sessionState == SessionState.paused) {
+        _controllerPercent.stop();
+      }
+    }
     if (appState.sessionState == SessionState.ended ||
         appState.sessionState == SessionState.notStarted) {
       _controllerPercent.reset();
       _percent = 1.0;
     }
-      if (_percent.isNegative) {
-        _percent = 0;
-      }
-    if(appState.openSession && appState.sessionState == SessionState.paused && !_pausePercentConfirmed) {
-      // _percent += 0.01;
-      _pausePercentConfirmed = true;
-      print('paused position is $_percent');
+    if (_percent.isNegative) {
+      _percent = 0;
     }
-
-
-
-
-
-
-
-
+    if (appState.openSession &&
+        appState.sessionState == SessionState.paused &&
+        !_pausePercentConfirmed) {
+      _pausePercentConfirmed = true;
+    }
 
     final primaryColor = Theme.of(context).primaryColor;
     final secondaryColor = Theme.of(context).colorScheme.secondary;
-
-
 
     return SizedBox(
       width: size.width * 0.90,
@@ -120,16 +91,22 @@ class _CustomCircularIndicatorState extends ConsumerState<StartButtonMain>
           Align(
             alignment: const Alignment(0.0, 0.0),
             child: FadeInAnimation(
-              durationMilliseconds: 2000,
-              beginScale: 1.20,
+              animateOnDemand: appState.appHasLoaded && !appState.introAnimationHasRun,
+              durationMilliseconds:  kIntroAnimationDuration,
+              beginScale: appState.introAnimationHasRun ? 1 : 1.30,
+              beginOpacity: appState.introAnimationHasRun ? 1 : kStartAnimationOpacity,
+              animationCompleted: (){
+                appNotifier.setIntroAnimationHasRun();
+              },
               child: SizedBox(
-                height: size.height * 0.35,
-                width: size.height * 0.35,
+                height: size.height * 0.30,
+                width: size.height * 0.30,
                 child: CustomPaint(
                   painter: appState.timerDesign == TimerDesign.solid
                       ? CustomClockSolid(
                           percentage: _percent,
-                          backgroundColor: secondaryColor.withOpacity(0.10),
+                          backgroundColor:
+                              secondaryColor.withOpacity(kTimerOpacityShade),
                           dashColor: primaryColor,
                         )
                       : appState.timerDesign == TimerDesign.clock
@@ -141,20 +118,25 @@ class _CustomCircularIndicatorState extends ConsumerState<StartButtonMain>
                           : appState.timerDesign == TimerDesign.circle
                               ? CustomClockCircle(
                                   percentage: _percent,
-                                  backgroundColor:
-                                      secondaryColor.withOpacity(0.20),
+                                  backgroundColor: secondaryColor
+                                      .withOpacity(kTimerOpacityShade),
                                   circlesColor: primaryColor,
                                   radius: 0.45,
                                 )
                               : appState.timerDesign == TimerDesign.dash
                                   ? CustomClockDash(
                                       percentage: _percent,
-                                      backgroundColor:
-                                          secondaryColor.withOpacity(0.20),
+                                      backgroundColor: secondaryColor
+                                          .withOpacity(kTimerOpacityShade),
                                       dashColor: secondaryColor,
                                     )
                                   : null,
-                  child: const CenterButton(),
+                  child: FadeInAnimation(
+                      animateOnDemand: appState.appHasLoaded,
+                      beginScale: appState.introAnimationHasRun ? 1 : 0.20,
+                      beginOpacity: appState.introAnimationHasRun ? 1 : kStartAnimationOpacity,
+                      durationMilliseconds:  kIntroAnimationDuration,
+                      child: const CenterButton()),
                 ),
               ),
             ),

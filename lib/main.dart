@@ -56,7 +56,7 @@ class _ChimeAppState extends ConsumerState<ChimeApp> {
   }
   @override
   void dispose() {
-   AudioManagerNew().dispose();
+   AudioManagerAmbience().dispose();
     super.dispose();
   }
 
@@ -131,9 +131,12 @@ class _ChimeAppState extends ConsumerState<ChimeApp> {
 
                 _prefsUpdated = true;
                 Timer.periodic(
-                  const Duration(milliseconds: 800),
+                  const Duration(milliseconds: 1000),
                   (timer) {
                     FlutterNativeSplash.remove();
+                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                      appNotifier.setAppHasLoaded(true);
+                    });
                   },
                 );
               }

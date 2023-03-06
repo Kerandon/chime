@@ -34,15 +34,15 @@ class StopButton extends ConsumerWidget {
               backgroundColor: Theme.of(context).splashColor.withOpacity(0.10),
             ),
             onPressed: () {
-              AudioManagerNew().stopAmbience();
+              AudioManagerAmbience().stopAmbience();
               if(appState.sessionState == SessionState.countdown){
                 appNotifier.setSessionState(SessionState.notStarted);
               }else {
                 int elapsed = 0;
-                if (!appState.openSession) {
-                  elapsed = (appState.totalTimeMinutes) -
-                      (appState.millisecondsRemaining / 60000).round();
-                }
+                // if (!appState.openSession) {
+                //   elapsed = (appState.totalTimeMinutes) -
+                //       (appState.millisecondsRemaining / 60000).round();
+                // }
                 if (appState.openSession) {
                   elapsed = (appState.millisecondsElapsed / 60000).round();
                 }

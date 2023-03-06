@@ -30,6 +30,7 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
   bool displayNoData = false;
   bool _futureHasRun = false;
   Future<List<StatsModel>>? _statsFuture;
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -43,21 +44,19 @@ class _BarChartHistoryState extends ConsumerState<BarChartHistory> {
       _futureHasRun = true;
     }
 
-   return Padding(
+    return Padding(
       padding: EdgeInsets.fromLTRB(
           widthPadding, size.height * 0.01, widthPadding, size.height * 0.01),
       child: FutureBuilder<List<StatsModel>>(
         future: _statsFuture,
         builder: (context, snapshot) {
-          if(snapshot.connectionState == ConnectionState.waiting){
-              return FadeInAnimation(
-                  delayMilliseconds: 500,
-                  beginScale: 1,
-                  beginOpacity: 0,
-                  child: CustomLoadingIndicator());
-
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const FadeInAnimation(
+                delayMilliseconds: 500,
+                beginScale: 1,
+                beginOpacity: 0,
+                child: CustomLoadingIndicator());
           }
-
 
           List<BarChartGroupData> bars = [];
           if (snapshot.hasData) {

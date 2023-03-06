@@ -17,7 +17,6 @@ class CustomClockSolid extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    var adjustedPercent = (360 * percentage) - (90 - 3.6);
 
     double centerX = size.width;
     double centerY = size.height;

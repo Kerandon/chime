@@ -9,17 +9,17 @@ import '../utils/vibration_method.dart';
 
 class AppState {
   //APP STATE
+  final bool appHasLoaded;
+  final bool introAnimationHasRun;
   final SessionState sessionState;
   final int currentPage;
   final bool animateHomePage;
   final bool homePageTabsAreOpen;
-  final bool appHasLoaded;
 
   //TIME
   final int totalTimeMinutes;
-  final int millisecondsRemaining;
   final int millisecondsElapsed;
-  final int pausedMilliseconds;
+  final int pausedMillisecondsElapsed;
   final bool countdownIsOn;
   final int totalCountdownTime;
   final int currentCountdownTime;
@@ -41,15 +41,15 @@ class AppState {
   final bool animateSplash;
 
   AppState({
+    required this.appHasLoaded,
+    required this.introAnimationHasRun,
     required this.sessionState,
     required this.currentPage,
     required this.totalTimeMinutes,
     required this.animateHomePage,
     required this.homePageTabsAreOpen,
-    required this.appHasLoaded,
-    required this.millisecondsRemaining,
     required this.millisecondsElapsed,
-    required this.pausedMilliseconds,
+    required this.pausedMillisecondsElapsed,
     required this.countdownIsOn,
     required this.totalCountdownTime,
     required this.currentCountdownTime,
@@ -64,16 +64,16 @@ class AppState {
   });
 
   AppState copyWith({
+    bool? appHasLoaded,
+    bool? introAnimationHasRun,
     SessionState? sessionState,
     FocusState? focusState,
     int? currentPage,
     bool? animateHomePage,
     bool? homePageTabsAreOpen,
-    bool? appHasLoaded,
     int? totalTimeMinutes,
-    int? millisecondsRemaining,
     int? millisecondsElapsed,
-    int? pausedMilliseconds,
+    int? pausedMillisecondsElapsed,
     bool? countdownIsOn,
     int? totalCountdownTime,
     int? currentCountdownTime,
@@ -87,16 +87,16 @@ class AppState {
     bool? animateSplash,
   }) {
     return AppState(
+      appHasLoaded: appHasLoaded ?? this.appHasLoaded,
+      introAnimationHasRun: introAnimationHasRun ?? this.introAnimationHasRun,
       sessionState: sessionState ?? this.sessionState,
       currentPage: currentPage ?? this.currentPage,
       totalTimeMinutes: totalTimeMinutes ?? this.totalTimeMinutes,
       animateHomePage: animateHomePage ?? this.animateHomePage,
       homePageTabsAreOpen: homePageTabsAreOpen ?? this.homePageTabsAreOpen,
-      appHasLoaded: appHasLoaded ?? this.appHasLoaded,
-      millisecondsRemaining:
-          millisecondsRemaining ?? this.millisecondsRemaining,
       millisecondsElapsed: millisecondsElapsed ?? this.millisecondsElapsed,
-      pausedMilliseconds: pausedMilliseconds ?? this.pausedMilliseconds,
+      pausedMillisecondsElapsed:
+          pausedMillisecondsElapsed ?? this.pausedMillisecondsElapsed,
       countdownIsOn: countdownIsOn ?? this.countdownIsOn,
       totalCountdownTime: totalCountdownTime ?? this.totalCountdownTime,
       currentCountdownTime: currentCountdownTime ?? this.currentCountdownTime,
@@ -115,11 +115,19 @@ class AppState {
 class AppNotifier extends StateNotifier<AppState> {
   AppNotifier(state) : super(state);
 
-  void setAppHasLoaded(bool loaded){
+  void setAppHasLoaded(bool loaded) {
     state = state.copyWith(appHasLoaded: loaded);
   }
 
-  void setTotalTime({int? minutes, int? hours, bool afterRestart = false, bool insertInDatabase = true}) async {
+  void setIntroAnimationHasRun(){
+    state = state.copyWith(introAnimationHasRun: true);
+  }
+
+  void setTotalTime(
+      {int? minutes,
+      int? hours,
+      bool afterRestart = false,
+      bool insertInDatabase = true}) async {
     int updatedTotalTime = 0;
     int currentTimeMinutes = state.totalTimeMinutes % 60;
     int currentTimeHours = state.totalTimeMinutes ~/ 60;
@@ -133,7 +141,7 @@ class AppNotifier extends StateNotifier<AppState> {
 
     state = state.copyWith(totalTimeMinutes: updatedTotalTime);
 
-    if(insertInDatabase) {
+    if (insertInDatabase) {
       await DatabaseManager()
           .insertIntoPrefs(k: Prefs.timeTotal.name, v: updatedTotalTime);
     }
@@ -160,9 +168,8 @@ class AppNotifier extends StateNotifier<AppState> {
 
   void resetSession() {
     state = state.copyWith(
-      pausedMilliseconds: 0,
+      pausedMillisecondsElapsed: 0,
       currentCountdownTime: 0,
-      millisecondsRemaining: 0,
       millisecondsElapsed: 0,
     );
   }
@@ -179,10 +186,6 @@ class AppNotifier extends StateNotifier<AppState> {
     state = state.copyWith(currentPage: index);
   }
 
-  void setMillisecondsRemaining(int milliseconds) {
-    state = state.copyWith(millisecondsRemaining: milliseconds);
-  }
-
   void setMillisecondsElapsed(int milliseconds) {
     state = state.copyWith(millisecondsElapsed: milliseconds);
   }
@@ -192,27 +195,25 @@ class AppNotifier extends StateNotifier<AppState> {
     if (reset == true) {
       time = 0;
     } else {
-      if (state.openSession) {
-        time = state.millisecondsElapsed;
-      } else {
-        time = state.millisecondsRemaining;
-      }
+      time = state.millisecondsElapsed;
     }
 
-    state = state.copyWith(pausedMilliseconds: time);
+    state = state.copyWith(pausedMillisecondsElapsed: time);
   }
 
   void setCountdownIsOn(bool on, {bool insertInDatabase = true}) async {
     state = state.copyWith(countdownIsOn: on);
-    if(insertInDatabase){
-      await DatabaseManager().insertIntoPrefs(k: Prefs.countdownIsOn.name, v: on);
+    if (insertInDatabase) {
+      await DatabaseManager()
+          .insertIntoPrefs(k: Prefs.countdownIsOn.name, v: on);
     }
   }
 
   void setTotalCountdownTime(int time, {bool insertInDatabase = true}) async {
     state = state.copyWith(totalCountdownTime: time);
-    if(insertInDatabase){
-      await DatabaseManager().insertIntoPrefs(k: Prefs.timeCountdown.name, v: time);
+    if (insertInDatabase) {
+      await DatabaseManager()
+          .insertIntoPrefs(k: Prefs.timeCountdown.name, v: time);
     }
   }
 
@@ -222,23 +223,24 @@ class AppNotifier extends StateNotifier<AppState> {
 
   void setOpenSession(bool open, {bool insertInDatabase = true}) async {
     state = state.copyWith(openSession: open);
-    if(insertInDatabase) {
-      await DatabaseManager().insertIntoPrefs(
-          k: Prefs.isOpenSession.name, v: open);
+    if (insertInDatabase) {
+      await DatabaseManager()
+          .insertIntoPrefs(k: Prefs.isOpenSession.name, v: open);
     }
   }
 
-  void setColorTheme(AppColorTheme colorTheme, {bool insertInDatabase = true}) async {
+  void setColorTheme(AppColorTheme colorTheme,
+      {bool insertInDatabase = true}) async {
     state = state.copyWith(colorTheme: colorTheme);
-    if(insertInDatabase) {
-      await DatabaseManager().insertIntoPrefs(
-          k: Prefs.colorTheme.name, v: colorTheme.name);
+    if (insertInDatabase) {
+      await DatabaseManager()
+          .insertIntoPrefs(k: Prefs.colorTheme.name, v: colorTheme.name);
     }
   }
 
   void setBrightness(bool isDark, {bool insertInDatabase = true}) async {
     state = state.copyWith(isDarkTheme: isDark);
-    if(insertInDatabase) {
+    if (insertInDatabase) {
       await DatabaseManager()
           .insertIntoPrefs(k: Prefs.themeBrightness.toString(), v: isDark);
     }
@@ -278,16 +280,16 @@ class AppNotifier extends StateNotifier<AppState> {
 
 final appProvider = StateNotifierProvider<AppNotifier, AppState>((ref) {
   return AppNotifier(AppState(
+    appHasLoaded: false,
+    introAnimationHasRun: false,
     sessionState: SessionState.notStarted,
     colorTheme: AppColorTheme.turquoise,
     animateHomePage: false,
     homePageTabsAreOpen: false,
-    appHasLoaded: false,
     currentPage: 0,
     totalTimeMinutes: 60,
-    millisecondsRemaining: 0,
     millisecondsElapsed: 0,
-    pausedMilliseconds: 0,
+    pausedMillisecondsElapsed: 0,
     countdownIsOn: false,
     currentCountdownTime: 5,
     totalCountdownTime: 5,

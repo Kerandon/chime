@@ -22,7 +22,7 @@ class CustomClockDash extends CustomPainter {
     double radius = math.min(centerX * 0.45, centerY * 0.45);
     double dotBuffer = size.width * 0.03;
     int dotBufferMultiplier = 4;
-    int numberOfDashesMultiplier = 18;
+    int numberOfDashesMultiplier = 9;
     final  strokeWidth = size.width * 0.05;
     /// 360 / 6 = 60;
 

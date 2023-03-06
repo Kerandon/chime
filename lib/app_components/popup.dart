@@ -1,4 +1,3 @@
-import 'package:chime/pages/timer/timers/session_countdown/countdown_timer.dart';
 import 'package:flutter/material.dart';
 
 Future<void> showPopup({required BuildContext context, required String text}) async {

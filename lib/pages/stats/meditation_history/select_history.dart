@@ -195,7 +195,7 @@ class LoadingHelper extends StatelessWidget {
             return const CustomLoadingIndicator();
           }
           onFutureComplete?.call();
-          return SizedBox();
+          return const SizedBox();
         });
   }
 }

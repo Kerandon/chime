@@ -50,7 +50,7 @@ class _FadeInAnimationState extends State<FadeInAnimation>
     if (!widget.animateOnDemand) {
       Future.delayed(Duration(milliseconds: widget.delayMilliseconds), () {
         if (mounted) {
-          _controller.forward();
+         _controller.forward();
         }
       });
     }
@@ -65,7 +65,7 @@ class _FadeInAnimationState extends State<FadeInAnimation>
   @override
   void didUpdateWidget(covariant FadeInAnimation oldWidget) {
     if (widget.animateOnDemand && !_controller.isAnimating) {
-      _controller.reset();
+      //_controller.reset();
       _controller.forward();
     }
     super.didUpdateWidget(oldWidget);

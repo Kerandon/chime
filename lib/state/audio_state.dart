@@ -120,7 +120,6 @@ class AudioNotifier extends StateNotifier<AudioState> {
 
   void setMaxRandomRange(double max, {bool insertInDatabase = true}) async {
     state = state.copyWith(maxRandomBell: max);
-    print('max range set to $max');
     if (insertInDatabase) {
       await DatabaseManager()
           .insertIntoPrefs(k: Prefs.bellIntervalRandomMax.name, v: max);
@@ -159,7 +158,6 @@ class AudioNotifier extends StateNotifier<AudioState> {
       await DatabaseManager()
           .insertIntoPrefs(k: Prefs.ambienceSelected.name, v: ambience.name);
     }
-    print('ambience set to ${state.ambienceSelected}');
   }
 
   void setAmbienceIsOn(bool on, {bool insertInDatabase = true}) async {
@@ -172,8 +170,7 @@ class AudioNotifier extends StateNotifier<AudioState> {
 
   void setAmbienceVolume(double volume, {bool insertInDatabase = true}) async {
     state = state.copyWith(ambienceVolume: volume);
-    print('current volume is ${volume}');
-    AudioManagerNew().setVolume(volume);
+    AudioManagerAmbience().setVolume(volume);
     if (insertInDatabase) {
       await DatabaseManager()
           .insertIntoPrefs(k: Prefs.ambienceVolume.name, v: volume);

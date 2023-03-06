@@ -30,6 +30,7 @@ class CustomClockClock extends CustomPainter {
     var dashBrushSmall = Paint()
       ..color = borderColor
       ..style = PaintingStyle.fill
+      ..strokeCap = StrokeCap.round
       ..strokeWidth = 2;
 
     for (double i = -90; i < 360; i += 6) {
@@ -54,7 +55,7 @@ class CustomClockClock extends CustomPainter {
     var circlePaint = Paint()
       ..color = fillColor
       ..style = PaintingStyle.stroke
-      ..strokeWidth = strokeWidthDash * 1.5;
+      ..strokeWidth = strokeWidthDash * 1.6;
 
     final circlePath = Path()
       ..addArc(Rect.fromCircle(center: center, radius: radius * 0.88),

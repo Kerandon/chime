@@ -22,7 +22,7 @@ class CustomClockCircle extends CustomPainter {
     Offset center = Offset(centerX / 2, centerY / 2);
     double adjustedRadius = math.min(centerX * radius , centerY * radius);
     double dotBuffer = size.width * 0.03;
-    int numberOfDashesMultiplier = 18;
+    int numberOfDashesMultiplier = 30;
 
     /// 360 / 6 = 60;
 
